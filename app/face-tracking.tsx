@@ -3,6 +3,18 @@
 import { useEffect, useRef, useState } from 'react';
 import * as faceapi from 'face-api.js';
 
+// Interface for tracked face data
+interface TrackedFace {
+    id: number;
+    lastSeen: number;
+    box: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
+}
+
 export default function FaceTracking() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -13,6 +25,10 @@ export default function FaceTracking() {
     const [imagesLoaded, setImagesLoaded] = useState(false);
     const [facesDetected, setFacesDetected] = useState(0);
     const [showDebugBox, setShowDebugBox] = useState(true);
+
+    // For persistent face tracking
+    const trackedFacesRef = useRef<TrackedFace[]>([]);
+    const nextIdRef = useRef(1);
 
     // Store previous detection positions for smoothing
     const prevPositionsRef = useRef<Array<{
@@ -125,6 +141,80 @@ export default function FaceTracking() {
         return smoothed;
     };
 
+    // Find center point of a box
+    const getBoxCenter = (box: { x: number; y: number; width: number; height: number }) => {
+        return {
+            x: box.x + box.width / 2,
+            y: box.y + box.height / 2
+        };
+    };
+
+    // Calculate squared distance between two points (faster than using Math.sqrt)
+    const getDistanceSquared = (p1: { x: number; y: number }, p2: { x: number; y: number }) => {
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        return dx * dx + dy * dy;
+    };
+
+    // Assign detections to tracked faces or create new tracked faces
+    const updateTrackedFaces = (detections: faceapi.ObjectDetection[]) => {
+        const currentTime = Date.now();
+
+        // First, mark all tracked faces as potentially expired
+        const trackedFaces = [...trackedFacesRef.current];
+
+        // Remove faces not seen for more than 1 second
+        const activeFaces = trackedFaces.filter(face => currentTime - face.lastSeen < 1000);
+
+        // For each detection, find the closest tracked face
+        const assignedFaceIndices = new Set<number>();
+        const newAssignments: TrackedFace[] = [];
+
+        detections.forEach(detection => {
+            const detectedBox = detection.box;
+            const detectedCenter = getBoxCenter(detectedBox);
+
+            let closestIndex = -1;
+            let closestDistance = Number.MAX_VALUE;
+
+            // Find the closest tracked face
+            activeFaces.forEach((face, index) => {
+                if (assignedFaceIndices.has(index)) return; // Skip already assigned faces
+
+                const trackedCenter = getBoxCenter(face.box);
+                const distance = getDistanceSquared(detectedCenter, trackedCenter);
+
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestIndex = index;
+                }
+            });
+
+            // If we found a close enough face, update it
+            // Use distance threshold based on image size to determine if it's the same face
+            const distanceThreshold = (detectedBox.width * detectedBox.width) * 2; // Adjust as needed
+
+            if (closestIndex !== -1 && closestDistance < distanceThreshold) {
+                const face = activeFaces[closestIndex];
+                face.lastSeen = currentTime;
+                face.box = detectedBox;
+                assignedFaceIndices.add(closestIndex);
+                newAssignments.push(face);
+            } else {
+                // Create a new tracked face
+                newAssignments.push({
+                    id: nextIdRef.current++,
+                    lastSeen: currentTime,
+                    box: detectedBox
+                });
+            }
+        });
+
+        // Update our ref
+        trackedFacesRef.current = newAssignments;
+        return newAssignments;
+    };
+
     // Handle video playback and face detection
     const handleVideoPlay = () => {
         if (!videoRef.current || !canvasRef.current || !modelsLoaded || !imagesLoaded) return;
@@ -149,20 +239,23 @@ export default function FaceTracking() {
 
                 setFacesDetected(detections.length);
 
+                // Update tracked faces with consistent IDs
+                const persistentFaces = updateTrackedFaces(detections);
+
                 // Get canvas context and clear previous drawings
                 const ctx = canvas.getContext('2d');
                 if (!ctx) return;
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // Clean up prevPositions array if we have fewer detections
-                if (prevPositionsRef.current.length > detections.length) {
-                    prevPositionsRef.current = prevPositionsRef.current.slice(0, detections.length);
+                // Clean up prevPositions array
+                if (prevPositionsRef.current.length > persistentFaces.length) {
+                    prevPositionsRef.current = prevPositionsRef.current.slice(0, persistentFaces.length);
                 }
 
-                // Process each detected face
-                detections.forEach((detection, index) => {
-                    const rawBox = detection.box;
+                // Process each tracked face with consistent ID
+                persistentFaces.forEach((face, index) => {
+                    const rawBox = face.box;
 
                     // Apply smoothing to the box position and dimensions
                     const box = smoothPosition(
@@ -180,6 +273,11 @@ export default function FaceTracking() {
                         ctx.strokeStyle = '#00ff00';
                         ctx.lineWidth = 2;
                         ctx.strokeRect(box.x, box.y, box.width, box.height);
+
+                        // Draw face ID for debugging
+                        ctx.fillStyle = '#00ff00';
+                        ctx.font = '16px Arial';
+                        ctx.fillText(`ID: ${face.id}`, box.x, box.y - 5);
                     }
 
                     // Get chef hat and shirt images
