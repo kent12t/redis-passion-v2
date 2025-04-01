@@ -1,0 +1,32 @@
+[
+    {
+        "personality_en": "Wellness Warrior",
+        "personality_cn": "健康达人",
+        "activity": "ActiveSG programs (swimming, brisk walking), Tai Chi at community centers, line dancing groups, chair yoga, gardening, cycling at park connectors."
+    },
+    {
+        "personality_en": "Art Maestro",
+        "personality_cn": "艺术达人",
+        "activity": "Pottery classes at community clubs, Chinese calligraphy workshops, watercolour painting, joining a choir, learning a musical instrument (ukulele, erhu), visiting art exhibitions at the National Gallery Singapore, attending theatre performances."
+    },
+    {
+        "personality_en": "Storyteller",
+        "personality_cn": "讲古人",
+        "activity": "Sharing stories at community events, participating in oral history projects, teaching younger generations about traditional crafts or customs, visiting heritage centers, learning about their family history, journaling, attending cultural festivals."
+    },
+    {
+        "personality_en": "Master Chef",
+        "personality_cn": "大厨",
+        "activity": "Cooking classes at community centers (focus on healthy Singaporean cuisine), baking workshops, visiting wet markets to learn about local ingredients, joining a community garden and using the produce in cooking, food tours, hawker food appreciation."
+    },
+    {
+        "personality_en": "Tree Whisperer",
+        "personality_cn": "绿手指",
+        "activity": "Gardening at community gardens, joining nature walks at the Botanic Gardens or other nature reserves, volunteering for park cleanup initiatives, attending workshops on plant propagation, visiting farms."
+    },
+    {
+        "personality_en": "Community Champion",
+        "personality_cn": "社区之光",
+        "activity": "Joining senior citizen clubs, volunteering at community events, participating in mahjong groups, joining dance groups, attending community center activities, going on group outings to local attractions, karaoke sessions."
+    }
+]
