@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { StartPage, QuestionPage, ResultPage } from './';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Types
 export interface Option {
@@ -31,6 +32,24 @@ export default function Quiz({ questions }: QuizProps) {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
     const [personalityResult, setPersonalityResult] = useState('');
+    const [direction, setDirection] = useState<'left' | 'right'>('right');
+
+    // Page transition variants
+    const variants = {
+        enter: (direction: 'left' | 'right') => ({
+            x: direction === 'right' ? -800 : 800,
+            opacity: 1
+        }),
+        center: {
+            x: 0,
+            opacity: 1,
+            zIndex: 1
+        },
+        exit: (direction: 'left' | 'right') => ({
+            x: direction === 'right' ? 800 : -800,
+            opacity: 1
+        })
+    };
 
     // Placeholder activities and resources
     const [activities, setActivities] = useState<string[]>([]);
@@ -38,6 +57,7 @@ export default function Quiz({ questions }: QuizProps) {
 
     // Handle starting the quiz
     const handleStart = () => {
+        setDirection('left');
         setQuizState('question');
         setCurrentQuestionIndex(0);
         setSelectedAnswers({});
@@ -53,6 +73,7 @@ export default function Quiz({ questions }: QuizProps) {
 
     // Handle navigating to the next question
     const handleNext = () => {
+        setDirection('left');
         if (currentQuestionIndex < typedQuestions.length - 1) {
             setCurrentQuestionIndex(prev => prev + 1);
         } else {
@@ -64,6 +85,7 @@ export default function Quiz({ questions }: QuizProps) {
 
     // Handle navigating to the previous question
     const handlePrevious = () => {
+        setDirection('right');
         if (currentQuestionIndex > 0) {
             setCurrentQuestionIndex(prev => prev - 1);
         }
@@ -71,11 +93,13 @@ export default function Quiz({ questions }: QuizProps) {
 
     // Handle returning to home/start screen
     const handleHome = () => {
+        setDirection('right');
         setQuizState('start');
     };
 
     // Handle starting the quiz over
     const handleStartOver = () => {
+        setDirection('right');
         setQuizState('start');
         setCurrentQuestionIndex(0);
         setSelectedAnswers({});
@@ -142,34 +166,66 @@ export default function Quiz({ questions }: QuizProps) {
 
     // Render the appropriate component based on quiz state
     return (
-        <>
-            {quizState === 'start' && (
-                <StartPage onStart={handleStart} />
-            )}
+        <div className="relative h-screen w-full overflow-hidden bg-sky-200">
+            <AnimatePresence initial={false} custom={direction} mode="sync">
+                {quizState === 'start' && (
+                    <motion.div
+                        key="start"
+                        custom={direction}
+                        variants={variants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={{
+                            x: { type: "tween", duration: 0.4, ease: "easeOut" },
+                            opacity: { duration: 0 }
+                        }}
+                        className="absolute inset-0 w-full h-full"
+                    >
+                        <StartPage onStart={handleStart} />
+                    </motion.div>
+                )}
 
-            {quizState === 'question' && (
-                <QuestionPage
-                    questions={typedQuestions}
-                    currentQuestionIndex={currentQuestionIndex}
-                    selectedAnswers={selectedAnswers}
-                    onSelectAnswer={handleSelectAnswer}
-                    onNext={handleNext}
-                    onPrevious={handlePrevious}
-                    onHome={handleHome}
-                    totalQuestions={typedQuestions.length}
-                />
-            )}
+                {quizState === 'question' && (
+                    <div key={`question-container`} className="absolute inset-0 w-full h-full">
+                        <QuestionPage
+                            questions={typedQuestions}
+                            currentQuestionIndex={currentQuestionIndex}
+                            selectedAnswers={selectedAnswers}
+                            onSelectAnswer={handleSelectAnswer}
+                            onNext={handleNext}
+                            onPrevious={handlePrevious}
+                            onHome={handleHome}
+                            totalQuestions={typedQuestions.length}
+                        />
+                    </div>
+                )}
 
-            {quizState === 'result' && (
-                <ResultPage
-                    personalityType={personalityResult}
-                    personalityDescription="Your personalized description based on quiz results."
-                    activities={activities}
-                    resources={resources}
-                    onStartOver={handleStartOver}
-                    onHome={handleHome}
-                />
-            )}
-        </>
+                {quizState === 'result' && (
+                    <motion.div
+                        key="result"
+                        custom={direction}
+                        variants={variants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={{
+                            x: { type: "tween", duration: 0.4, ease: "easeOut" },
+                            opacity: { duration: 0 }
+                        }}
+                        className="absolute inset-0 w-full h-full"
+                    >
+                        <ResultPage
+                            personalityType={personalityResult}
+                            personalityDescription="Your personalized description based on quiz results."
+                            activities={activities}
+                            resources={resources}
+                            onStartOver={handleStartOver}
+                            onHome={handleHome}
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
     );
 } 

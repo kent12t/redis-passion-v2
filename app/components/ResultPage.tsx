@@ -1,8 +1,9 @@
 'use client';
 
 import { FaceTrackingVideo } from './';
-import { Card, CardContent, CardTitle } from './ui/card';
-import { Button } from './ui/button';
+import { CardContent, CardTitle } from './ui/card';
+import MotionButton from './ui/motion-button';
+import MotionCard from './ui/motion-card';
 import { Home, Users, Calendar, BookOpen, RefreshCw } from 'lucide-react';
 
 interface ResultPageProps {
@@ -24,45 +25,44 @@ export default function ResultPage({
     onHome,
 }: ResultPageProps) {
     return (
-        <div className="min-h-screen bg-sky-200 p-6 flex flex-col items-center">
-            <div className="w-full max-w-[800px] mx-auto relative">
-                <div className="absolute top-0 right-0">
-                    <Button
+        <div className="h-screen bg-sky-200 flex flex-col items-center">
+            <div className="w-full max-w-[800px] h-screen mx-auto flex flex-col relative px-6">
+                {/* Home button */}
+                <div className="absolute top-6 right-0">
+                    <MotionButton
                         variant="primary"
-                        className="h-16 w-16 p-0 flex items-center justify-center rounded-full"
+                        size="icon"
+                        className="flex items-center justify-center rounded-full"
                         onClick={onHome || onStartOver}
                     >
                         <Home size={24} />
-                    </Button>
+                    </MotionButton>
                 </div>
 
-                <div className="grid md:grid-cols-[1fr_1.2fr] gap-8 mt-20">
-                    <div className="flex flex-col gap-6">
-                        <div className="text-center md:text-left">
-                            <span className="text-blue-600 text-2xl font-bold">YOU&apos;RE A</span>
-                            <h1 className="text-5xl md:text-6xl font-bold text-pink-500 drop-shadow-[4px_4px_0px_rgba(255,255,255,0.5)]">
-                                MASTER {personalityType.toUpperCase()}
-                            </h1>
-                        </div>
+                {/* Header spanning both columns */}
+                <div className="text-center mt-20 mb-6">
+                    <span className="text-blue-600 text-2xl font-bold">YOU&apos;RE A</span>
+                    <h1 className="text-5xl md:text-6xl font-bold text-pink-500 drop-shadow-[4px_4px_0px_rgba(255,255,255,0.5)]">
+                        MASTER {personalityType.toUpperCase()}
+                    </h1>
+                </div>
 
+                {/* Main content with 3:2 ratio columns */}
+                <div className="flex-grow grid grid-cols-5 gap-6 mb-6">
+                    {/* Left column (60%) */}
+                    <div className="col-span-3 flex flex-col">
                         {/* Face tracking display */}
-                        <Card className="relative aspect-[4/3] overflow-hidden p-0">
-                            <FaceTrackingVideo personalityType={personalityType.toLowerCase()} />
-                        </Card>
-
-                        {/* Start over button */}
-                        <Button
-                            onClick={onStartOver}
-                            size="lg"
-                            className="w-full"
+                        <MotionCard
+                            className="flex-grow relative overflow-hidden p-0"
+                            interactive={false}
                         >
-                            <RefreshCw size={20} className="mr-2" />
-                            Start Over
-                        </Button>
+                            <FaceTrackingVideo personalityType={personalityType.toLowerCase()} />
+                        </MotionCard>
                     </div>
 
-                    <div className="flex flex-col gap-6">
-                        <Card>
+                    {/* Right column (40%) */}
+                    <div className="col-span-2 flex flex-col gap-4 overflow-y-auto">
+                        <MotionCard interactive={false}>
                             <CardContent className="pt-6">
                                 <CardTitle className="mb-4 flex items-center">
                                     <Users size={24} className="mr-2" />
@@ -72,14 +72,14 @@ export default function ResultPage({
                                     {[1, 2].map((buddy) => (
                                         <div
                                             key={buddy}
-                                            className="aspect-square rounded-full bg-gray-200 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                                            className="aspect-square rounded-full bg-gray-200 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                                         />
                                     ))}
                                 </div>
                             </CardContent>
-                        </Card>
+                        </MotionCard>
 
-                        <Card>
+                        <MotionCard interactive={false}>
                             <CardContent className="pt-6">
                                 <CardTitle className="mb-4 flex items-center">
                                     <Calendar size={24} className="mr-2" />
@@ -89,7 +89,7 @@ export default function ResultPage({
                                     {activities.map((activity, index) => (
                                         <div
                                             key={index}
-                                            className="p-4 rounded-lg bg-gray-200 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center"
+                                            className="p-4 rounded-lg bg-gray-200 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center"
                                         >
                                             <div className="bg-pink-500 text-white rounded-full p-2 mr-3 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                                                 <Calendar size={16} />
@@ -99,9 +99,9 @@ export default function ResultPage({
                                     ))}
                                 </div>
                             </CardContent>
-                        </Card>
+                        </MotionCard>
 
-                        <Card>
+                        <MotionCard interactive={false}>
                             <CardContent className="pt-6">
                                 <CardTitle className="mb-4 flex items-center">
                                     <BookOpen size={24} className="mr-2" />
@@ -111,7 +111,7 @@ export default function ResultPage({
                                     {resources.map((resource, index) => (
                                         <div
                                             key={index}
-                                            className="p-4 rounded-lg bg-gray-200 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center"
+                                            className="p-4 rounded-lg bg-gray-200 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center"
                                         >
                                             <div className="bg-blue-500 text-white rounded-full p-2 mr-3 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                                                 <BookOpen size={16} />
@@ -121,9 +121,19 @@ export default function ResultPage({
                                     ))}
                                 </div>
                             </CardContent>
-                        </Card>
+                        </MotionCard>
                     </div>
                 </div>
+
+                {/* Start over button spanning both columns at the bottom */}
+                <MotionButton
+                    onClick={onStartOver}
+                    size="lg"
+                    className="w-full mb-6"
+                >
+                    <RefreshCw size={20} className="mr-2" />
+                    Start Over
+                </MotionButton>
             </div>
         </div>
     );

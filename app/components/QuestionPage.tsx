@@ -1,8 +1,9 @@
 'use client';
 
-import { cn } from '../lib/utils';
 import { ArrowLeft, ArrowRight, Home } from 'lucide-react';
-import { Button } from './ui/button';
+import MotionButton from './ui/motion-button';
+import MotionCard from './ui/motion-card';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Option {
     option_text: string;
@@ -40,64 +41,76 @@ export default function QuestionPage({
     const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
     return (
-        <div className="h-screen bg-sky-200 flex flex-col items-center">
+        <div className="h-screen bg-sky-200 flex flex-col items-center font-sans">
             <div className="w-full max-w-[800px] h-screen mx-auto flex flex-col relative px-6">
                 {/* Home button */}
                 <div className="absolute top-6 right-0">
-                    <Button
+                    <MotionButton
                         variant="primary"
-                        className="h-16 w-16 p-0 flex items-center justify-center rounded-full"
+                        size="icon"
+                        className="flex items-center justify-center rounded-full"
                         onClick={onHome}
                     >
                         <Home size={24} />
-                    </Button>
+                    </MotionButton>
                 </div>
 
                 {/* Main content area - centered vertically and horizontally */}
                 <div className="flex-grow flex flex-col items-center justify-center">
-                    {/* Question */}
-                    <div className="flex flex-col items-center justify-center mb-10">
-                        <h2 className="text-5xl text-center font-bold text-pink-500 drop-shadow-[3px_3px_0px_rgba(255,255,255,0.5)] max-w-[500px]">
-                            {currentQuestion.question_text}
-                        </h2>
-                    </div>
+                    {/* Question and Options - these will be animated */}
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={`question-${currentQuestionIndex}`}
+                            initial={{ x: 300, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            exit={{ x: -300, opacity: 0 }}
+                            transition={{
+                                x: { type: "tween", duration: 0.4, ease: "easeOut" },
+                                opacity: { duration: 0.3 }
+                            }}
+                            className="flex flex-col items-center w-full"
+                        >
+                            {/* Question */}
+                            <div className="flex flex-col items-center justify-center mb-10">
+                                <h2 className="text-5xl text-center font-bold text-pink-500 question max-w-[500px]">
+                                    {currentQuestion.question_text}
+                                </h2>
+                            </div>
 
-                    {/* Options */}
-                    <div className="flex flex-col items-center w-full">
-                        <div className="flex flex-col gap-6 w-full max-w-[500px]">
-                            {currentQuestion.options.map((option, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => onSelectAnswer(currentQuestionIndex, index)}
-                                    className={cn(
-                                        "text-center p-6 rounded-lg text-lg font-medium text-[#3A3A3A]",
-                                        "transform transition-all duration-200 bg-white",
-                                        selectedAnswers[currentQuestionIndex] === index
-                                            ? "border-pink-500 border-2 shadow-none translate-x-[4px] translate-y-[4px]"
-                                            : "border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none"
-                                    )}
-                                >
-                                    {option.option_text}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                            {/* Options */}
+                            <div className="flex flex-col items-center w-full">
+                                <div className="flex flex-col gap-6 w-full max-w-[500px]">
+                                    {currentQuestion.options.map((option, index) => (
+                                        <MotionCard
+                                            key={index}
+                                            isSelected={selectedAnswers[currentQuestionIndex] === index}
+                                            variant="white"
+                                            className="p-6 text-center text-lg font-medium"
+                                            onClick={() => onSelectAnswer(currentQuestionIndex, index)}
+                                        >
+                                            {option.option_text}
+                                        </MotionCard>
+                                    ))}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
                 </div>
 
                 {/* Bottom navigation section */}
                 <div className="flex flex-col gap-4 pb-6">
                     {/* Navigation */}
                     <div className="flex justify-between items-center w-full">
-                        <Button
+                        <MotionButton
                             onClick={onPrevious}
                             disabled={currentQuestionIndex === 0}
                             variant="neutral"
                             className="h-14"
                         >
                             <ArrowLeft size={24} />
-                        </Button>
+                        </MotionButton>
 
-                        <Button
+                        <MotionButton
                             onClick={onNext}
                             disabled={selectedAnswers[currentQuestionIndex] === undefined}
                             variant={selectedAnswers[currentQuestionIndex] === undefined ? "neutral" : "primary"}
@@ -105,7 +118,7 @@ export default function QuestionPage({
                         >
                             Next
                             <ArrowRight size={24} className="ml-2" />
-                        </Button>
+                        </MotionButton>
                     </div>
 
                     {/* Progress bar */}
