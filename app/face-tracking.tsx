@@ -317,7 +317,7 @@ export default function FaceTracking() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4">
+        <div className="flex flex-col items-center justify-center min-h-screen p-4">
             <h1 className="text-3xl font-bold mb-6">Face Tracking Chef</h1>
 
             <div className="relative">

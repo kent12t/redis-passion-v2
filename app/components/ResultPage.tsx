@@ -25,7 +25,7 @@ export default function ResultPage({
     onHome,
 }: ResultPageProps) {
     return (
-        <div className="h-screen bg-sky-200 flex flex-col items-center">
+        <div className="h-screen flex flex-col items-center">
             <div className="w-full max-w-[800px] h-screen mx-auto flex flex-col relative px-6">
                 {/* Home button */}
                 <div className="absolute top-6 right-0">

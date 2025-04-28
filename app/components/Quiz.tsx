@@ -166,7 +166,7 @@ export default function Quiz({ questions }: QuizProps) {
 
     // Render the appropriate component based on quiz state
     return (
-        <div className="relative h-screen w-full overflow-hidden bg-sky-200">
+        <div className="relative h-screen w-full overflow-hidden">
             <AnimatePresence initial={false} custom={direction} mode="sync">
                 {quizState === 'start' && (
                     <motion.div

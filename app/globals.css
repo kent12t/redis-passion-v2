@@ -3,6 +3,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --grid-background: #95CFFC;
+  --grid-lines: #C1E4FF;
+  --grid-size: 20px;
 }
 
 @theme inline {
@@ -15,11 +18,16 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --grid-background: #95CFFC;
+    --grid-lines: #C1E4FF;
   }
 }
 
 body {
-  background: var(--background);
+  background-color: var(--grid-background);
+  background-image: linear-gradient(to right, var(--grid-lines) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-lines) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 500;
@@ -36,8 +44,10 @@ h6,
   font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 700;
   /* Bold for questions and headers */
-  text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white,
-    0px 2px 0 white, 0px -2px 0 white, 2px 0px 0 white, -2px 0px 0 white;
+  text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.7), -2px -2px 0 rgba(255, 255, 255, 0.7),
+    2px -2px 0 rgba(255, 255, 255, 0.7), -2px 2px 0 rgba(255, 255, 255, 0.7),
+    0px 2px 0 rgba(255, 255, 255, 0.7), 0px -2px 0 rgba(255, 255, 255, 0.7),
+    2px 0px 0 rgba(255, 255, 255, 0.7), -2px 0px 0 rgba(255, 255, 255, 0.7);
   filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.15));
 }
 

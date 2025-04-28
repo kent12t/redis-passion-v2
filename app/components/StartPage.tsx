@@ -11,7 +11,7 @@ interface StartPageProps {
 
 export default function StartPage({ onStart }: StartPageProps) {
     return (
-        <div className="min-h-screen bg-sky-200 grid grid-cols-1 gap-8 p-6 font-sans">
+        <div className="min-h-screen grid grid-cols-1 gap-8 p-6 font-sans">
             <div className="flex flex-col items-center justify-center gap-6">
                 <div className="text-center">
                     <h1 className="text-6xl font-bold text-pink-500 question">
