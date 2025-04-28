@@ -16,51 +16,74 @@ interface TrackedFace {
 }
 
 interface FaceTrackingVideoProps {
-    personalityType: string; // Used in future implementation for specific personality hats/shirts
+    personalityType: string;
 }
 
+// Personality type to asset mapping
+const personalityAssets = {
+    "wellness warrior": {
+        hat: '/runner-hat.png',
+        shirt: '/runner-shirt.png'
+    },
+    "art maestro": {
+        hat: '/artist-hat.png',
+        shirt: '/artist-shirt.png'
+    },
+    "storyteller": {
+        hat: '/storyteller-hat.png',
+        shirt: '/storyteller-shirt.png'
+    },
+    "master chef": {
+        hat: '/chef-hat.png',
+        shirt: '/chef-shirt.png'
+    },
+    "tree whisperer": {
+        hat: '/farmer-hat.png',
+        shirt: '/farmer-shirt.png'
+    },
+    "community champion": {
+        hat: '/volunteer-hat.png',
+        shirt: '/volunteer-shirt.png'
+    }
+} as const;
+
 export default function FaceTrackingVideo({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    personalityType // Will be used in future to show different hats based on personality
+    personalityType
 }: FaceTrackingVideoProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [modelsLoaded, setModelsLoaded] = useState(false);
     const [stream, setStream] = useState<MediaStream | null>(null);
-    const hatRef = useRef<HTMLImageElement | null>(null);
-    const shirtRef = useRef<HTMLImageElement | null>(null);
     const [imagesLoaded, setImagesLoaded] = useState(false);
-    const [, setFacesDetected] = useState(0); // Using only the setter but keeping state for future use
-
-    // For persistent face tracking
     const trackedFacesRef = useRef<TrackedFace[]>([]);
-    const nextIdRef = useRef(1);
+    const nextIdRef = useRef(0);
+    const prevPositionsRef = useRef<Array<{ x: number; y: number; width: number; height: number }>>([]);
+    const [hatImage, setHatImage] = useState<HTMLImageElement | null>(null);
+    const [shirtImage, setShirtImage] = useState<HTMLImageElement | null>(null);
 
-    // Store previous detection positions for smoothing
-    const prevPositionsRef = useRef<Array<{
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-    }>>([]);
-
-    // Load the chef images
+    // Load personality-specific assets
     useEffect(() => {
-        // In the future, could use personalityType to load different hats/shirts
-        const hat = new Image();
-        hat.src = `/chef-hat.png`; // For now, just using chef hat as specified
-        hat.onload = () => {
-            hatRef.current = hat;
-            if (shirtRef.current) setImagesLoaded(true);
+        const assets = personalityAssets[personalityType as keyof typeof personalityAssets];
+        if (!assets) return;
+
+        const loadImage = (src: string) => {
+            return new Promise<HTMLImageElement>((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = src;
+            });
         };
 
-        const shirt = new Image();
-        shirt.src = `/chef-shirt.png`; // For now, just using chef shirt as specified
-        shirt.onload = () => {
-            shirtRef.current = shirt;
-            if (hatRef.current) setImagesLoaded(true);
-        };
-    }, []);
+        Promise.all([
+            loadImage(assets.hat),
+            loadImage(assets.shirt)
+        ]).then(([hat, shirt]) => {
+            setHatImage(hat);
+            setShirtImage(shirt);
+            setImagesLoaded(true);
+        }).catch(console.error);
+    }, [personalityType]);
 
     // Load face-api.js models
     useEffect(() => {
@@ -223,7 +246,6 @@ export default function FaceTrackingVideo({
                     new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.3 })
                 );
 
-                setFacesDetected(detections.length);
                 const persistentFaces = updateTrackedFaces(detections);
                 const ctx = canvas.getContext('2d');
                 if (!ctx) return;
@@ -246,8 +268,8 @@ export default function FaceTrackingVideo({
                         index
                     );
 
-                    const hat = hatRef.current;
-                    const shirt = shirtRef.current;
+                    const hat = hatImage;
+                    const shirt = shirtImage;
 
                     if (hat && shirt) {
                         // Position chef hat above the face

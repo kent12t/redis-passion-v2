@@ -20,7 +20,14 @@ export interface Question {
 
 type QuizState = 'start' | 'question' | 'result';
 
-const personalityTypes = ['runner', 'farmer', 'chef', 'artist', 'volunteer', 'storyteller'];
+const personalityTypes = [
+    'wellness warrior',
+    'art maestro',
+    'storyteller',
+    'master chef',
+    'tree whisperer',
+    'community champion'
+];
 
 interface QuizProps {
     questions: unknown[]; // More specific than any, we'll type assert inside
@@ -110,63 +117,70 @@ export default function Quiz({ questions }: QuizProps) {
     const calculateResults = () => {
         // Initialize scores for each personality type
         const scores: Record<string, number> = {};
+        const firstToReach: Record<number, string> = {}; // Track first personality to reach each score
         personalityTypes.forEach(type => {
             scores[type] = 0;
         });
 
-        // Calculate points for each answer
-        Object.entries(selectedAnswers).forEach(([questionIndex, optionIndex]) => {
-            const question = typedQuestions[parseInt(questionIndex)];
-            const option = question.options[optionIndex];
+        // Calculate points for each answer in order
+        Object.entries(selectedAnswers)
+            .sort(([a], [b]) => parseInt(a) - parseInt(b)) // Sort by question number
+            .forEach(([questionIndex, optionIndex]) => {
+                const question = typedQuestions[parseInt(questionIndex)];
+                const option = question.options[optionIndex];
 
-            // Add points to personality types
-            Object.entries(option.points).forEach(([type, points]) => {
-                if (scores[type] !== undefined) {
-                    scores[type] += points;
-                }
+                // Add points to personality types
+                Object.entries(option.points).forEach(([type, points]) => {
+                    if (scores[type] !== undefined) {
+                        scores[type] += points;
+                        // Track first personality to reach each score
+                        if (!firstToReach[scores[type]]) {
+                            firstToReach[scores[type]] = type;
+                        }
+                    }
+                });
             });
-        });
 
-        // Find the highest scoring personality type
-        let highestType = '';
-        let highestScore = -1;
+        // Find the highest scoring personality type(s)
+        const maxScore = Math.max(...Object.values(scores));
+        const winners = Object.entries(scores)
+            .filter(([, score]) => score === maxScore)
+            .map(([type]) => type);
 
-        Object.entries(scores).forEach(([type, score]) => {
-            if (score > highestScore) {
-                highestScore = score;
-                highestType = type;
-            }
-        });
+        // If there's a tie, use First Past The Post
+        const result = winners.length === 1
+            ? winners[0]
+            : firstToReach[maxScore] || winners[0]; // Fallback to first winner if no first-to-reach record
 
-        setPersonalityResult(highestType);
+        setPersonalityResult(result);
 
         // Set activities based on personality type
         const personalityActivities = {
-            runner: ['Morning jogs in the neighborhood', 'Joining community sports', 'Organizing fitness meetups'],
-            farmer: ['Community gardening', 'Seasonal produce sharing', 'Nature walks'],
-            chef: ['Cooking classes for neighbors', 'Recipe exchanges', 'Hosting community meals'],
-            artist: ['Local art workshops', 'Creative social gatherings', 'Community mural projects'],
-            volunteer: ['Neighborhood cleanup events', 'Support groups for elderly', 'Community outreach programs'],
-            storyteller: ['Book clubs', 'Memoir writing workshops', 'Community history projects']
+            'wellness warrior': ['Morning jogs in the neighborhood', 'Joining community sports', 'Organizing fitness meetups'],
+            'art maestro': ['Local art workshops', 'Creative social gatherings', 'Community mural projects'],
+            storyteller: ['Book clubs', 'Memoir writing workshops', 'Community history projects'],
+            'master chef': ['Cooking classes for neighbors', 'Recipe exchanges', 'Hosting community meals'],
+            'tree whisperer': ['Community gardening', 'Seasonal produce sharing', 'Nature walks'],
+            'community champion': ['Neighborhood cleanup events', 'Support groups for elderly', 'Community outreach programs']
         };
 
         // Set resources based on personality type
         const personalityResources = {
-            runner: ['Local fitness groups', 'Neighborhood walking maps', 'Community sports leagues'],
-            farmer: ['Community garden listings', 'Seasonal planting guides', 'Seed exchange programs'],
-            chef: ['Recipe sharing platforms', 'Community kitchen locations', 'Local cooking workshops'],
-            artist: ['Art supply resources', 'Local galleries and exhibitions', 'Creative workshops'],
-            volunteer: ['Community service organizations', 'Volunteer opportunities', 'Neighborhood assistance programs'],
-            storyteller: ['Local libraries', 'Writing groups', 'Oral history projects']
+            'wellness warrior': ['Local fitness groups', 'Neighborhood walking maps', 'Community sports leagues'],
+            'art maestro': ['Art supply resources', 'Local galleries and exhibitions', 'Creative workshops'],
+            storyteller: ['Local libraries', 'Writing groups', 'Oral history projects'],
+            'master chef': ['Recipe sharing platforms', 'Community kitchen locations', 'Local cooking workshops'],
+            'tree whisperer': ['Community garden listings', 'Seasonal planting guides', 'Seed exchange programs'],
+            'community champion': ['Community service organizations', 'Volunteer opportunities', 'Neighborhood assistance programs']
         };
 
-        setActivities(personalityActivities[highestType as keyof typeof personalityActivities] || []);
-        setResources(personalityResources[highestType as keyof typeof personalityResources] || []);
+        setActivities(personalityActivities[result as keyof typeof personalityActivities] || []);
+        setResources(personalityResources[result as keyof typeof personalityResources] || []);
     };
 
     // Render the appropriate component based on quiz state
     return (
-        <div className="relative h-screen w-full overflow-hidden">
+        <div className="relative w-full h-screen overflow-hidden">
             <AnimatePresence initial={false} custom={direction} mode="sync">
                 {quizState === 'start' && (
                     <motion.div

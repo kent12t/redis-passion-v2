@@ -43,7 +43,7 @@ export default function ResultPage({
                 <div className="text-center mt-20 mb-6">
                     <span className="text-blue-600 text-2xl font-bold">YOU&apos;RE A</span>
                     <h1 className="text-5xl md:text-6xl font-bold text-pink-500 drop-shadow-[4px_4px_0px_rgba(255,255,255,0.5)]">
-                        MASTER {personalityType.toUpperCase()}
+                        {personalityType.toUpperCase()}
                     </h1>
                 </div>
 

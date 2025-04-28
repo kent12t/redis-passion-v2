@@ -6,35 +6,35 @@
             {
                 "option_text": "A peaceful park, feeling the fresh air and noticing the greenery.",
                 "points": {
-                    "runner": 2,
-                    "farmer": 2
+                    "wellness warrior": 2,
+                    "tree whisperer": 2
                 }
             },
             {
                 "option_text": "A cozy café, admiring the art on the walls and sampling a new pastry.",
                 "points": {
-                    "artist": 3,
-                    "chef": 1
+                    "art maestro": 3,
+                    "master chef": 1
                 }
             }
         ]
     },
     {
         "question_number": 2,
-        "question_text": "You’re given a blank notebook. What do you do first?",
+        "question_text": "You're given a blank notebook. What do you do first?",
         "options": [
             {
                 "option_text": "Write down a story or memory that comes to mind.",
                 "points": {
                     "storyteller": 3,
-                    "volunteer": 1
+                    "community champion": 1
                 }
             },
             {
                 "option_text": "Decorate the cover with colors and patterns that make you happy.",
                 "points": {
-                    "runner": 3,
-                    "artist": 1
+                    "wellness warrior": 3,
+                    "art maestro": 1
                 }
             }
         ]
@@ -46,14 +46,14 @@
             {
                 "option_text": "A festive hamper filled with delicious snacks and handy kitchen tools.",
                 "points": {
-                    "chef": 3,
-                    "artist": 1
+                    "master chef": 3,
+                    "art maestro": 1
                 }
             },
             {
                 "option_text": "Tickets to a community event or group outing.",
                 "points": {
-                    "volunteer": 3,
+                    "community champion": 3,
                     "storyteller": 1
                 }
             }
@@ -66,15 +66,15 @@
             {
                 "option_text": "Tending to your plants or strolling through a community garden, reminiscing about old times.",
                 "points": {
-                    "farmer": 3,
+                    "tree whisperer": 3,
                     "storyteller": 2
                 }
             },
             {
                 "option_text": "Cooking a new dish and sharing it with friends.",
                 "points": {
-                    "chef": 3,
-                    "volunteer": 1
+                    "master chef": 3,
+                    "community champion": 1
                 }
             }
         ]
@@ -86,15 +86,15 @@
             {
                 "option_text": "Organizing a gathering for friends and neighbors.",
                 "points": {
-                    "volunteer": 3,
-                    "chef": 1
+                    "community champion": 3,
+                    "master chef": 1
                 }
             },
             {
                 "option_text": "Arranging flowers or going for a nature walk.",
                 "points": {
-                    "farmer": 3,
-                    "runner": 1
+                    "tree whisperer": 3,
+                    "wellness warrior": 1
                 }
             }
         ]
@@ -106,15 +106,15 @@
             {
                 "option_text": "Painting, drawing, or making something with your hands.",
                 "points": {
-                    "artist": 3,
-                    "runner": 1
+                    "art maestro": 3,
+                    "wellness warrior": 1
                 }
             },
             {
-                "option_text": "Sharing stories or listening to others’ life experiences in a garden.",
+                "option_text": "Sharing stories or listening to others' life experiences in a garden.",
                 "points": {
                     "storyteller": 3,
-                    "farmer": 1
+                    "tree whisperer": 1
                 }
             }
         ]
@@ -124,17 +124,17 @@
         "question_text": "Which phrase resonates more with you?",
         "options": [
             {
-                "option_text": "“A healthy body is a happy body.”",
+                "option_text": "A healthy body is a happy body.",
                 "points": {
-                    "runner": 3,
-                    "chef": 1
+                    "wellness warrior": 3,
+                    "master chef": 1
                 }
             },
             {
-                "option_text": "“Creativity brings people together.”",
+                "option_text": "Creativity brings people together.",
                 "points": {
-                    "artist": 3,
-                    "volunteer": 2
+                    "art maestro": 3,
+                    "community champion": 2
                 }
             }
         ]
@@ -146,14 +146,14 @@
             {
                 "option_text": "Hosting a cooking session or potluck for friends and family.",
                 "points": {
-                    "chef": 3,
-                    "volunteer": 2
+                    "master chef": 3,
+                    "community champion": 2
                 }
             },
             {
                 "option_text": "Attending a wellness workshop and sharing your story.",
                 "points": {
-                    "runner": 2,
+                    "wellness warrior": 2,
                     "storyteller": 3
                 }
             }
@@ -166,15 +166,15 @@
             {
                 "option_text": "Arranging a beautiful plant display at home.",
                 "points": {
-                    "farmer": 3,
-                    "artist": 1
+                    "tree whisperer": 3,
+                    "art maestro": 1
                 }
             },
             {
                 "option_text": "Leading a brisk walk or group exercise at the community center.",
                 "points": {
-                    "volunteer": 2,
-                    "runner": 2
+                    "community champion": 2,
+                    "wellness warrior": 2
                 }
             }
         ]
@@ -187,14 +187,14 @@
                 "option_text": "A book or storytelling club that meets in the park.",
                 "points": {
                     "storyteller": 2,
-                    "farmer": 2
+                    "tree whisperer": 2
                 }
             },
             {
                 "option_text": "An art and cooking club that meets in a cozy community space.",
                 "points": {
-                    "artist": 2,
-                    "chef": 2
+                    "art maestro": 2,
+                    "master chef": 2
                 }
             }
         ]
