@@ -55,7 +55,7 @@ export default function ResultPage({
 
     return (
         <div className="flex flex-col items-center h-screen">
-            <div className="w-full max-w-[800px] h-screen mx-auto flex flex-col relative px-6">
+            <div className="w-full max-w-[1200px] h-screen mx-auto flex flex-col relative px-6">
                 {/* Home button */}
                 <div className="absolute right-0 top-6">
                     <MotionButton

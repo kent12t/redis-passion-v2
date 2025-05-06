@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, ArrowRight, Home } from 'lucide-react';
+import { ArrowLeft, ArrowRight, House } from 'lucide-react';
 import MotionButton from './ui/motion-button';
 import MotionCard from './ui/motion-card';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -41,22 +41,22 @@ export default function QuestionPage({
     const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
     return (
-        <div className="h-screen flex flex-col items-center font-sans">
-            <div className="w-full max-w-[800px] h-screen mx-auto flex flex-col relative px-6">
+        <div className="flex flex-col items-center h-screen font-sans">
+            <div className="relative flex flex-col w-4/5 h-screen max-w-[1200px] mx-auto items-center justify-center">
                 {/* Home button */}
-                <div className="absolute top-6 right-0">
+                <div className="absolute right-0 top-6 lg:top-12">
                     <MotionButton
                         variant="primary"
                         size="icon"
-                        className="flex items-center justify-center rounded-full"
+                        className="flex items-center justify-center w-16 h-16 rounded-full sm:h-20 lg:h-24 sm:w-20 lg:w-24"
                         onClick={onHome}
                     >
-                        <Home size={24} />
+                        <House className="w-8 h-8 sm:w-10 lg:w-12 sm:h-10 lg:h-12" />
                     </MotionButton>
                 </div>
 
                 {/* Main content area - centered vertically and horizontally */}
-                <div className="flex-grow flex flex-col items-center justify-center">
+                <div className="flex flex-col justify-center flex-grow w-4/5 gap-6 md:gap-16">
                     {/* Question and Options - these will be animated */}
                     <AnimatePresence mode="wait">
                         <motion.div
@@ -71,21 +71,21 @@ export default function QuestionPage({
                             className="flex flex-col items-center w-full"
                         >
                             {/* Question */}
-                            <div className="flex flex-col items-center justify-center mb-10">
-                                <h2 className="text-5xl text-center font-bold text-pink-500 question max-w-[500px]">
+                            <div className="flex flex-col items-center justify-center mb-6 md:mb-16">
+                                <h2 className="text-4xl font-bold text-center text-pink-500 sm:text-6xl lg:text-7xl question">
                                     {currentQuestion.question_text}
                                 </h2>
                             </div>
 
                             {/* Options */}
                             <div className="flex flex-col items-center w-full">
-                                <div className="flex flex-col gap-6 w-full max-w-[500px]">
+                                <div className="flex flex-col w-full gap-4 md:gap-6">
                                     {currentQuestion.options.map((option, index) => (
                                         <MotionCard
                                             key={index}
                                             isSelected={selectedAnswers[currentQuestionIndex] === index}
                                             variant="white"
-                                            className="p-6 text-center text-lg font-medium"
+                                            className="p-4 text-lg font-medium leading-normal text-center sm:p-8 lg:p-12 sm:text-xl lg:text-3xl"
                                             onClick={() => onSelectAnswer(currentQuestionIndex, index)}
                                         >
                                             {option.option_text}
@@ -98,33 +98,34 @@ export default function QuestionPage({
                 </div>
 
                 {/* Bottom navigation section */}
-                <div className="flex flex-col gap-4 pb-6">
+                <div className="flex flex-col w-full gap-4 pb-6 lg:pb-12 md:gap-6">
                     {/* Navigation */}
-                    <div className="flex justify-between items-center w-full">
+                    <div className="flex items-center justify-between w-full">
                         <MotionButton
                             onClick={onPrevious}
                             disabled={currentQuestionIndex === 0}
                             variant="neutral"
-                            className="h-14"
+                            className="w-16 h-16 sm:h-20 lg:h-24 sm:w-20 lg:w-24"
+                            size="icon"
                         >
-                            <ArrowLeft size={24} />
+                            <ArrowLeft className="w-7 sm:w-8 lg:w-10 h-7 sm:h-8 lg:h-10" />
                         </MotionButton>
 
                         <MotionButton
                             onClick={onNext}
                             disabled={selectedAnswers[currentQuestionIndex] === undefined}
                             variant={selectedAnswers[currentQuestionIndex] === undefined ? "neutral" : "primary"}
-                            className="px-10 h-14"
+                            className="h-16 px-8 text-lg sm:h-20 lg:h-24 sm:px-10 sm:text-xl lg:text-3xl"
                         >
                             Next
-                            <ArrowRight size={24} className="ml-2" />
+                            <ArrowRight className="ml-2 w-7 sm:w-8 lg:w-10 h-7 sm:h-8 lg:h-10" />
                         </MotionButton>
                     </div>
 
                     {/* Progress bar */}
-                    <div className="w-full bg-white h-4 rounded-full overflow-hidden border-2 border-black">
+                    <div className="w-full h-3 overflow-hidden bg-white border-2 border-black rounded-full sm:h-4 lg:h-5">
                         <div
-                            className="h-full bg-pink-500 transition-all duration-300 ease-in-out"
+                            className="h-full transition-all duration-300 ease-in-out bg-pink-500"
                             style={{ width: `${progress}%` }}
                         ></div>
                     </div>

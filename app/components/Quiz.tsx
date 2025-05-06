@@ -43,18 +43,17 @@ export default function Quiz({ questions }: QuizProps) {
 
     // Page transition variants
     const variants = {
-        enter: (direction: 'left' | 'right') => ({
-            x: direction === 'right' ? -800 : 800,
-            opacity: 1
+        enter: (direction: string) => ({
+            x: direction === 'right' ? -1200 : 1200,
+            opacity: 0
         }),
         center: {
             x: 0,
-            opacity: 1,
-            zIndex: 1
-        },
-        exit: (direction: 'left' | 'right') => ({
-            x: direction === 'right' ? 800 : -800,
             opacity: 1
+        },
+        exit: (direction: string) => ({
+            x: direction === 'right' ? 1200 : -1200,
+            opacity: 0
         })
     };
 
