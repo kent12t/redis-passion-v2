@@ -25,10 +25,10 @@ export default function ResultPage({
     onHome,
 }: ResultPageProps) {
     return (
-        <div className="h-screen flex flex-col items-center">
+        <div className="flex flex-col items-center h-screen">
             <div className="w-full max-w-[800px] h-screen mx-auto flex flex-col relative px-6">
                 {/* Home button */}
-                <div className="absolute top-6 right-0">
+                <div className="absolute right-0 top-6">
                     <MotionButton
                         variant="primary"
                         size="icon"
@@ -40,20 +40,20 @@ export default function ResultPage({
                 </div>
 
                 {/* Header spanning both columns */}
-                <div className="text-center mt-20 mb-6">
-                    <span className="text-blue-600 text-2xl font-bold">YOU&apos;RE A</span>
+                <div className="mt-20 mb-6 text-center">
+                    <span className="text-2xl font-bold text-blue-600">YOU&apos;RE A</span>
                     <h1 className="text-5xl md:text-6xl font-bold text-pink-500 drop-shadow-[4px_4px_0px_rgba(255,255,255,0.5)]">
                         {personalityType.toUpperCase()}
                     </h1>
                 </div>
 
                 {/* Main content with 3:2 ratio columns */}
-                <div className="flex-grow grid grid-cols-5 gap-6 mb-6">
+                <div className="grid flex-grow grid-cols-5 gap-6 mb-6">
                     {/* Left column (60%) */}
-                    <div className="col-span-3 flex flex-col">
+                    <div className="flex flex-col col-span-3">
                         {/* Face tracking display */}
                         <MotionCard
-                            className="flex-grow relative overflow-hidden p-0"
+                            className="relative flex-grow p-0 overflow-hidden"
                             interactive={false}
                         >
                             <FaceTrackingVideo personalityType={personalityType.toLowerCase()} />
@@ -61,10 +61,10 @@ export default function ResultPage({
                     </div>
 
                     {/* Right column (40%) */}
-                    <div className="col-span-2 flex flex-col gap-4 overflow-y-auto">
+                    <div className="flex flex-col col-span-2 gap-4 overflow-y-auto">
                         <MotionCard interactive={false}>
                             <CardContent className="pt-6">
-                                <CardTitle className="mb-4 flex items-center">
+                                <CardTitle className="flex items-center mb-4">
                                     <Users size={24} className="mr-2" />
                                     FIND YOUR BUDDIES
                                 </CardTitle>
@@ -81,7 +81,7 @@ export default function ResultPage({
 
                         <MotionCard interactive={false}>
                             <CardContent className="pt-6">
-                                <CardTitle className="mb-4 flex items-center">
+                                <CardTitle className="flex items-center mb-4">
                                     <Calendar size={24} className="mr-2" />
                                     ACTIVITIES
                                 </CardTitle>
@@ -103,7 +103,7 @@ export default function ResultPage({
 
                         <MotionCard interactive={false}>
                             <CardContent className="pt-6">
-                                <CardTitle className="mb-4 flex items-center">
+                                <CardTitle className="flex items-center mb-4">
                                     <BookOpen size={24} className="mr-2" />
                                     RESOURCES
                                 </CardTitle>

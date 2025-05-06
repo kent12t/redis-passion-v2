@@ -51,7 +51,7 @@ export const PageTransition = ({
                     animate="animate"
                     exit="exit"
                     variants={variants}
-                    className="w-full h-full absolute"
+                    className="absolute w-full h-full"
                 >
                     {children}
                 </motion.div>

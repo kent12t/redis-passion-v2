@@ -1,4 +1,4 @@
-import Quiz from './components/Quiz';
+import { Quiz } from './components';
 import questions from './data/questions.json';
 
 export default function Home() {

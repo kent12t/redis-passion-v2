@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { forwardRef, ReactNode } from "react";
 
@@ -59,33 +58,15 @@ export const MotionButton = forwardRef<HTMLButtonElement, MotionButtonProps>(({
         icon: "h-16 w-16 p-0",
     };
 
-    // Define animation states
-    const initialState = {
-        boxShadow: "4px 4px 0px 0px rgba(0,0,0,1)",
-        x: 0,
-        y: 0,
-    };
-
-    const hoverState = {
-        boxShadow: "2px 2px 0px 0px rgba(0,0,0,1)",
-        x: 2,
-        y: 2,
-    };
-
-    const tapState = {
-        boxShadow: "0px 0px 0px 0px rgba(0,0,0,1)",
-        x: 4,
-        y: 4,
-    };
-
-    // Selected state uses the tap state
-    const selectedState = tapState;
-
-    // Set initial state based on whether the button is selected
-    const initialAnimation = isSelected ? selectedState : initialState;
+    // Generate CSS classes based on state
+    const stateClasses = cn(
+        "transition-all duration-100 ease-out",
+        isSelected ? "selected" : "",
+        !isSelected ? "interactive" : ""
+    );
 
     return (
-        <motion.button
+        <button
             ref={ref}
             className={cn(
                 "inline-flex items-center justify-center whitespace-nowrap rounded-full font-medium font-sans",
@@ -93,22 +74,15 @@ export const MotionButton = forwardRef<HTMLButtonElement, MotionButtonProps>(({
                 "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
                 "disabled:pointer-events-none disabled:opacity-50",
                 buttonSizes[size as keyof typeof buttonSizes],
+                "motion-button",
+                stateClasses,
                 className
             )}
             style={buttonVariants[variant as keyof typeof buttonVariants]}
-            initial={initialAnimation}
-            whileHover={isSelected ? selectedState : hoverState}
-            whileTap={tapState}
-            animate={isSelected ? selectedState : initialState}
-            transition={{
-                type: "tween",
-                duration: 0.1,
-                ease: "easeOut"
-            }}
             {...props}
         >
             {children}
-        </motion.button>
+        </button>
     );
 });
 

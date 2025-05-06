@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { forwardRef, ReactNode } from "react";
 
@@ -22,6 +21,8 @@ export const MotionCard = forwardRef<HTMLDivElement, MotionCardProps>(({
     variant = 'white',
     children,
     textColor = "#3A3A3A",
+    onClick,
+    style,
     ...props
 }, ref) => {
     // Define variants based on card type
@@ -48,52 +49,31 @@ export const MotionCard = forwardRef<HTMLDivElement, MotionCardProps>(({
         },
     };
 
-    // Define animation states
-    const initialState = {
-        boxShadow: "4px 4px 0px 0px rgba(0,0,0,1)",
-        x: 0,
-        y: 0,
-    };
-
-    const hoverState = interactive ? {
-        boxShadow: "2px 2px 0px 0px rgba(0,0,0,1)",
-        x: 2,
-        y: 2,
-    } : initialState;
-
-    const tapState = interactive ? {
-        boxShadow: "0px 0px 0px 0px rgba(0,0,0,1)",
-        x: 4,
-        y: 4,
-    } : initialState;
-
-    // Selected state uses the tap state
-    const selectedState = tapState;
-
-    // Set initial state based on whether the card is selected
-    const initialAnimation = isSelected ? selectedState : initialState;
+    // Generate CSS classes based on state
+    const stateClasses = cn(
+        "transition-all duration-100 ease-out",
+        isSelected ? "selected" : "",
+        interactive && !isSelected ? "interactive" : "",
+    );
 
     return (
-        <motion.div
+        <div
             ref={ref}
             className={cn(
                 "rounded-lg font-sans",
+                "motion-card",
+                stateClasses,
                 className
             )}
-            style={cardVariants[variant]}
-            initial={initialAnimation}
-            whileHover={interactive ? (isSelected ? selectedState : hoverState) : initialState}
-            whileTap={interactive ? tapState : initialState}
-            animate={isSelected ? selectedState : initialState}
-            transition={{
-                type: "tween",
-                duration: 0.1,
-                ease: "easeOut"
+            style={{
+                ...cardVariants[variant],
+                ...style,
             }}
+            onClick={interactive ? onClick : undefined}
             {...props}
         >
             {children}
-        </motion.div>
+        </div>
     );
 });
 
