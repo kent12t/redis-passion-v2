@@ -47,6 +47,8 @@ const personalityAssets = {
     }
 } as const;
 
+const debugMode = false;
+
 export default function FaceTrackingVideo({
     personalityType
 }: FaceTrackingVideoProps) {
@@ -414,21 +416,23 @@ export default function FaceTrackingVideo({
                         const hatScale = hatScaleBase * (0.9 + faceScale * 0.2); // More conservative scaling
                         const shirtScale = shirtScaleBase * (0.9 + faceScale * 0.2);
 
-                        // Draw debug bounding box
-                        ctx.strokeStyle = '#00ff00';
-                        ctx.lineWidth = 2;
-                        ctx.strokeRect(box.x, box.y, box.width, box.height);
+                        if (debugMode) {
+                            // Draw debug bounding box
+                            ctx.strokeStyle = '#00ff00';
+                            ctx.lineWidth = 2;
+                            ctx.strokeRect(box.x, box.y, box.width, box.height);
 
-                        // Add debug text for scale values
-                        ctx.fillStyle = '#00ff00';
-                        ctx.font = '12px Arial';
-                        ctx.fillText(`Scale: ${faceScale.toFixed(2)}`, box.x, box.y - 5);
+                            // Add debug text for scale values
+                            ctx.fillStyle = '#00ff00';
+                            ctx.font = '12px Arial';
+                            ctx.fillText(`Scale: ${faceScale.toFixed(2)}`, box.x, box.y - 5);
+                        }
 
                         // Position hat above the face with dynamic scaling
                         const hatWidth = box.width * hatScale;
                         const hatHeight = hatWidth * (hat.height / hat.width);
                         const hatX = box.x - (hatWidth - box.width) / 2;
-                        const hatY = box.y - box.height*1.6;
+                        const hatY = box.y - box.height * 1.6;
 
                         // Draw hat
                         ctx.drawImage(hat, hatX, hatY, hatWidth, hatHeight);
