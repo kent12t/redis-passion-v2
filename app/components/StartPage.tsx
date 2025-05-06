@@ -3,34 +3,37 @@
 import { CardContent } from './ui/card';
 import MotionButton from './ui/motion-button';
 import MotionCard from './ui/motion-card';
-import { PlayCircle } from 'lucide-react';
-
+import Image from 'next/image';
 interface StartPageProps {
     onStart: () => void;
 }
 
 export default function StartPage({ onStart }: StartPageProps) {
     return (
-        <div className="min-h-screen grid grid-cols-1 gap-8 p-6 font-sans">
-            <div className="flex flex-col items-center justify-center gap-6">
-                <div className="text-center">
-                    <h1 className="text-6xl font-bold text-pink-500 question">
-                        REDISCOVER
-                        <span className="text-blue-600 text-5xl font-bold italic block">your</span>
-                        PERSONALITY
-                    </h1>
+        <div className="grid min-h-screen grid-cols-1 p-6 font-sans">
+            <div className="flex flex-col items-center justify-center gap-6 md:gap-16">
+                <div className="w-4/5 max-w-2xl">
+                    <div className="relative w-full aspect-[3/1]">
+                        <Image 
+                            src="/logo.png" 
+                            alt="Logo" 
+                            fill
+                            priority
+                            className="object-contain"
+                        />
+                    </div>
                 </div>
 
                 <MotionCard
-                    className="max-w-md"
+                    className="w-4/5 max-w-2xl"
                     interactive={false}
                 >
                     <CardContent className="pt-6">
-                        <p className="text-center text-lg mb-6 text-[#3A3A3A]">
+                        <p className="text-center text-lg sm:text-xl lg:text-2xl mb-6 text-[#3A3A3A]">
                             Take this quick and fun quiz to find out what activities suit you best! There are no right or wrong answers, just choose what feels most like you.
                         </p>
-                        <p className="text-center text-lg text-[#3A3A3A]">
-                            This will take about 3—5 minutes.
+                        <p className="text-center text-lg sm:text-xl lg:text-2xl text-[#3A3A3A]">
+                            This will take about 3-5 minutes.
                             <br />
                             At the end, you&apos;ll get personalized suggestions for activities you might enjoy.
                         </p>
@@ -40,9 +43,8 @@ export default function StartPage({ onStart }: StartPageProps) {
                 <MotionButton
                     onClick={onStart}
                     size="lg"
-                    className="w-full max-w-xs"
+                    className="w-4/5 h-16 max-w-2xl text-xl sm:h-20 lg:h-24 sm:text-2xl lg:text-3xl"
                 >
-                    <PlayCircle size={20} className="mr-2" />
                     Get Started
                 </MotionButton>
             </div>
