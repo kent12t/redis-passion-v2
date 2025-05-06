@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import * as faceapi from 'face-api.js';
 
 // Interface for tracked face data
@@ -52,6 +52,7 @@ export default function FaceTrackingVideo({
 }: FaceTrackingVideoProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     const [modelsLoaded, setModelsLoaded] = useState(false);
     const [stream, setStream] = useState<MediaStream | null>(null);
     const [imagesLoaded, setImagesLoaded] = useState(false);
@@ -60,6 +61,84 @@ export default function FaceTrackingVideo({
     const prevPositionsRef = useRef<Array<{ x: number; y: number; width: number; height: number }>>([]);
     const [hatImage, setHatImage] = useState<HTMLImageElement | null>(null);
     const [shirtImage, setShirtImage] = useState<HTMLImageElement | null>(null);
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0, scale: 1 });
+
+    // Target aspect ratio (2:3)
+    const TARGET_ASPECT_RATIO = 2/3;
+
+    // Calculate dimensions and scale based on container size
+    const updateDimensions = useCallback(() => {
+        if (!containerRef.current || !videoRef.current) return;
+
+        const container = containerRef.current;
+        const video = videoRef.current;
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
+        const containerAspect = containerWidth / containerHeight;
+
+        let width, height;
+
+        // If container is wider than target aspect
+        if (containerAspect > TARGET_ASPECT_RATIO) {
+            height = containerHeight;
+            width = height * TARGET_ASPECT_RATIO;
+        } else {
+            width = containerWidth;
+            height = width / TARGET_ASPECT_RATIO;
+        }
+
+        // Calculate scale between video and display dimensions
+        const videoAspect = video.videoWidth / video.videoHeight;
+        let videoDisplayWidth, videoDisplayHeight;
+
+        if (videoAspect > TARGET_ASPECT_RATIO) {
+            // Video is wider than container
+            videoDisplayHeight = height;
+            videoDisplayWidth = videoDisplayHeight * videoAspect;
+        } else {
+            // Video is taller than container
+            videoDisplayWidth = width;
+            videoDisplayHeight = videoDisplayWidth / videoAspect;
+        }
+
+        const scale = width / videoDisplayWidth;
+
+        setDimensions({ width, height, scale });
+
+        // Update canvas size
+        if (canvasRef.current) {
+            canvasRef.current.width = width;
+            canvasRef.current.height = height;
+        }
+    }, [TARGET_ASPECT_RATIO]);
+
+    // Start the webcam
+    const startVideo = useCallback(async () => {
+        try {
+            const newStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                }
+            });
+
+            if (videoRef.current) {
+                videoRef.current.srcObject = newStream;
+                setStream(newStream);
+                
+                // Wait for video metadata to load then update dimensions
+                videoRef.current.onloadedmetadata = updateDimensions;
+            }
+        } catch (error) {
+            console.error('Error accessing camera:', error);
+        }
+    }, [updateDimensions]);
+
+    // Update dimensions on resize
+    useEffect(() => {
+        window.addEventListener('resize', updateDimensions);
+        return () => window.removeEventListener('resize', updateDimensions);
+    }, [updateDimensions]);
 
     // Load personality-specific assets
     useEffect(() => {
@@ -100,6 +179,13 @@ export default function FaceTrackingVideo({
         loadModels();
     }, []);
 
+    // Start video when models and images are loaded
+    useEffect(() => {
+        if (modelsLoaded && imagesLoaded) {
+            startVideo();
+        }
+    }, [modelsLoaded, imagesLoaded, startVideo]);
+
     // Cleanup function for video stream
     useEffect(() => {
         return () => {
@@ -109,37 +195,10 @@ export default function FaceTrackingVideo({
         };
     }, [stream]);
 
-    // Start video when models and images are loaded
-    useEffect(() => {
-        if (modelsLoaded && imagesLoaded) {
-            startVideo();
-        }
-    }, [modelsLoaded, imagesLoaded]);
-
-    // Start the webcam
-    const startVideo = async () => {
-        try {
-            const newStream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    width: { ideal: 640 },
-                    height: { ideal: 480 }
-                }
-            });
-
-            if (videoRef.current) {
-                videoRef.current.srcObject = newStream;
-                setStream(newStream);
-            }
-        } catch (error) {
-            console.error('Error accessing camera:', error);
-        }
-    };
-
     // Function to smoothly interpolate between previous and current values
     const smoothPosition = (
         current: { x: number; y: number; width: number; height: number },
-        index: number,
-        easing = 0.3
+        index: number
     ) => {
         if (!prevPositionsRef.current[index]) {
             prevPositionsRef.current[index] = { ...current };
@@ -147,13 +206,17 @@ export default function FaceTrackingVideo({
         }
 
         const prev = prevPositionsRef.current[index];
+        const positionEasing = 0.15; // Weaker position smoothing (was 0.3)
+        const scaleEasing = 0.7;    // Stronger scale smoothing
 
-        // Apply easing to create smooth movement
+        // Apply different easing values for position and scale
         const smoothed = {
-            x: prev.x + easing * (current.x - prev.x),
-            y: prev.y + easing * (current.y - prev.y),
-            width: prev.width + easing * (current.width - prev.width),
-            height: prev.height + easing * (current.height - prev.height)
+            // Position uses weaker smoothing for more responsive movement
+            x: prev.x + positionEasing * (current.x - prev.x),
+            y: prev.y + positionEasing * (current.y - prev.y),
+            // Scale uses stronger smoothing for more stable size changes
+            width: prev.width + scaleEasing * (current.width - prev.width),
+            height: prev.height + scaleEasing * (current.height - prev.height)
         };
 
         // Update previous position for next frame
@@ -232,17 +295,45 @@ export default function FaceTrackingVideo({
         const video = videoRef.current;
         const canvas = canvasRef.current;
 
-        // Match canvas size to video
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-
         // Create face detection loop
         const detectFaces = async () => {
             if (!video || !canvas) return;
 
             try {
+                // Calculate the center crop region of the video
+                const videoAspect = video.videoWidth / video.videoHeight;
+                let cropX = 0, cropY = 0, cropWidth = video.videoWidth, cropHeight = video.videoHeight;
+
+                if (videoAspect > TARGET_ASPECT_RATIO) {
+                    // Video is wider - crop sides
+                    cropWidth = video.videoHeight * TARGET_ASPECT_RATIO;
+                    cropX = (video.videoWidth - cropWidth) / 2;
+                } else {
+                    // Video is taller - crop top/bottom
+                    cropHeight = video.videoWidth / TARGET_ASPECT_RATIO;
+                    cropY = (video.videoHeight - cropHeight) / 2;
+                }
+
+                // Create a temporary canvas for the cropped and mirrored video
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = cropWidth;
+                tempCanvas.height = cropHeight;
+                const tempCtx = tempCanvas.getContext('2d');
+                if (!tempCtx) return;
+
+                // Set up mirroring transform for detection input
+                tempCtx.translate(cropWidth, 0);
+                tempCtx.scale(-1, 1);
+
+                // Draw the cropped and mirrored region
+                tempCtx.drawImage(video, 
+                    cropX, cropY, cropWidth, cropHeight,
+                    0, 0, cropWidth, cropHeight
+                );
+
+                // Detect faces on the cropped region
                 const detections = await faceapi.detectAllFaces(
-                    video,
+                    tempCanvas,
                     new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.3 })
                 );
 
@@ -256,74 +347,92 @@ export default function FaceTrackingVideo({
                     prevPositionsRef.current = prevPositionsRef.current.slice(0, persistentFaces.length);
                 }
 
+                // Scale factor between cropped video and display
+                const scaleX = canvas.width / cropWidth;
+                const scaleY = canvas.height / cropHeight;
+
                 persistentFaces.forEach((face, index) => {
                     const rawBox = face.box;
-                    const box = smoothPosition(
-                        {
-                            x: rawBox.x,
-                            y: rawBox.y,
-                            width: rawBox.width,
-                            height: rawBox.height
-                        },
-                        index
-                    );
+                    
+                    // Scale the detection box to match display dimensions
+                    // Note: x position is already mirrored from detection stage
+                    const scaledBox = {
+                        x: rawBox.x * scaleX,
+                        y: rawBox.y * scaleY,
+                        width: rawBox.width * scaleX,
+                        height: rawBox.height * scaleY
+                    };
+
+                    const box = smoothPosition(scaledBox, index);
 
                     const hat = hatImage;
                     const shirt = shirtImage;
 
                     if (hat && shirt) {
-                        // Position chef hat above the face
+                        // Position hat above the face
                         const hatWidth = box.width * 1.5;
                         const hatHeight = hatWidth * (hat.height / hat.width);
                         const hatX = box.x - (hatWidth - box.width) / 2;
                         const hatY = box.y - hatHeight * 0.9;
 
-                        // Draw chef hat
+                        // Draw hat
                         ctx.drawImage(hat, hatX, hatY, hatWidth, hatHeight);
 
-                        // Position chef shirt below the face
+                        // Position shirt below the face
                         const shirtWidth = box.width * 2.5;
                         const shirtHeight = shirtWidth * (shirt.height / shirt.width);
                         const shirtX = box.x - (shirtWidth - box.width) / 2;
                         const shirtY = box.y + box.height;
 
-                        // Draw chef shirt
+                        // Draw shirt
                         ctx.drawImage(shirt, shirtX, shirtY, shirtWidth, shirtHeight);
                     }
                 });
+
             } catch (error) {
                 console.error('Error in face detection:', error);
             }
 
-            // Continue the detection loop
             requestAnimationFrame(detectFaces);
         };
 
-        // Start the detection loop
         detectFaces();
     };
 
     return (
-        <>
-            <video
-                ref={videoRef}
-                autoPlay
-                muted
-                playsInline
-                onPlay={handleVideoPlay}
-                className="w-full h-full object-cover"
-            />
-            <canvas
-                ref={canvasRef}
-                className="absolute top-0 left-0 w-full h-full"
-            />
-            {(!modelsLoaded || !imagesLoaded) && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                    <div className="bg-white p-4 rounded-lg border-2 border-black">
-                        Loading camera...
+        <div ref={containerRef} className="relative w-full h-full overflow-hidden">
+            <div 
+                className="relative w-full h-full"
+                style={{
+                    width: dimensions.width,
+                    height: dimensions.height,
+                    margin: '0 auto'
+                }}
+            >
+                <video
+                    ref={videoRef}
+                    autoPlay
+                    muted
+                    playsInline
+                    onPlay={handleVideoPlay}
+                    className="absolute top-0 left-0 object-cover w-full h-full"
+                    style={{
+                        objectFit: 'cover',
+                        transform: 'scaleX(-1)' // Mirror the video display
+                    }}
+                />
+                <canvas
+                    ref={canvasRef}
+                    className="absolute top-0 left-0 w-full h-full"
+                />
+                {(!modelsLoaded || !imagesLoaded) && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                        <div className="p-4 bg-white border-2 border-black rounded-lg">
+                            Loading camera...
+                        </div>
                     </div>
-                </div>
-            )}
-        </>
+                )}
+            </div>
+        </div>
     );
 } 
