@@ -4,7 +4,9 @@ import { FaceTrackingVideo } from './';
 import { CardContent, CardTitle } from './ui/card';
 import MotionButton from './ui/motion-button';
 import MotionCard from './ui/motion-card';
-import { Home, Users, Calendar, BookOpen, RefreshCw } from 'lucide-react';
+import { Home, Users, Calendar, BookOpen, RefreshCw, MapPin } from 'lucide-react';
+import Image from 'next/image';
+import { useRef, useEffect } from 'react';
 
 interface ResultPageProps {
     personalityType: string;
@@ -24,6 +26,33 @@ export default function ResultPage({
     onStartOver,
     onHome,
 }: ResultPageProps) {
+    // References for GPU acceleration on individual overlays
+    const multiplyRef = useRef<HTMLDivElement>(null);
+    const softlightRef = useRef<HTMLDivElement>(null);
+    const hardlightRef = useRef<HTMLDivElement>(null);
+
+    // Apply GPU acceleration to overlay layers individually
+    useEffect(() => {
+        // Apply GPU acceleration to each overlay layer
+        if (multiplyRef.current) {
+            multiplyRef.current.style.transform = 'translateZ(0)';
+            multiplyRef.current.style.backfaceVisibility = 'hidden';
+            multiplyRef.current.style.willChange = 'transform';
+        }
+        
+        if (softlightRef.current) {
+            softlightRef.current.style.transform = 'translateZ(0)';
+            softlightRef.current.style.backfaceVisibility = 'hidden';
+            softlightRef.current.style.willChange = 'transform';
+        }
+        
+        if (hardlightRef.current) {
+            hardlightRef.current.style.transform = 'translateZ(0)';
+            hardlightRef.current.style.backfaceVisibility = 'hidden';
+            hardlightRef.current.style.willChange = 'transform';
+        }
+    }, []);
+
     return (
         <div className="flex flex-col items-center h-screen">
             <div className="w-full max-w-[800px] h-screen mx-auto flex flex-col relative px-6">
@@ -50,13 +79,79 @@ export default function ResultPage({
                 {/* Main content with 3:2 ratio columns */}
                 <div className="grid flex-grow grid-cols-5 gap-6 mb-6">
                     {/* Left column (60%) */}
-                    <div className="flex flex-col col-span-3">
-                        {/* Face tracking display */}
+                    <div className="flex flex-col col-span-3 gap-4">
+                        {/* Face tracking display - 50% height */}
                         <MotionCard
-                            className="relative flex-grow p-0 overflow-hidden"
+                            className="relative h-[50%] p-0 overflow-hidden"
                             interactive={false}
                         >
-                            <FaceTrackingVideo personalityType={personalityType.toLowerCase()} />
+                            <div className="relative w-full h-full">
+                                <FaceTrackingVideo personalityType={personalityType.toLowerCase()} />
+                                
+                                {/* Individual overlays with direct blend modes */}
+                                <div 
+                                    ref={multiplyRef}
+                                    className="absolute inset-0 pointer-events-none mix-blend-multiply"
+                                >
+                                    <Image 
+                                        src="/7. multiply.png" 
+                                        alt="" 
+                                        fill 
+                                        sizes="(max-width: 768px) 100vw, 60vw"
+                                        style={{ objectFit: 'fill' }}
+                                        priority
+                                    />
+                                </div>
+                                
+                                <div 
+                                    ref={softlightRef}
+                                    className="absolute inset-0 pointer-events-none mix-blend-soft-light"
+                                >
+                                    <Image 
+                                        src="/2. softlight.png" 
+                                        alt="" 
+                                        fill 
+                                        sizes="(max-width: 768px) 100vw, 60vw"
+                                        style={{ objectFit: 'fill' }}
+                                        priority
+                                    />
+                                </div>
+                                
+                                <div 
+                                    ref={hardlightRef}
+                                    className="absolute inset-0 pointer-events-none mix-blend-hard-light"
+                                >
+                                    <Image 
+                                        src="/1. hardlight.png" 
+                                        alt="" 
+                                        fill 
+                                        sizes="(max-width: 768px) 100vw, 60vw"
+                                        style={{ objectFit: 'fill' }}
+                                        priority
+                                    />
+                                </div>
+                            </div>
+                        </MotionCard>
+
+                        {/* Places to go section */}
+                        <MotionCard
+                            className="flex-grow"
+                            interactive={false}
+                        >
+                            <CardContent className="pt-6">
+                                <CardTitle className="flex items-center mb-4">
+                                    <MapPin size={24} className="mr-2" />
+                                    PLACES TO GO
+                                </CardTitle>
+                                <div className="flex flex-col gap-4">
+                                    <div className="p-4 rounded-lg bg-gray-200 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center">
+                                        <div className="bg-blue-500 text-white rounded-full p-2 mr-3 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                                            <MapPin size={16} />
+                                        </div>
+                                        Local community gardens
+                                    </div>
+                                </div>
+                            </CardContent>
                         </MotionCard>
                     </div>
 
