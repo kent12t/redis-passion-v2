@@ -62,9 +62,13 @@ export default function FaceTrackingVideo({
     const [hatImage, setHatImage] = useState<HTMLImageElement | null>(null);
     const [shirtImage, setShirtImage] = useState<HTMLImageElement | null>(null);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0, scale: 1 });
+    // Add ref for scale smoothing
+    const prevScaleRef = useRef<number>(1);
+    const scaleBufferRef = useRef<number[]>([]);
+    const SCALE_BUFFER_SIZE = 10; // Number of frames to average
 
     // Target aspect ratio (2:3)
-    const TARGET_ASPECT_RATIO = 2/3;
+    const TARGET_ASPECT_RATIO = 2 / 3;
 
     // Calculate dimensions and scale based on container size
     const updateDimensions = useCallback(() => {
@@ -125,7 +129,7 @@ export default function FaceTrackingVideo({
             if (videoRef.current) {
                 videoRef.current.srcObject = newStream;
                 setStream(newStream);
-                
+
                 // Wait for video metadata to load then update dimensions
                 videoRef.current.onloadedmetadata = updateDimensions;
             }
@@ -288,6 +292,31 @@ export default function FaceTrackingVideo({
         return newAssignments;
     };
 
+    // Add scale smoothing function
+    const smoothScale = useCallback((newScale: number) => {
+        const buffer = scaleBufferRef.current;
+
+        // Add new scale to buffer
+        buffer.push(newScale);
+        if (buffer.length > SCALE_BUFFER_SIZE) {
+            buffer.shift();
+        }
+
+        // Calculate weighted moving average
+        // Recent values have more weight
+        let weightedSum = 0;
+        let weightSum = 0;
+        buffer.forEach((scale, index) => {
+            const weight = index + 1;
+            weightedSum += scale * weight;
+            weightSum += weight;
+        });
+
+        const smoothedScale = weightedSum / weightSum;
+        prevScaleRef.current = smoothedScale;
+        return smoothedScale;
+    }, []);
+
     // Handle video playback and face detection
     const handleVideoPlay = () => {
         if (!videoRef.current || !canvasRef.current || !modelsLoaded || !imagesLoaded) return;
@@ -326,7 +355,7 @@ export default function FaceTrackingVideo({
                 tempCtx.scale(-1, 1);
 
                 // Draw the cropped and mirrored region
-                tempCtx.drawImage(video, 
+                tempCtx.drawImage(video,
                     cropX, cropY, cropWidth, cropHeight,
                     0, 0, cropWidth, cropHeight
                 );
@@ -353,7 +382,7 @@ export default function FaceTrackingVideo({
 
                 persistentFaces.forEach((face, index) => {
                     const rawBox = face.box;
-                    
+
                     // Scale the detection box to match display dimensions
                     // Note: x position is already mirrored from detection stage
                     const scaledBox = {
@@ -369,20 +398,46 @@ export default function FaceTrackingVideo({
                     const shirt = shirtImage;
 
                     if (hat && shirt) {
-                        // Position hat above the face
-                        const hatWidth = box.width * 1.5;
+                        // Calculate base scale factor based on face size relative to canvas
+                        const faceArea = box.width * box.height;
+                        const canvasArea = canvas.width * canvas.height;
+                        const rawFaceScale = Math.sqrt(faceArea / canvasArea);
+
+                        // Apply temporal smoothing to scale
+                        const faceScale = smoothScale(rawFaceScale);
+
+                        // Scale multipliers - adjust these to fine-tune the effect
+                        const hatScaleBase = 2.5;
+                        const shirtScaleBase = 4;
+
+                        // Apply dynamic scaling based on face size with more conservative range
+                        const hatScale = hatScaleBase * (0.9 + faceScale * 0.2); // More conservative scaling
+                        const shirtScale = shirtScaleBase * (0.9 + faceScale * 0.2);
+
+                        // Draw debug bounding box
+                        ctx.strokeStyle = '#00ff00';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(box.x, box.y, box.width, box.height);
+
+                        // Add debug text for scale values
+                        ctx.fillStyle = '#00ff00';
+                        ctx.font = '12px Arial';
+                        ctx.fillText(`Scale: ${faceScale.toFixed(2)}`, box.x, box.y - 5);
+
+                        // Position hat above the face with dynamic scaling
+                        const hatWidth = box.width * hatScale;
                         const hatHeight = hatWidth * (hat.height / hat.width);
                         const hatX = box.x - (hatWidth - box.width) / 2;
-                        const hatY = box.y - hatHeight * 0.9;
+                        const hatY = box.y - box.height*1.6;
 
                         // Draw hat
                         ctx.drawImage(hat, hatX, hatY, hatWidth, hatHeight);
 
-                        // Position shirt below the face
-                        const shirtWidth = box.width * 2.5;
+                        // Position shirt below the face with dynamic scaling
+                        const shirtWidth = box.width * shirtScale;
                         const shirtHeight = shirtWidth * (shirt.height / shirt.width);
                         const shirtX = box.x - (shirtWidth - box.width) / 2;
-                        const shirtY = box.y + box.height;
+                        const shirtY = box.y;
 
                         // Draw shirt
                         ctx.drawImage(shirt, shirtX, shirtY, shirtWidth, shirtHeight);
@@ -401,7 +456,7 @@ export default function FaceTrackingVideo({
 
     return (
         <div ref={containerRef} className="relative w-full h-full overflow-hidden">
-            <div 
+            <div
                 className="relative w-full h-full"
                 style={{
                     width: dimensions.width,
