@@ -9,6 +9,12 @@ const overusedGrotesk = localFont({
   display: 'swap',
 });
 
+const futuraBold = localFont({
+  src: './fonts/FuturaBold.otf',
+  variable: '--font-futura-bold',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
   title: "Rediscover Your Passion",
   description: "Personalized recommendations for your unique interests and passions.",
@@ -22,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${overusedGrotesk.variable} antialiased`}
+        className={`${overusedGrotesk.variable} ${futuraBold.variable} antialiased`}
       >
         <NeoBrutalismProvider>
           {children}

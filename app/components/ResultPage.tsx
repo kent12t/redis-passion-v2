@@ -6,7 +6,21 @@ import MotionButton from './ui/motion-button';
 import MotionCard from './ui/motion-card';
 import { Home, Users, Calendar, BookOpen, RefreshCw, MapPin } from 'lucide-react';
 import Image from 'next/image';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
+import personalityData from '../data/personality.json';
+import BuddyCard from './ui/buddy-card';
+
+interface Buddy {
+    personality: string;
+    reason: string;
+}
+
+interface PersonalityData {
+    personality_en: string;
+    personality_cn: string;
+    activity: string;
+    buddies: Buddy[];
+}
 
 interface ResultPageProps {
     personalityType: string;
@@ -31,6 +45,14 @@ export default function ResultPage({
     const softlightRef = useRef<HTMLDivElement>(null);
     const hardlightRef = useRef<HTMLDivElement>(null);
 
+    // Get buddies from personality data
+    const currentBuddies = useMemo(() => {
+        const currentPersonality = personalityData.find(
+            (p: PersonalityData) => p.personality_en.toLowerCase() === personalityType.toLowerCase()
+        );
+        return currentPersonality?.buddies || [];
+    }, [personalityType]);
+
     // Apply GPU acceleration to overlay layers individually
     useEffect(() => {
         // Apply GPU acceleration to each overlay layer
@@ -54,35 +76,35 @@ export default function ResultPage({
     }, []);
 
     return (
-        <div className="flex flex-col items-center h-screen">
-            <div className="w-full max-w-[1200px] h-screen mx-auto flex flex-col relative px-6">
+        <div className="flex flex-col items-center h-screen p-6 lg:p-12">
+            <div className="relative flex flex-col w-full h-full max-w-[1200px] mx-auto items-center justify-center">
                 {/* Home button */}
-                <div className="absolute right-0 top-6">
+                <div className="absolute right-0 top-6 lg:top-12">
                     <MotionButton
                         variant="primary"
                         size="icon"
-                        className="flex items-center justify-center rounded-full"
+                        className="flex items-center justify-center w-16 h-16 rounded-full sm:h-20 lg:h-24 sm:w-20 lg:w-24"
                         onClick={onHome || onStartOver}
                     >
-                        <Home size={24} />
+                        <Home className="w-8 h-8 sm:w-10 lg:w-12 sm:h-10 lg:h-12" />
                     </MotionButton>
                 </div>
 
                 {/* Header spanning both columns */}
-                <div className="mt-20 mb-6 text-center">
-                    <span className="text-2xl font-bold text-blue-600">YOU&apos;RE A</span>
-                    <h1 className="text-5xl md:text-6xl font-bold text-pink-500 drop-shadow-[4px_4px_0px_rgba(255,255,255,0.5)]">
+                <div className="mb-6 text-center md:mb-16">
+                    <span className="text-2xl font-bold text-blue-600 sm:text-3xl lg:text-4xl font-title title-shadow">YOU&apos;RE A</span>
+                    <h1 className="text-5xl font-bold text-pink-500 sm:text-7xl lg:text-8xl font-title title-shadow">
                         {personalityType.toUpperCase()}
                     </h1>
                 </div>
 
                 {/* Main content with 3:2 ratio columns */}
-                <div className="grid flex-grow grid-cols-5 gap-6 mb-6">
+                <div className="grid w-full grid-cols-5 gap-6 mb-6 h-2/3 grid-rows-8 lg:mb-12">
                     {/* Left column (60%) */}
-                    <div className="flex flex-col col-span-3 gap-4">
-                        {/* Face tracking display - 50% height */}
+                    <div className="flex flex-col col-span-3 gap-4 row-span-full md:gap-6">
+                        {/* Face tracking display - 5/8 height */}
                         <MotionCard
-                            className="relative h-[50%] p-0 overflow-hidden"
+                            className="relative h-[62.5%] p-0 overflow-hidden"
                             interactive={false}
                         >
                             <div className="relative w-full h-full">
@@ -133,20 +155,20 @@ export default function ResultPage({
                             </div>
                         </MotionCard>
 
-                        {/* Places to go section */}
+                        {/* Places to go section - 3/8 height */}
                         <MotionCard
                             className="flex-grow"
                             interactive={false}
                         >
-                            <CardContent className="pt-6">
-                                <CardTitle className="flex items-center mb-4">
-                                    <MapPin size={24} className="mr-2" />
+                            <CardContent className="pt-6 lg:pt-8">
+                                <CardTitle className="flex items-center mb-4 text-lg sm:text-xl lg:text-2xl">
+                                    <MapPin className="w-6 h-6 mr-2 sm:w-8 sm:h-8 lg:w-10 lg:h-10" />
                                     PLACES TO GO
                                 </CardTitle>
-                                <div className="flex flex-col gap-4">
-                                    <div className="p-4 rounded-lg bg-gray-200 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center">
-                                        <div className="bg-blue-500 text-white rounded-full p-2 mr-3 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                            <MapPin size={16} />
+                                <div className="flex flex-col gap-4 md:gap-6">
+                                    <div className="flex items-center p-4 text-lg border-2 border-black rounded-lg sm:text-xl lg:text-2xl sm:p-6 lg:p-8 bg-gray-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                        <div className="flex items-center justify-center p-2 mr-3 text-white bg-blue-500 border-2 border-black rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                                            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
                                         </div>
                                         Local community gardens
                                     </div>
@@ -156,38 +178,47 @@ export default function ResultPage({
                     </div>
 
                     {/* Right column (40%) */}
-                    <div className="flex flex-col col-span-2 gap-4 overflow-y-auto">
-                        <MotionCard interactive={false}>
-                            <CardContent className="pt-6">
-                                <CardTitle className="flex items-center mb-4">
-                                    <Users size={24} className="mr-2" />
+                    <div className="flex flex-col col-span-2 gap-4 pr-1 overflow-hidden row-span-full md:gap-6">
+                        {/* Find your buddies - 2/8 height */}
+                        <MotionCard 
+                            className="h-[25%]"
+                            interactive={false}
+                        >
+                            <CardContent className="pt-6 lg:pt-8">
+                                <CardTitle className="flex items-center mb-4 text-lg sm:text-xl lg:text-2xl">
+                                    <Users className="w-6 h-6 mr-2 sm:w-8 sm:h-8 lg:w-10 lg:h-10" />
                                     FIND YOUR BUDDIES
                                 </CardTitle>
-                                <div className="grid grid-cols-2 gap-4">
-                                    {[1, 2].map((buddy) => (
-                                        <div
-                                            key={buddy}
-                                            className="aspect-square rounded-full bg-gray-200 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                                <div className="grid grid-cols-2 gap-4 md:gap-6">
+                                    {currentBuddies.map((buddy: Buddy, index: number) => (
+                                        <BuddyCard
+                                            key={index}
+                                            personality={buddy.personality}
+                                            reason={buddy.reason}
                                         />
                                     ))}
                                 </div>
                             </CardContent>
                         </MotionCard>
 
-                        <MotionCard interactive={false}>
-                            <CardContent className="pt-6">
-                                <CardTitle className="flex items-center mb-4">
-                                    <Calendar size={24} className="mr-2" />
+                        {/* Activities - 3/8 height */}
+                        <MotionCard 
+                            className="h-[37.5%] overflow-y-auto"
+                            interactive={false}
+                        >
+                            <CardContent className="pt-6 lg:pt-8">
+                                <CardTitle className="flex items-center mb-4 text-lg sm:text-xl lg:text-2xl">
+                                    <Calendar className="w-6 h-6 mr-2 sm:w-8 sm:h-8 lg:w-10 lg:h-10" />
                                     ACTIVITIES
                                 </CardTitle>
-                                <div className="flex flex-col gap-4">
+                                <div className="flex flex-col gap-4 md:gap-6">
                                     {activities.map((activity, index) => (
                                         <div
                                             key={index}
-                                            className="p-4 rounded-lg bg-gray-200 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center"
+                                            className="flex items-center p-4 text-lg border-2 border-black rounded-lg sm:text-xl lg:text-2xl sm:p-6 lg:p-8 bg-gray-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                                         >
-                                            <div className="bg-pink-500 text-white rounded-full p-2 mr-3 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                                <Calendar size={16} />
+                                            <div className="flex items-center justify-center p-2 mr-3 text-white bg-pink-500 border-2 border-black rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                                                <Calendar className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
                                             </div>
                                             {activity}
                                         </div>
@@ -196,20 +227,24 @@ export default function ResultPage({
                             </CardContent>
                         </MotionCard>
 
-                        <MotionCard interactive={false}>
-                            <CardContent className="pt-6">
-                                <CardTitle className="flex items-center mb-4">
-                                    <BookOpen size={24} className="mr-2" />
+                        {/* Resources - 3/8 height */}
+                        <MotionCard 
+                            className="h-[37.5%] overflow-y-auto"
+                            interactive={false}
+                        >
+                            <CardContent className="pt-6 lg:pt-8">
+                                <CardTitle className="flex items-center mb-4 text-lg sm:text-xl lg:text-2xl">
+                                    <BookOpen className="w-6 h-6 mr-2 sm:w-8 sm:h-8 lg:w-10 lg:h-10" />
                                     RESOURCES
                                 </CardTitle>
-                                <div className="flex flex-col gap-4">
+                                <div className="flex flex-col gap-4 md:gap-6">
                                     {resources.map((resource, index) => (
                                         <div
                                             key={index}
-                                            className="p-4 rounded-lg bg-gray-200 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center"
+                                            className="flex items-center p-4 text-lg border-2 border-black rounded-lg sm:text-xl lg:text-2xl sm:p-6 lg:p-8 bg-gray-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                                         >
-                                            <div className="bg-blue-500 text-white rounded-full p-2 mr-3 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                                <BookOpen size={16} />
+                                            <div className="flex items-center justify-center p-2 mr-3 text-white bg-blue-500 border-2 border-black rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                                                <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
                                             </div>
                                             {resource}
                                         </div>
@@ -224,9 +259,9 @@ export default function ResultPage({
                 <MotionButton
                     onClick={onStartOver}
                     size="lg"
-                    className="w-full mb-6"
+                    className="w-full h-16 text-lg sm:h-20 lg:h-24 sm:text-xl lg:text-3xl"
                 >
-                    <RefreshCw size={20} className="mr-2" />
+                    <RefreshCw className="w-5 h-5 mr-2 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
                     Start Over
                 </MotionButton>
             </div>

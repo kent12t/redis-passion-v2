@@ -12,6 +12,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-overused-grotesk);
+  --font-title: var(--font-futura-bold);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -34,7 +35,7 @@ body {
   /* Semibold for body text */
 }
 
-h1,
+
 h2,
 h3,
 h4,
@@ -51,20 +52,29 @@ h6,
   filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.15));
 }
 
-button {
-  font-family: var(--font-sans), system-ui, sans-serif;
+.title-shadow {
+  text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.7), -2px -2px 0 rgba(255, 255, 255, 0.7),
+    2px -2px 0 rgba(255, 255, 255, 0.7), -2px 2px 0 rgba(255, 255, 255, 0.7),
+    0px 2px 0 rgba(255, 255, 255, 0.7), 0px -2px 0 rgba(255, 255, 255, 0.7),
+    2px 0px 0 rgba(255, 255, 255, 0.7), -2px 0px 0 rgba(255, 255, 255, 0.7);
+  filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.15));
+}
+
+button,
+.motion-button {
+  font-family: var(--font-overused-grotesk), system-ui, sans-serif;
   font-weight: 700;
   /* Bold for buttons */
 }
 
 .answer-button {
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-overused-grotesk), system-ui, sans-serif;
   font-weight: 600;
   /* Semibold for answer buttons */
 }
 
 p {
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-overused-grotesk), system-ui, sans-serif;
   font-weight: 600;
   /* Semibold for paragraphs */
 }

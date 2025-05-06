@@ -23,7 +23,7 @@ type QuizState = 'start' | 'question' | 'result';
 const personalityTypes = [
     'wellness warrior',
     'art maestro',
-    'storyteller',
+    'wise storyteller',
     'master chef',
     'tree whisperer',
     'community champion'
@@ -157,7 +157,7 @@ export default function Quiz({ questions }: QuizProps) {
         const personalityActivities = {
             'wellness warrior': ['Morning jogs in the neighborhood', 'Joining community sports', 'Organizing fitness meetups'],
             'art maestro': ['Local art workshops', 'Creative social gatherings', 'Community mural projects'],
-            storyteller: ['Book clubs', 'Memoir writing workshops', 'Community history projects'],
+            'wise storyteller': ['Book clubs', 'Memoir writing workshops', 'Community history projects'],
             'master chef': ['Cooking classes for neighbors', 'Recipe exchanges', 'Hosting community meals'],
             'tree whisperer': ['Community gardening', 'Seasonal produce sharing', 'Nature walks'],
             'community champion': ['Neighborhood cleanup events', 'Support groups for elderly', 'Community outreach programs']
@@ -167,7 +167,7 @@ export default function Quiz({ questions }: QuizProps) {
         const personalityResources = {
             'wellness warrior': ['Local fitness groups', 'Neighborhood walking maps', 'Community sports leagues'],
             'art maestro': ['Art supply resources', 'Local galleries and exhibitions', 'Creative workshops'],
-            storyteller: ['Local libraries', 'Writing groups', 'Oral history projects'],
+            'wise storyteller': ['Local libraries', 'Writing groups', 'Oral history projects'],
             'master chef': ['Recipe sharing platforms', 'Community kitchen locations', 'Local cooking workshops'],
             'tree whisperer': ['Community garden listings', 'Seasonal planting guides', 'Seed exchange programs'],
             'community champion': ['Community service organizations', 'Volunteer opportunities', 'Neighborhood assistance programs']

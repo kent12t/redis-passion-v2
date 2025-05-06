@@ -29,7 +29,7 @@ const personalityAssets = {
         hat: '/artist-hat.png',
         shirt: '/artist-shirt.png'
     },
-    "storyteller": {
+    "wise storyteller": {
         hat: '/storyteller-hat.png',
         shirt: '/storyteller-shirt.png'
     },
@@ -69,8 +69,8 @@ export default function FaceTrackingVideo({
     const scaleBufferRef = useRef<number[]>([]);
     const SCALE_BUFFER_SIZE = 10; // Number of frames to average
 
-    // Target aspect ratio (2:3)
-    const TARGET_ASPECT_RATIO = 2 / 3;
+    // Target aspect ratio
+    const TARGET_ASPECT_RATIO = 0.76;
 
     // Calculate dimensions and scale based on container size
     const updateDimensions = useCallback(() => {
