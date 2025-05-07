@@ -13,6 +13,11 @@ interface TrackedFace {
         width: number;
         height: number;
     };
+    velocity?: {
+        x: number;
+        y: number;
+    };
+    confidence: number;
 }
 
 interface FaceTrackingVideoProps {
@@ -48,6 +53,9 @@ const personalityAssets = {
 } as const;
 
 const debugMode = false;
+// Confidence thresholds
+const INITIAL_DETECTION_THRESHOLD = 0.85; // Higher threshold for new faces
+const TRACKING_CONFIDENCE_THRESHOLD = 0.6; // Existing threshold for continuous tracking
 
 export default function FaceTrackingVideo({
     personalityType
@@ -246,6 +254,28 @@ export default function FaceTrackingVideo({
         return dx * dx + dy * dy;
     };
 
+    // Calculate similarity score between two faces
+    const calculateSimilarity = (face1: TrackedFace, detection: faceapi.ObjectDetection) => {
+        const center1 = getBoxCenter(face1.box);
+        const center2 = getBoxCenter(detection.box);
+        
+        // If face has velocity, predict its position
+        const predictedCenter = face1.velocity ? {
+            x: center1.x + (face1.velocity.x * (Date.now() - face1.lastSeen) / 1000),
+            y: center1.y + (face1.velocity.y * (Date.now() - face1.lastSeen) / 1000)
+        } : center1;
+
+        // Distance score (0-1, where 1 is closest)
+        const distanceScore = 1 / (1 + Math.sqrt(getDistanceSquared(predictedCenter, center2)) / detection.box.width);
+        
+        // Size similarity score (0-1, where 1 is most similar)
+        const sizeDiff = Math.abs(face1.box.width - detection.box.width) / Math.max(face1.box.width, detection.box.width);
+        const sizeScore = 1 - sizeDiff;
+
+        // Combine scores with weights
+        return distanceScore * 0.7 + sizeScore * 0.3;
+    };
+
     // Assign detections to tracked faces or create new tracked faces
     const updateTrackedFaces = (detections: faceapi.ObjectDetection[]) => {
         const currentTime = Date.now();
@@ -254,38 +284,53 @@ export default function FaceTrackingVideo({
         const assignedFaceIndices = new Set<number>();
         const newAssignments: TrackedFace[] = [];
 
-        detections.forEach(detection => {
-            const detectedBox = detection.box;
-            const detectedCenter = getBoxCenter(detectedBox);
+        // Sort detections by size (larger faces first, as they're likely closer and more reliable)
+        const sortedDetections = [...detections].sort((a, b) => 
+            (b.box.width * b.box.height) - (a.box.width * a.box.height)
+        );
 
-            let closestIndex = -1;
-            let closestDistance = Number.MAX_VALUE;
+        sortedDetections.forEach(detection => {
+            let bestMatch = {
+                index: -1,
+                similarity: 0
+            };
 
+            // Find best matching face
             activeFaces.forEach((face, index) => {
                 if (assignedFaceIndices.has(index)) return;
 
-                const trackedCenter = getBoxCenter(face.box);
-                const distance = getDistanceSquared(detectedCenter, trackedCenter);
-
-                if (distance < closestDistance) {
-                    closestDistance = distance;
-                    closestIndex = index;
+                const similarity = calculateSimilarity(face, detection);
+                if (similarity > bestMatch.similarity && similarity > TRACKING_CONFIDENCE_THRESHOLD) { // Using tracking threshold for continuous tracking
+                    bestMatch = { index, similarity };
                 }
             });
 
-            const distanceThreshold = (detectedBox.width * detectedBox.width) * 2;
+            if (bestMatch.index !== -1) {
+                const face = activeFaces[bestMatch.index];
+                const timeDelta = (currentTime - face.lastSeen) / 1000; // Convert to seconds
 
-            if (closestIndex !== -1 && closestDistance < distanceThreshold) {
-                const face = activeFaces[closestIndex];
+                // Update velocity
+                const oldCenter = getBoxCenter(face.box);
+                const newCenter = getBoxCenter(detection.box);
+                const velocity = {
+                    x: (newCenter.x - oldCenter.x) / timeDelta,
+                    y: (newCenter.y - oldCenter.y) / timeDelta
+                };
+
+                // Update face data
                 face.lastSeen = currentTime;
-                face.box = detectedBox;
-                assignedFaceIndices.add(closestIndex);
+                face.box = detection.box;
+                face.velocity = velocity;
+                face.confidence = bestMatch.similarity;
+                assignedFaceIndices.add(bestMatch.index);
                 newAssignments.push(face);
             } else {
+                // Create new tracked face
                 newAssignments.push({
                     id: nextIdRef.current++,
                     lastSeen: currentTime,
-                    box: detectedBox
+                    box: detection.box,
+                    confidence: 1, // New faces start with full confidence
                 });
             }
         });
@@ -365,7 +410,7 @@ export default function FaceTrackingVideo({
                 // Detect faces on the cropped region
                 const detections = await faceapi.detectAllFaces(
                     tempCanvas,
-                    new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.3 })
+                    new faceapi.TinyFaceDetectorOptions({ scoreThreshold: INITIAL_DETECTION_THRESHOLD })
                 );
 
                 const persistentFaces = updateTrackedFaces(detections);

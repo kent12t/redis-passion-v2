@@ -38,28 +38,32 @@ export default function BuddyCard({ personality }: BuddyCardProps) {
     const personalityKey = personality.toLowerCase() as keyof typeof personalityAssets;
     
     return (
-        <div className="flex flex-col items-center">
-            <div className="relative w-24 aspect-square sm:w-28 lg:w-36">
+        <div className="flex flex-col items-center gap-0">
+            <div className="relative w-[84px] aspect-square sm:w-[96px] lg:w-[120px]">
                 {/* Shirt layer */}
-                <div className="absolute inset-0">
+                <div className="absolute inset-0 scale-[80%] translate-y-[10%]">
                     <Image
                         src={personalityAssets[personalityKey].shirt}
                         alt={`${personality} shirt`}
-                        fill
-                        className="object-contain"
+                        width={120}
+                        height={120}
+                        sizes="(max-width: 640px) 84px, (max-width: 1024px) 96px, 120px"
+                        className="object-contain w-full h-full"
                     />
                 </div>
                 {/* Hat layer - smaller size */}
-                <div className="absolute inset-0 scale-75 -translate-y-4">
+                <div className="absolute inset-0 scale-50 -translate-y-[30%]">
                     <Image
                         src={personalityAssets[personalityKey].hat}
                         alt={`${personality} hat`}
-                        fill
-                        className="object-contain"
+                        width={120}
+                        height={120}
+                        sizes="(max-width: 640px) 84px, (max-width: 1024px) 96px, 120px"
+                        className="object-contain w-full h-full"
                     />
                 </div>
             </div>
-            <span className="mt-2 text-sm text-center sm:text-base lg:text-lg">
+            <span className="mt-2 text-sm leading-tight text-center sm:text-base lg:text-lg">
                 {personality}
             </span>
         </div>

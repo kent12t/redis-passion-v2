@@ -42,9 +42,9 @@ export default function QuestionPage({
 
     return (
         <div className="flex flex-col items-center h-screen font-sans">
-            <div className="relative flex flex-col w-4/5 h-screen max-w-[1200px] mx-auto items-center justify-center">
+            <div className="relative flex flex-col p-6 lg:p-12 w-full h-screen max-w-[1200px] mx-auto items-center justify-center">
                 {/* Home button */}
-                <div className="absolute right-0 top-6 lg:top-12">
+                <div className="absolute right-6 lg:right-12 top-6 lg:top-12">
                     <MotionButton
                         variant="primary"
                         size="icon"
@@ -98,7 +98,7 @@ export default function QuestionPage({
                 </div>
 
                 {/* Bottom navigation section */}
-                <div className="flex flex-col w-full gap-4 pb-6 lg:pb-12 md:gap-6">
+                <div className="flex flex-col w-full gap-4 md:gap-6">
                     {/* Navigation */}
                     <div className="flex items-center justify-between w-full">
                         <MotionButton
