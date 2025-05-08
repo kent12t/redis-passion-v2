@@ -5,7 +5,7 @@
   --foreground: #171717;
   --grid-background: #95CFFC;
   --grid-lines: #C1E4FF;
-  --grid-size: 20px;
+  --grid-size: 40px;
 }
 
 @theme inline {

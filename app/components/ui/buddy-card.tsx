@@ -31,7 +31,6 @@ const personalityAssets = {
 
 interface BuddyCardProps {
     personality: string;
-    reason?: string;
 }
 
 export default function BuddyCard({ personality }: BuddyCardProps) {

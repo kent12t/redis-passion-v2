@@ -12,13 +12,13 @@ import BuddyCard from './ui/buddy-card';
 
 interface Buddy {
     personality: string;
-    reason: string;
 }
 
 interface PersonalityData {
     personality_en: string;
     personality_cn: string;
     activity: string;
+    buddy_reason: string;
     buddies: Buddy[];
 }
 
@@ -45,13 +45,17 @@ export default function ResultPage({
     const softlightRef = useRef<HTMLDivElement>(null);
     const hardlightRef = useRef<HTMLDivElement>(null);
 
-    // Get buddies from personality data
-    const currentBuddies = useMemo(() => {
-        const currentPersonality = personalityData.find(
+    // Get current personality data
+    const currentPersonality = useMemo(() => {
+        return personalityData.find(
             (p: PersonalityData) => p.personality_en.toLowerCase() === personalityType.toLowerCase()
         );
-        return currentPersonality?.buddies || [];
     }, [personalityType]);
+
+    // Get buddies from personality data
+    const currentBuddies = useMemo(() => {
+        return currentPersonality?.buddies || [];
+    }, [currentPersonality]);
 
     // Apply GPU acceleration to overlay layers individually
     useEffect(() => {
@@ -92,7 +96,9 @@ export default function ResultPage({
 
                 {/* Header spanning both columns */}
                 <div className="mb-6 text-center md:mb-16">
-                    <span className="text-2xl font-bold text-blue-600 sm:text-3xl lg:text-4xl font-title title-shadow">YOU&apos;RE A</span>
+                    <span className="text-2xl font-bold text-blue-600 sm:text-3xl lg:text-4xl font-title title-shadow">
+                        {personalityType.toLowerCase() === 'art maestro' ? 'YOU\'RE AN' : 'YOU\'RE A'}
+                    </span>
                     <h1 className="text-5xl font-bold text-pink-500 sm:text-7xl lg:text-8xl font-title title-shadow">
                         {personalityType.toUpperCase()}
                     </h1>
@@ -161,18 +167,22 @@ export default function ResultPage({
                             interactive={false}
                         >
                             <CardContent className="pt-6 lg:pt-8">
-                                <CardTitle className="flex items-center mb-4 text-lg sm:text-xl lg:text-2xl">
+                                <CardTitle className="flex items-center mb-4 text-md sm:text-lg lg:text-xl">
                                     <Users className="w-4 h-4 mr-2 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
                                     FIND YOUR BUDDIES
                                 </CardTitle>
-                                <div className="grid grid-cols-2 gap-4 md:gap-6">
-                                    {currentBuddies.map((buddy: Buddy, index: number) => (
-                                        <BuddyCard
-                                            key={index}
-                                            personality={buddy.personality}
-                                            reason={buddy.reason}
-                                        />
-                                    ))}
+                                <div className="flex flex-col gap-2 md:gap-4">
+                                    <div className="grid grid-cols-2 gap-4 md:gap-6">
+                                        {currentBuddies.map((buddy: Buddy, index: number) => (
+                                            <BuddyCard
+                                                key={index}
+                                                personality={buddy.personality}
+                                            />
+                                        ))}
+                                    </div>
+                                    <p className="text-sm text-gray-500">
+                                        {currentPersonality?.buddy_reason}
+                                    </p>
                                 </div>
                             </CardContent>
                         </MotionCard>
@@ -186,7 +196,7 @@ export default function ResultPage({
                             interactive={false}
                         >
                             <CardContent className="pt-6 lg:pt-8">
-                                <CardTitle className="flex items-center mb-4 text-lg sm:text-xl lg:text-2xl">
+                                <CardTitle className="flex items-center mb-4 text-md sm:text-lg lg:text-xl">
                                     <MapPin className="w-4 h-4 mr-2 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
                                     PLACES TO GO
                                 </CardTitle>
@@ -207,7 +217,7 @@ export default function ResultPage({
                             interactive={false}
                         >
                             <CardContent className="pt-6 lg:pt-8">
-                                <CardTitle className="flex items-center mb-4 text-lg sm:text-xl lg:text-2xl">
+                                <CardTitle className="flex items-center mb-4 text-md sm:text-lg lg:text-xl">
                                     <Calendar className="w-4 h-4 mr-2 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
                                     ACTIVITIES
                                 </CardTitle>
@@ -233,7 +243,7 @@ export default function ResultPage({
                             interactive={false}
                         >
                             <CardContent className="pt-6 lg:pt-8">
-                                <CardTitle className="flex items-center mb-4 text-lg sm:text-xl lg:text-2xl">
+                                <CardTitle className="flex items-center mb-4 text-md sm:text-lg lg:text-xl">
                                     <BookOpen className="w-4 h-4 mr-2 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
                                     RESOURCES
                                 </CardTitle>
