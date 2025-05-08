@@ -1,7 +1,19 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import * as faceapi from 'face-api.js';
+// Remove the direct import
+// import * as faceapi from '@vladmandic/face-api';
+
+// Define types we need
+interface FaceDetection {
+    box: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
+    score: number;
+}
 
 // Interface for tracked face data
 interface TrackedFace {
@@ -54,8 +66,8 @@ const personalityAssets = {
 
 const debugMode = false;
 // Confidence thresholds
-const INITIAL_DETECTION_THRESHOLD = 0.85; // Higher threshold for new faces
-const TRACKING_CONFIDENCE_THRESHOLD = 0.6; // Existing threshold for continuous tracking
+const INITIAL_DETECTION_THRESHOLD = 0.65; // Higher threshold for new faces
+const TRACKING_CONFIDENCE_THRESHOLD = 0.4; // Existing threshold for continuous tracking
 
 export default function FaceTrackingVideo({
     personalityType
@@ -180,17 +192,42 @@ export default function FaceTrackingVideo({
 
     // Load face-api.js models
     useEffect(() => {
+        // Flag to track if the effect has been cleaned up
+        let isActive = true;
+        
         const loadModels = async () => {
             try {
+                // Dynamically import the face-api library only on the client side
+                const faceapi = await import('@vladmandic/face-api');
+                if (!isActive) return;
+
                 const MODEL_URL = '/models';
-                await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-                setModelsLoaded(true);
+                
+                // Log the library version information
+                console.log('Face-API Version:', faceapi.version);
+                console.log('TensorFlow Version:', faceapi.tf?.version);
+                
+                // Load the SSD MobileNetV1 model which is more accurate than TinyFaceDetector
+                await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+                
+                console.log('Face detection models loaded successfully');
+                if (isActive) {
+                    setModelsLoaded(true);
+                }
             } catch (error) {
                 console.error('Error loading models:', error);
             }
         };
 
-        loadModels();
+        // Only run on the client side
+        if (typeof window !== 'undefined') {
+            loadModels();
+        }
+
+        // Cleanup function
+        return () => {
+            isActive = false;
+        };
     }, []);
 
     // Start video when models and images are loaded
@@ -221,7 +258,7 @@ export default function FaceTrackingVideo({
 
         const prev = prevPositionsRef.current[index];
         const positionEasing = 0.15; // Weaker position smoothing (was 0.3)
-        const scaleEasing = 0.7;    // Stronger scale smoothing
+        const scaleEasing = 0.8;    // Stronger scale smoothing
 
         // Apply different easing values for position and scale
         const smoothed = {
@@ -255,7 +292,7 @@ export default function FaceTrackingVideo({
     };
 
     // Calculate similarity score between two faces
-    const calculateSimilarity = (face1: TrackedFace, detection: faceapi.ObjectDetection) => {
+    const calculateSimilarity = (face1: TrackedFace, detection: FaceDetection) => {
         const center1 = getBoxCenter(face1.box);
         const center2 = getBoxCenter(detection.box);
         
@@ -277,7 +314,7 @@ export default function FaceTrackingVideo({
     };
 
     // Assign detections to tracked faces or create new tracked faces
-    const updateTrackedFaces = (detections: faceapi.ObjectDetection[]) => {
+    const updateTrackedFaces = (detections: FaceDetection[]) => {
         const currentTime = Date.now();
         const trackedFaces = [...trackedFacesRef.current];
         const activeFaces = trackedFaces.filter(face => currentTime - face.lastSeen < 1000);
@@ -376,6 +413,9 @@ export default function FaceTrackingVideo({
             if (!video || !canvas) return;
 
             try {
+                // Dynamically import face-api for each detection cycle
+                const { detectAllFaces, SsdMobilenetv1Options } = await import('@vladmandic/face-api');
+
                 // Calculate the center crop region of the video
                 const videoAspect = video.videoWidth / video.videoHeight;
                 let cropX = 0, cropY = 0, cropWidth = video.videoWidth, cropHeight = video.videoHeight;
@@ -408,12 +448,18 @@ export default function FaceTrackingVideo({
                 );
 
                 // Detect faces on the cropped region
-                const detections = await faceapi.detectAllFaces(
+                const detections = await detectAllFaces(
                     tempCanvas,
-                    new faceapi.TinyFaceDetectorOptions({ scoreThreshold: INITIAL_DETECTION_THRESHOLD })
+                    new SsdMobilenetv1Options({ minConfidence: INITIAL_DETECTION_THRESHOLD })
                 );
 
-                const persistentFaces = updateTrackedFaces(detections);
+                // Cast the detections to our simplified FaceDetection interface
+                const simplifiedDetections: FaceDetection[] = detections.map(d => ({
+                    box: d.box,
+                    score: d.score
+                }));
+
+                const persistentFaces = updateTrackedFaces(simplifiedDetections);
                 const ctx = canvas.getContext('2d');
                 if (!ctx) return;
 
@@ -454,8 +500,8 @@ export default function FaceTrackingVideo({
                         const faceScale = smoothScale(rawFaceScale);
 
                         // Scale multipliers - adjust these to fine-tune the effect
-                        const hatScaleBase = 2.5;
-                        const shirtScaleBase = 4;
+                        const hatScaleBase = 3.3;
+                        const shirtScaleBase = 6;
 
                         // Apply dynamic scaling based on face size with more conservative range
                         const hatScale = hatScaleBase * (0.9 + faceScale * 0.2); // More conservative scaling
@@ -469,7 +515,7 @@ export default function FaceTrackingVideo({
 
                             // Add debug text for scale values
                             ctx.fillStyle = '#00ff00';
-                            ctx.font = '12px Arial';
+                            ctx.font = '24px Arial';
                             ctx.fillText(`Scale: ${faceScale.toFixed(2)}`, box.x, box.y - 5);
                         }
 
@@ -477,7 +523,7 @@ export default function FaceTrackingVideo({
                         const hatWidth = box.width * hatScale;
                         const hatHeight = hatWidth * (hat.height / hat.width);
                         const hatX = box.x - (hatWidth - box.width) / 2;
-                        const hatY = box.y - box.height * 1.6;
+                        const hatY = box.y - box.height * 1.4;
 
                         // Draw hat
                         ctx.drawImage(hat, hatX, hatY, hatWidth, hatHeight);
