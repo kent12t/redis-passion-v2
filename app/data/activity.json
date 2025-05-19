@@ -1,0 +1,135 @@
+{
+    "Wellness Warrior": [
+      {
+        "title": "Tai Chi and Qi Gong Sessions",
+        "subtitle": "@ Various AACs",
+        "qr": null
+      },
+      {
+        "title": "Tea Dance for Seniors",
+        "subtitle": "@ Reunion Social Space (National Museum)",
+        "qr": null
+      },
+      {
+        "title": "Tea Wellness Bar",
+        "subtitle": "@ Goodlife Studio (Bedok)",
+        "qr": null
+      },
+      {
+        "title": "Bike Kitchen Activities",
+        "subtitle": "@ Goodlife Studio (Yishun Riverwalk)",
+        "qr": null
+      }
+    ],
+    "Wise Storyteller": [
+      {
+        "title": "Volunteer with AIC",
+        "subtitle": "Find a volunteer role that fits you",
+        "qr": "qr/aic_volunteer.png"
+      },
+      {
+        "title": "Digital Media Studio Sessions",
+        "subtitle": "@ Goodlife Studio (Tiong Bahru)",
+        "qr": null
+      },
+      {
+        "title": "Senior-friendly Museum Tours",
+        "subtitle": "@ National Museum of Singapore",
+        "qr": null
+      },
+      {
+        "title": "Memories Cafe",
+        "subtitle": "@ Reunion Social Space (National Museum)",
+        "qr": null
+      }
+    ],
+    "Tree Whisperer": [
+      {
+        "title": "Gardening Workshops",
+        "subtitle": "@ Various AACs",
+        "qr": null
+      },
+      {
+        "title": "Therapeutic Horticulture Courses",
+        "subtitle": "NParks",
+        "qr": "qr/nparks_horti.png"
+      },
+      {
+        "title": "Grow Your Own Food Workshops",
+        "subtitle": "@ Edible Garden City",
+        "qr": null
+      },
+      {
+        "title": "Active Health Discovery Walk",
+        "subtitle": "@ Various ActiveSG Locations",
+        "qr": null
+      }
+    ],
+    "Community Champion": [
+      {
+        "title": "Volunteer with AIC",
+        "subtitle": "Find a volunteer role that fits you",
+        "qr": "qr/aic_volunteer.png"
+      },
+      {
+        "title": "Karaoke Sessions",
+        "subtitle": "@ Various AACs",
+        "qr": null
+      },
+      {
+        "title": "Community Kitchen Sessions",
+        "subtitle": "@ Goodlife! Makan (Marine Parade)",
+        "qr": null
+      },
+      {
+        "title": "Seniors-Meet-Seniors Knowledge Café",
+        "subtitle": "@ Reunion Social Space (National Museum)",
+        "qr": null
+      }
+    ],
+    "Master Chef": [
+      {
+        "title": "Intergenerational Workshops",
+        "subtitle": "@ Reunion Social Space (National Museum)",
+        "qr": null
+      },
+      {
+        "title": "Cooking / Baking Sessions",
+        "subtitle": "@ Various AACs",
+        "qr": null
+      },
+      {
+        "title": "Makan with Seniors",
+        "subtitle": "@ Reunion Social Space (National Museum)",
+        "qr": null
+      },
+      {
+        "title": "Community Kitchen Sessions",
+        "subtitle": "@ Goodlife! Makan (Marine Parade)",
+        "qr": null
+      }
+    ],
+    "Art Maestro": [
+      {
+        "title": "Ukulele Class",
+        "subtitle": "@ Various AACs",
+        "qr": null
+      },
+      {
+        "title": "Carpentry Studio",
+        "subtitle": "@ Goodlife Studio (Bukit Purmei)",
+        "qr": null
+      },
+      {
+        "title": "Community Theatre",
+        "subtitle": "@ Goodlife Studio (Telok Blangah Towers)",
+        "qr": null
+      },
+      {
+        "title": "Monthly Workshops for Seniors",
+        "subtitle": "@ Reunion Social Space (National Museum)",
+        "qr": null
+      }
+    ]
+  }
+  
