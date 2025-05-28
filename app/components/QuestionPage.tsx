@@ -41,8 +41,8 @@ export default function QuestionPage({
     const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
     return (
-        <div className="flex flex-col items-center h-screen font-sans">
-            <div className="relative flex flex-col p-6 lg:p-12 w-full h-screen max-w-[1200px] mx-auto items-center justify-center">
+        <div className="flex flex-col items-center h-full font-sans">
+            <div className="relative flex flex-col p-6 lg:p-12 w-full h-full max-w-[1200px] mx-auto items-center justify-center">
                 {/* Home button */}
                 <div className="absolute right-6 lg:right-12 top-6 lg:top-12">
                     <MotionButton

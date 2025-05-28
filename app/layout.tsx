@@ -31,7 +31,11 @@ export default function RootLayout({
         className={`${overusedGrotesk.variable} ${futuraBold.variable} antialiased`}
       >
         <NeoBrutalismProvider>
-          {children}
+          <div className="app-container">
+            <div className="app-content">
+              {children}
+            </div>
+          </div>
         </NeoBrutalismProvider>
       </body>
     </html>

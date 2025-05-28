@@ -11,6 +11,10 @@ module.exports = {
                 sans: ['var(--font-overused-grotesk)', 'system-ui', 'sans-serif'],
                 title: ['var(--font-futura-bold)', 'system-ui', 'sans-serif'],
             },
+            colors: {
+                background: 'var(--background)',
+                foreground: 'var(--foreground)',
+            },
         },
     },
     plugins: [],

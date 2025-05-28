@@ -80,7 +80,7 @@ export default function ResultPage({
     }, []);
 
     return (
-        <div className="flex flex-col items-center h-screen p-6 lg:p-12">
+        <div className="flex flex-col items-center h-full p-6 lg:p-12">
             <div className="relative flex flex-col w-full h-full max-w-[1200px] mx-auto items-center justify-center">
                 {/* Home button */}
                 <div className="absolute right-0 top-6 lg:top-12">

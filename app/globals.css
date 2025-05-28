@@ -1,18 +1,15 @@
 @import "tailwindcss";
 
+@config "../tailwind.config.js";
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
   --grid-background: #95CFFC;
   --grid-lines: #C1E4FF;
   --grid-size: 40px;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-overused-grotesk);
-  --font-title: var(--font-futura-bold);
+  --font-overused-grotesk: var(--font-overused-grotesk);
+  --font-futura-bold: var(--font-futura-bold);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,6 +21,19 @@
   }
 }
 
+/* Alternative: Use traditional approach until VS Code catches up */
+/* You can uncomment this and remove the @theme block if you prefer */
+/*
+@layer theme {
+  :root {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --font-sans: var(--font-overused-grotesk);
+    --font-title: var(--font-futura-bold);
+  }
+}
+*/
+
 body {
   background-color: var(--grid-background);
   background-image: linear-gradient(to right, var(--grid-lines) 1px, transparent 1px),
@@ -33,8 +43,54 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 500;
   /* Semibold for body text */
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
+/* Responsive 9:16 container */
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--grid-background);
+  background-image: linear-gradient(to right, var(--grid-lines) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-lines) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+}
+
+.app-content {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--grid-background);
+  background-image: linear-gradient(to right, var(--grid-lines) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-lines) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  
+  /* Default to full viewport */
+  width: 100vw;
+  height: 100vh;
+  min-width: 320px;
+  min-height: 568px;
+}
+
+/* When viewport is wider than 9:16 (landscape), constrain by height */
+@media (min-aspect-ratio: 9/16) {
+  .app-content {
+    height: 100vh;
+    width: calc(100vh * 9 / 16);
+  }
+}
+
+/* When viewport is narrower than 9:16 (portrait), constrain by width */
+@media (max-aspect-ratio: 9/16) {
+  .app-content {
+    width: 100vw;
+    height: calc(100vw * 16 / 9);
+  }
+}
 
 h2,
 h3,

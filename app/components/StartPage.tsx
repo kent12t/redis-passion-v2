@@ -10,7 +10,7 @@ interface StartPageProps {
 
 export default function StartPage({ onStart }: StartPageProps) {
     return (
-        <div className="grid min-h-screen grid-cols-1 p-6 font-sans">
+        <div className="grid h-full grid-cols-1 p-6 font-sans">
             <div className="flex flex-col items-center justify-center gap-6 md:gap-16">
                 <div className="w-4/5 max-w-[1200px]">
                     <div className="relative w-full aspect-[3/1]">
@@ -19,6 +19,7 @@ export default function StartPage({ onStart }: StartPageProps) {
                             alt="Logo" 
                             fill
                             priority
+                            sizes="(max-width: 768px) 80vw, (max-width: 1200px) 60vw, 1200px"
                             className="object-contain"
                         />
                     </div>
