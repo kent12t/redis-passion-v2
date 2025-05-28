@@ -72,7 +72,7 @@ export default function QuestionPage({
                         >
                             {/* Question */}
                             <div className="flex flex-col items-center justify-center mb-6 md:mb-16">
-                                <h2 className="text-4xl font-bold text-center text-pink-500 sm:text-6xl lg:text-7xl question">
+                                <h2 className="text-4xl font-bold text-center text-white sm:text-6xl lg:text-7xl question">
                                     {currentQuestion.question_text}
                                 </h2>
                             </div>
@@ -84,8 +84,7 @@ export default function QuestionPage({
                                         <MotionCard
                                             key={index}
                                             isSelected={selectedAnswers[currentQuestionIndex] === index}
-                                            variant="white"
-                                            className="p-4 text-lg font-medium leading-normal text-center sm:p-8 lg:p-12 sm:text-xl lg:text-3xl"
+                                            className={`p-12 text-[40px] text-white font-medium leading-normal text-center ${index > 0 ? 'bg-green' : 'bg-purple'}`}
                                             onClick={() => onSelectAnswer(currentQuestionIndex, index)}
                                         >
                                             {option.option_text}
@@ -123,9 +122,9 @@ export default function QuestionPage({
                     </div>
 
                     {/* Progress bar */}
-                    <div className="w-full h-3 overflow-hidden bg-white border-2 border-black rounded-full sm:h-4 lg:h-5">
+                    <div className="w-full h-3 overflow-hidden bg-white border-4 border-black rounded-full sm:h-4 lg:h-5">
                         <div
-                            className="h-full transition-all duration-300 ease-in-out bg-pink-500"
+                            className="h-full transition-all duration-300 ease-in-out bg-orange"
                             style={{ width: `${progress}%` }}
                         ></div>
                     </div>

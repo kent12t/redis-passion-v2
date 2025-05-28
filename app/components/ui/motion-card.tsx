@@ -8,10 +8,8 @@ interface MotionCardProps {
     isSelected?: boolean;
     interactive?: boolean;
     variant?: 'primary' | 'secondary' | 'neutral' | 'white';
-    textColor?: string;
     children?: ReactNode;
     onClick?: () => void;
-    style?: React.CSSProperties;
 }
 
 export const MotionCard = forwardRef<HTMLDivElement, MotionCardProps>(({
@@ -20,33 +18,18 @@ export const MotionCard = forwardRef<HTMLDivElement, MotionCardProps>(({
     interactive = true,
     variant = 'white',
     children,
-    textColor = "#3A3A3A",
     onClick,
-    style,
     ...props
 }, ref) => {
-    // Define variants based on card type
-    const cardVariants = {
-        primary: {
-            background: "rgb(236, 72, 153)", // pink-500
-            color: "white",
-            border: "2px solid black",
-        },
-        secondary: {
-            background: "rgb(59, 130, 246)", // blue-500
-            color: "white",
-            border: "2px solid black",
-        },
-        neutral: {
-            background: "rgb(209, 213, 219)", // gray-300
-            color: textColor,
-            border: "2px solid black",
-        },
-        white: {
-            background: "white",
-            color: textColor,
-            border: isSelected ? "2px solid rgb(236, 72, 153)" : "2px solid black", // Pink border if selected
-        },
+    // Define variant classes using Tailwind
+    const variantClasses = {
+        primary: "bg-pink-500 text-white border-2 border-black",
+        secondary: "bg-blue-500 text-white border-2 border-black",
+        neutral: "bg-gray-300 text-[#3A3A3A] border-2 border-black",
+        white: cn(
+            "bg-white text-[#3A3A3A] border-4",
+            isSelected ? "border-white-500" : "border-black"
+        ),
     };
 
     // Generate CSS classes based on state
@@ -60,15 +43,19 @@ export const MotionCard = forwardRef<HTMLDivElement, MotionCardProps>(({
         <div
             ref={ref}
             className={cn(
-                "rounded-lg font-sans",
+                // Base styles
+                "rounded-2xl font-sans",
                 "motion-card",
+                
+                // Variant styles (can be overridden by className)
+                variantClasses[variant],
+                
+                // State styles
                 stateClasses,
+                
+                // Custom className (will override variant styles due to order)
                 className
             )}
-            style={{
-                ...cardVariants[variant],
-                ...style,
-            }}
             onClick={interactive ? onClick : undefined}
             {...props}
         >

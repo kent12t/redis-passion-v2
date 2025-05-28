@@ -39,28 +39,28 @@ interface FaceTrackingVideoProps {
 // Personality type to asset mapping
 const personalityAssets = {
     "wellness warrior": {
-        hat: '/runner-hat.png',
-        shirt: '/runner-shirt.png'
+        hat: '/costume/runner-hat.png',
+        shirt: '/costume/runner-shirt.png'
     },
     "art maestro": {
-        hat: '/artist-hat.png',
-        shirt: '/artist-shirt.png'
+        hat: '/costume/artist-hat.png',
+        shirt: '/costume/artist-shirt.png'
     },
     "wise storyteller": {
-        hat: '/storyteller-hat.png',
-        shirt: '/storyteller-shirt.png'
+        hat: '/costume/storyteller-hat.png',
+        shirt: '/costume/storyteller-shirt.png'
     },
     "master chef": {
-        hat: '/chef-hat.png',
-        shirt: '/chef-shirt.png'
+        hat: '/costume/chef-hat.png',
+        shirt: '/costume/chef-shirt.png'
     },
     "tree whisperer": {
-        hat: '/farmer-hat.png',
-        shirt: '/farmer-shirt.png'
+        hat: '/costume/farmer-hat.png',
+        shirt: '/costume/farmer-shirt.png'
     },
     "community champion": {
-        hat: '/volunteer-hat.png',
-        shirt: '/volunteer-shirt.png'
+        hat: '/costume/volunteer-hat.png',
+        shirt: '/costume/volunteer-shirt.png'
     }
 } as const;
 
