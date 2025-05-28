@@ -4,6 +4,133 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 // Remove the direct import
 // import * as faceapi from '@vladmandic/face-api';
 
+// Global state to track if models are loaded across component instances
+let globalModelsLoaded = false;
+let globalModelLoadingPromise: Promise<void> | null = null;
+
+// Global video stream management
+let globalVideoStream: MediaStream | null = null;
+let globalStreamPromise: Promise<MediaStream> | null = null;
+let activeComponentId: string | null = null;
+let releaseTimeout: NodeJS.Timeout | null = null;
+
+// Function to get or create video stream globally
+const getGlobalVideoStream = async (componentId: string): Promise<MediaStream | null> => {
+    // Clear any pending release timeout since a component wants the stream
+    if (releaseTimeout) {
+        clearTimeout(releaseTimeout);
+        releaseTimeout = null;
+        console.log('FaceTrackingVideo: Cancelled pending stream release');
+    }
+
+    // If there's already an active component, don't interfere
+    if (activeComponentId && activeComponentId !== componentId) {
+        console.log('FaceTrackingVideo: Another component is using the camera');
+        return null;
+    }
+
+    // If we already have a stream, return it
+    if (globalVideoStream && globalVideoStream.active) {
+        console.log('FaceTrackingVideo: Reusing existing global video stream');
+        activeComponentId = componentId;
+        return globalVideoStream;
+    }
+
+    // If we're already getting a stream, wait for it
+    if (globalStreamPromise) {
+        console.log('FaceTrackingVideo: Waiting for existing stream request...');
+        const stream = await globalStreamPromise;
+        if (stream && stream.active) {
+            activeComponentId = componentId;
+            return stream;
+        }
+    }
+
+    // Create new stream
+    console.log('FaceTrackingVideo: Creating new global video stream...');
+    globalStreamPromise = navigator.mediaDevices.getUserMedia({
+        video: {
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+        }
+    });
+
+    try {
+        globalVideoStream = await globalStreamPromise;
+        activeComponentId = componentId;
+        console.log('FaceTrackingVideo: Global video stream created successfully');
+        return globalVideoStream;
+    } catch (error) {
+        console.error('FaceTrackingVideo: Error creating global video stream:', error);
+        globalStreamPromise = null;
+        return null;
+    }
+};
+
+// Function to release video stream globally with delay for React development mode
+const releaseGlobalVideoStream = (componentId: string) => {
+    if (activeComponentId !== componentId) {
+        console.log('FaceTrackingVideo: Not the active component, ignoring stream release');
+        return;
+    }
+
+    console.log('FaceTrackingVideo: Scheduling global video stream release in 1 second...');
+    
+    // Clear any existing timeout
+    if (releaseTimeout) {
+        clearTimeout(releaseTimeout);
+    }
+    
+    // Delay the actual release to handle React development mode re-mounting
+    releaseTimeout = setTimeout(() => {
+        console.log('FaceTrackingVideo: Executing delayed stream release');
+        if (globalVideoStream) {
+            globalVideoStream.getTracks().forEach(track => track.stop());
+            globalVideoStream = null;
+        }
+        globalStreamPromise = null;
+        activeComponentId = null;
+        releaseTimeout = null;
+    }, 1000); // 1 second delay
+};
+
+// Function to load models globally
+const loadFaceApiModels = async () => {
+    if (globalModelsLoaded) {
+        console.log('FaceTrackingVideo: Models already loaded globally');
+        return;
+    }
+
+    if (globalModelLoadingPromise) {
+        console.log('FaceTrackingVideo: Models already loading, waiting...');
+        await globalModelLoadingPromise;
+        return;
+    }
+
+    console.log('FaceTrackingVideo: Starting global model loading...');
+    globalModelLoadingPromise = (async () => {
+        try {
+            const faceapi = await import('@vladmandic/face-api');
+            const MODEL_URL = '/models';
+            
+            console.log('Face-API Version:', faceapi.version);
+            console.log('TensorFlow Version:', faceapi.tf?.version);
+            console.log('FaceTrackingVideo: Loading SSD MobileNetV1 model from:', MODEL_URL);
+            
+            await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+            
+            globalModelsLoaded = true;
+            console.log('Face detection models loaded successfully (global)');
+        } catch (error) {
+            console.error('FaceTrackingVideo: Error loading models (global):', error);
+            globalModelLoadingPromise = null; // Reset on error to allow retry
+            throw error;
+        }
+    })();
+
+    await globalModelLoadingPromise;
+};
+
 // Define types we need
 interface FaceDetection {
     box: {
@@ -72,11 +199,16 @@ const TRACKING_CONFIDENCE_THRESHOLD = 0.4; // Existing threshold for continuous 
 export default function FaceTrackingVideo({
     personalityType
 }: FaceTrackingVideoProps) {
+    console.log('FaceTrackingVideo: Component mounting for personality:', personalityType);
+    
+    // Generate unique component ID
+    const componentId = useRef(`face-tracking-${Date.now()}-${Math.random()}`).current;
+    console.log('FaceTrackingVideo: Component ID:', componentId);
+    
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [modelsLoaded, setModelsLoaded] = useState(false);
-    const [stream, setStream] = useState<MediaStream | null>(null);
     const [imagesLoaded, setImagesLoaded] = useState(false);
     const trackedFacesRef = useRef<TrackedFace[]>([]);
     const nextIdRef = useRef(0);
@@ -89,12 +221,35 @@ export default function FaceTrackingVideo({
     const scaleBufferRef = useRef<number[]>([]);
     const SCALE_BUFFER_SIZE = 10; // Number of frames to average
 
+    // Add refs for cleanup management
+    const animationFrameRef = useRef<number | null>(null);
+    const isActiveRef = useRef<boolean>(true);
+    const tempCanvasRef = useRef<HTMLCanvasElement | null>(null);
+    
+    // Add a mounting ref to track if this is the initial mount
+    const isMountedRef = useRef<boolean>(false);
+    
+    // Set mounted flag on first mount
+    useEffect(() => {
+        console.log('FaceTrackingVideo: Initial mount effect, setting mounted flag for:', componentId);
+        isMountedRef.current = true;
+        isActiveRef.current = true;
+        
+        return () => {
+            console.log('FaceTrackingVideo: Component unmounting, clearing mounted flag for:', componentId);
+            isMountedRef.current = false;
+            isActiveRef.current = false;
+            // Release the global video stream when component unmounts
+            releaseGlobalVideoStream(componentId);
+        };
+    }, [componentId]);
+
     // Target aspect ratio
     const TARGET_ASPECT_RATIO = 0.76;
 
     // Calculate dimensions and scale based on container size
     const updateDimensions = useCallback(() => {
-        if (!containerRef.current || !videoRef.current) return;
+        if (!containerRef.current || !videoRef.current || !isActiveRef.current) return;
 
         const container = containerRef.current;
         const video = videoRef.current;
@@ -140,36 +295,61 @@ export default function FaceTrackingVideo({
 
     // Start the webcam
     const startVideo = useCallback(async () => {
-        try {
-            const newStream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 }
-                }
-            });
+        console.log('FaceTrackingVideo: startVideo called, isActive:', isActiveRef.current, 'componentId:', componentId);
+        if (!isActiveRef.current) return;
 
+        try {
+            console.log('FaceTrackingVideo: Requesting camera access via global stream...');
+            const newStream = await getGlobalVideoStream(componentId);
+
+            if (!newStream) {
+                console.log('FaceTrackingVideo: Could not get global video stream');
+                return;
+            }
+
+            if (!isActiveRef.current) {
+                // Component was unmounted during async operation
+                console.log('FaceTrackingVideo: Component became inactive during camera access');
+                return;
+            }
+
+            console.log('FaceTrackingVideo: Camera access granted, setting up video...');
             if (videoRef.current) {
                 videoRef.current.srcObject = newStream;
-                setStream(newStream);
 
                 // Wait for video metadata to load then update dimensions
                 videoRef.current.onloadedmetadata = updateDimensions;
             }
         } catch (error) {
-            console.error('Error accessing camera:', error);
+            console.error('FaceTrackingVideo: Error accessing camera:', error);
         }
-    }, [updateDimensions]);
+    }, [updateDimensions, componentId]);
 
     // Update dimensions on resize
     useEffect(() => {
-        window.addEventListener('resize', updateDimensions);
-        return () => window.removeEventListener('resize', updateDimensions);
+        const resizeHandler = () => {
+            if (isActiveRef.current) {
+                updateDimensions();
+            }
+        };
+
+        window.addEventListener('resize', resizeHandler);
+        return () => window.removeEventListener('resize', resizeHandler);
     }, [updateDimensions]);
 
     // Load personality-specific assets
     useEffect(() => {
+        console.log('FaceTrackingVideo: Loading assets for personality:', personalityType);
+        if (!isActiveRef.current || !isMountedRef.current) {
+            console.log('FaceTrackingVideo: Component not active or mounted, skipping asset loading');
+            return;
+        }
+
         const assets = personalityAssets[personalityType as keyof typeof personalityAssets];
-        if (!assets) return;
+        if (!assets) {
+            console.log('FaceTrackingVideo: No assets found for personality:', personalityType);
+            return;
+        }
 
         const loadImage = (src: string) => {
             return new Promise<HTMLImageElement>((resolve, reject) => {
@@ -184,67 +364,131 @@ export default function FaceTrackingVideo({
             loadImage(assets.hat),
             loadImage(assets.shirt)
         ]).then(([hat, shirt]) => {
-            setHatImage(hat);
-            setShirtImage(shirt);
-            setImagesLoaded(true);
-        }).catch(console.error);
+            if (isActiveRef.current && isMountedRef.current) {
+                console.log('FaceTrackingVideo: Assets loaded successfully');
+                setHatImage(hat);
+                setShirtImage(shirt);
+                setImagesLoaded(true);
+            } else {
+                console.log('FaceTrackingVideo: Component became inactive during asset loading');
+            }
+        }).catch((error) => {
+            console.error('FaceTrackingVideo: Error loading assets:', error);
+        });
     }, [personalityType]);
 
     // Load face-api.js models
     useEffect(() => {
+        console.log('FaceTrackingVideo: Model loading effect triggered');
         // Flag to track if the effect has been cleaned up
         let isActive = true;
         
         const loadModels = async () => {
+            console.log('FaceTrackingVideo: Starting model loading...');
             try {
-                // Dynamically import the face-api library only on the client side
-                const faceapi = await import('@vladmandic/face-api');
-                if (!isActive) return;
-
-                const MODEL_URL = '/models';
+                await loadFaceApiModels();
                 
-                // Log the library version information
-                console.log('Face-API Version:', faceapi.version);
-                console.log('TensorFlow Version:', faceapi.tf?.version);
-                
-                // Load the SSD MobileNetV1 model which is more accurate than TinyFaceDetector
-                await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
-                
-                console.log('Face detection models loaded successfully');
-                if (isActive) {
+                console.log('FaceTrackingVideo: Models loaded, checking component state...');
+                if (isActive && isActiveRef.current && isMountedRef.current) {
+                    console.log('FaceTrackingVideo: Setting modelsLoaded to true');
                     setModelsLoaded(true);
+                } else {
+                    console.log('FaceTrackingVideo: Component became inactive after model loading');
                 }
             } catch (error) {
-                console.error('Error loading models:', error);
+                console.error('FaceTrackingVideo: Error loading models:', error);
             }
         };
 
         // Only run on the client side
         if (typeof window !== 'undefined') {
+            console.log('FaceTrackingVideo: Client side detected, calling loadModels');
             loadModels();
+        } else {
+            console.log('FaceTrackingVideo: Server side, skipping model loading');
         }
 
         // Cleanup function
         return () => {
+            console.log('FaceTrackingVideo: Model loading effect cleanup');
             isActive = false;
         };
     }, []);
 
     // Start video when models and images are loaded
     useEffect(() => {
-        if (modelsLoaded && imagesLoaded) {
-            startVideo();
+        console.log('FaceTrackingVideo: Checking if ready to start video - models:', modelsLoaded, 'images:', imagesLoaded, 'active:', isActiveRef.current, 'mounted:', isMountedRef.current);
+        if (modelsLoaded && imagesLoaded && isActiveRef.current && isMountedRef.current) {
+            console.log('FaceTrackingVideo: All conditions met, waiting 100ms before starting video...');
+            // Add a small delay to ensure component is fully stable
+            const timeout = setTimeout(() => {
+                if (isActiveRef.current && isMountedRef.current) {
+                    console.log('FaceTrackingVideo: Starting video after delay...');
+                    startVideo();
+                } else {
+                    console.log('FaceTrackingVideo: Component became inactive during delay');
+                }
+            }, 100);
+
+            return () => clearTimeout(timeout);
         }
     }, [modelsLoaded, imagesLoaded, startVideo]);
 
-    // Cleanup function for video stream
+    // Main cleanup effect - runs when component unmounts
     useEffect(() => {
+        // Capture current ref values to avoid stale closure issues
+        const currentVideo = videoRef.current;
+        const currentCanvas = canvasRef.current;
+        const currentTempCanvas = tempCanvasRef.current;
+        
+        // This effect should only return the cleanup function, not run cleanup on mount
         return () => {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
+            console.log('FaceTrackingVideo: Component unmounting, starting cleanup for:', componentId);
+            
+            // Mark component as inactive to prevent new operations
+            isActiveRef.current = false;
+
+            // Stop animation frame
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+                animationFrameRef.current = null;
             }
+
+            // Clean up video element using captured ref
+            if (currentVideo) {
+                currentVideo.pause();
+                currentVideo.srcObject = null;
+                currentVideo.onloadedmetadata = null;
+                currentVideo.onplay = null;
+            }
+
+            // Clean up temporary canvas using captured ref
+            if (currentTempCanvas) {
+                const ctx = currentTempCanvas.getContext('2d');
+                if (ctx) {
+                    ctx.clearRect(0, 0, currentTempCanvas.width, currentTempCanvas.height);
+                }
+                tempCanvasRef.current = null;
+            }
+
+            // Clear canvas using captured ref
+            if (currentCanvas) {
+                const ctx = currentCanvas.getContext('2d');
+                if (ctx) {
+                    ctx.clearRect(0, 0, currentCanvas.width, currentCanvas.height);
+                }
+            }
+
+            // Reset all refs
+            trackedFacesRef.current = [];
+            nextIdRef.current = 0;
+            prevPositionsRef.current = [];
+            prevScaleRef.current = 1;
+            scaleBufferRef.current = [];
+
+            console.log('FaceTrackingVideo: Cleanup completed for:', componentId);
         };
-    }, [stream]);
+    }, [componentId]); // Remove stream dependency as it's managed globally
 
     // Function to smoothly interpolate between previous and current values
     const smoothPosition = (
@@ -403,18 +647,22 @@ export default function FaceTrackingVideo({
 
     // Handle video playback and face detection
     const handleVideoPlay = () => {
-        if (!videoRef.current || !canvasRef.current || !modelsLoaded || !imagesLoaded) return;
+        if (!videoRef.current || !canvasRef.current || !modelsLoaded || !imagesLoaded || !isActiveRef.current) return;
 
         const video = videoRef.current;
         const canvas = canvasRef.current;
 
         // Create face detection loop
         const detectFaces = async () => {
-            if (!video || !canvas) return;
+            // Check if component is still active before processing
+            if (!video || !canvas || !isActiveRef.current) return;
 
             try {
                 // Dynamically import face-api for each detection cycle
                 const { detectAllFaces, SsdMobilenetv1Options } = await import('@vladmandic/face-api');
+
+                // Double-check active state after async import
+                if (!isActiveRef.current) return;
 
                 // Calculate the center crop region of the video
                 const videoAspect = video.videoWidth / video.videoHeight;
@@ -430,14 +678,18 @@ export default function FaceTrackingVideo({
                     cropY = (video.videoHeight - cropHeight) / 2;
                 }
 
-                // Create a temporary canvas for the cropped and mirrored video
-                const tempCanvas = document.createElement('canvas');
+                // Reuse or create temporary canvas
+                if (!tempCanvasRef.current) {
+                    tempCanvasRef.current = document.createElement('canvas');
+                }
+                const tempCanvas = tempCanvasRef.current;
                 tempCanvas.width = cropWidth;
                 tempCanvas.height = cropHeight;
                 const tempCtx = tempCanvas.getContext('2d');
-                if (!tempCtx) return;
+                if (!tempCtx || !isActiveRef.current) return;
 
                 // Set up mirroring transform for detection input
+                tempCtx.save(); // Save the context state
                 tempCtx.translate(cropWidth, 0);
                 tempCtx.scale(-1, 1);
 
@@ -447,11 +699,19 @@ export default function FaceTrackingVideo({
                     0, 0, cropWidth, cropHeight
                 );
 
+                tempCtx.restore(); // Restore the context state
+
+                // Check active state before expensive detection
+                if (!isActiveRef.current) return;
+
                 // Detect faces on the cropped region
                 const detections = await detectAllFaces(
                     tempCanvas,
                     new SsdMobilenetv1Options({ minConfidence: INITIAL_DETECTION_THRESHOLD })
                 );
+
+                // Final check before processing results
+                if (!isActiveRef.current) return;
 
                 // Cast the detections to our simplified FaceDetection interface
                 const simplifiedDetections: FaceDetection[] = detections.map(d => ({
@@ -461,7 +721,7 @@ export default function FaceTrackingVideo({
 
                 const persistentFaces = updateTrackedFaces(simplifiedDetections);
                 const ctx = canvas.getContext('2d');
-                if (!ctx) return;
+                if (!ctx || !isActiveRef.current) return;
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -474,6 +734,8 @@ export default function FaceTrackingVideo({
                 const scaleY = canvas.height / cropHeight;
 
                 persistentFaces.forEach((face, index) => {
+                    if (!isActiveRef.current) return;
+
                     const rawBox = face.box;
 
                     // Scale the detection box to match display dimensions
@@ -490,7 +752,7 @@ export default function FaceTrackingVideo({
                     const hat = hatImage;
                     const shirt = shirtImage;
 
-                    if (hat && shirt) {
+                    if (hat && shirt && isActiveRef.current) {
                         // Calculate base scale factor based on face size relative to canvas
                         const faceArea = box.width * box.height;
                         const canvasArea = canvas.width * canvas.height;
@@ -543,7 +805,10 @@ export default function FaceTrackingVideo({
                 console.error('Error in face detection:', error);
             }
 
-            requestAnimationFrame(detectFaces);
+            // Schedule next frame only if component is still active
+            if (isActiveRef.current) {
+                animationFrameRef.current = requestAnimationFrame(detectFaces);
+            }
         };
 
         detectFaces();

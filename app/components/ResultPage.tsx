@@ -86,7 +86,10 @@ export default function ResultPage({
                             interactive={false}
                         >
                             <div className="relative w-full h-full">
-                                <FaceTrackingVideo personalityType={personalityType.toLowerCase()} />
+                                <FaceTrackingVideo 
+                                    key={`face-tracking-${personalityType}`}
+                                    personalityType={personalityType.toLowerCase()} 
+                                />
                             </div>
                         </MotionCard>
 
