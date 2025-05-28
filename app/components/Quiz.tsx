@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StartPage, QuestionPage, ResultPage } from './';
 
 // Types
@@ -38,6 +38,20 @@ export default function Quiz({ questions }: QuizProps) {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
     const [personalityResult, setPersonalityResult] = useState('');
+
+    // Apply container classes based on quiz state
+    useEffect(() => {
+        const appContainer = document.querySelector('.app-container');
+        if (appContainer) {
+            // Remove all state classes
+            appContainer.classList.remove('question-page');
+            
+            // Add appropriate class based on state
+            if (quizState === 'question') {
+                appContainer.classList.add('question-page');
+            }
+        }
+    }, [quizState]);
 
     // Handle starting the quiz
     const handleStart = () => {

@@ -5,91 +5,90 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --grid-background: #95CFFC;
-  --grid-lines: #C1E4FF;
   --grid-size: 40px;
   --font-overused-grotesk: var(--font-overused-grotesk);
   --font-futura-bold: var(--font-futura-bold);
+  
+  /* Page-specific colors */
+  --start-result-bg: #facb16;
+  --start-result-grid: #f6ae1e;
+  --question-bg: #418ccb;
+  --question-grid: #77aac6;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
-    --grid-background: #95CFFC;
-    --grid-lines: #C1E4FF;
   }
 }
-
-/* Alternative: Use traditional approach until VS Code catches up */
-/* You can uncomment this and remove the @theme block if you prefer */
-/*
-@layer theme {
-  :root {
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --font-sans: var(--font-overused-grotesk);
-    --font-title: var(--font-futura-bold);
-  }
-}
-*/
 
 body {
-  background-color: var(--grid-background);
-  background-image: linear-gradient(to right, var(--grid-lines) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-lines) 1px, transparent 1px);
-  background-size: var(--grid-size) var(--grid-size);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 500;
-  /* Semibold for body text */
   margin: 0;
   padding: 0;
   overflow: hidden;
 }
 
-/* Responsive 9:16 container */
+/* Responsive 9:16 container system */
 .app-container {
   width: 100vw;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--grid-background);
-  background-image: linear-gradient(to right, var(--grid-lines) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-lines) 1px, transparent 1px);
-  background-size: var(--grid-size) var(--grid-size);
+  /* Plain background color - no grid */
+  background-color: var(--start-result-bg);
+}
+
+.app-container.question-page {
+  background-color: var(--question-bg);
 }
 
 .app-content {
   position: relative;
   overflow: hidden;
-  background-color: var(--grid-background);
-  background-image: linear-gradient(to right, var(--grid-lines) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-lines) 1px, transparent 1px);
-  background-size: var(--grid-size) var(--grid-size);
   
-  /* Default to full viewport */
-  width: 100vw;
+  /* Grid background */
+  background-image: linear-gradient(to right, var(--start-result-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--start-result-grid) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+}
+
+/* Default: Wider than 9:16 (landscape) - constrain by height */
+.app-content {
+  width: calc(100vh * 9 / 16);
   height: 100vh;
-  min-width: 320px;
-  min-height: 568px;
 }
 
-/* When viewport is wider than 9:16 (landscape), constrain by height */
-@media (min-aspect-ratio: 9/16) {
-  .app-content {
-    height: 100vh;
-    width: calc(100vh * 9 / 16);
-  }
-}
-
-/* When viewport is narrower than 9:16 (portrait), constrain by width */
+/* Narrower than 9:16 (very tall portrait) - constrain by width */
 @media (max-aspect-ratio: 9/16) {
   .app-content {
     width: 100vw;
     height: calc(100vw * 16 / 9);
   }
+}
+
+/* Question page grid colors */
+.question-page .app-content {
+  background-image: linear-gradient(to right, var(--question-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--question-grid) 1px, transparent 1px);
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
 }
 
 h2,
@@ -100,7 +99,6 @@ h6,
 .question {
   font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 700;
-  /* Bold for questions and headers */
   text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.7), -2px -2px 0 rgba(255, 255, 255, 0.7),
     2px -2px 0 rgba(255, 255, 255, 0.7), -2px 2px 0 rgba(255, 255, 255, 0.7),
     0px 2px 0 rgba(255, 255, 255, 0.7), 0px -2px 0 rgba(255, 255, 255, 0.7),
@@ -120,19 +118,16 @@ button,
 .motion-button {
   font-family: var(--font-overused-grotesk), system-ui, sans-serif;
   font-weight: 700;
-  /* Bold for buttons */
 }
 
 .answer-button {
   font-family: var(--font-overused-grotesk), system-ui, sans-serif;
   font-weight: 600;
-  /* Semibold for answer buttons */
 }
 
 p {
   font-family: var(--font-overused-grotesk), system-ui, sans-serif;
   font-weight: 600;
-  /* Semibold for paragraphs */
 }
 
 /* Motion component styles */
@@ -141,33 +136,28 @@ p {
   position: relative;
   box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
   transform: translate(0, 0);
-  /* Faster unpressing (releasing) animation */
   transition: transform 0.01s ease-out, box-shadow 0.01s ease-out;
   will-change: transform, box-shadow;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
-/* Selected state - Using !important to ensure it overrides any active states */
 .motion-card.selected,
 .motion-button.selected {
   box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1) !important;
   transform: translate(4px, 4px) !important;
 }
 
-/* Hover state for interactive elements */
 .motion-card.interactive:hover:not(:active):not(.selected),
 .motion-button.interactive:hover:not(:active):not(.selected) {
   box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
   transform: translate(2px, 2px);
-  /* Faster unpressing animation */
   transition: transform 0.01s ease-out, box-shadow 0.01s ease-out;
 }
 
-/* Active/pressed state for non-selected elements */
 .motion-card.interactive:active:not(.selected),
 .motion-button.interactive:active:not(.selected) {
   box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
   transform: translate(4px, 4px);
-  /* Faster pressing animation */
   transition: transform 0.01s ease-out, box-shadow 0.01s ease-out;
 }
+

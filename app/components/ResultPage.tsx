@@ -5,8 +5,7 @@ import { CardContent, CardTitle } from './ui/card';
 import MotionButton from './ui/motion-button';
 import MotionCard from './ui/motion-card';
 import { Home, Users, Calendar, BookOpen, RefreshCw, MapPin } from 'lucide-react';
-import Image from 'next/image';
-import { useRef, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import personalityData from '../data/personality.json';
 import BuddyCard from './ui/buddy-card';
 
@@ -40,11 +39,6 @@ export default function ResultPage({
     onStartOver,
     onHome,
 }: ResultPageProps) {
-    // References for GPU acceleration on individual overlays
-    const multiplyRef = useRef<HTMLDivElement>(null);
-    const softlightRef = useRef<HTMLDivElement>(null);
-    const hardlightRef = useRef<HTMLDivElement>(null);
-
     // Get current personality data
     const currentPersonality = useMemo(() => {
         return personalityData.find(
@@ -56,28 +50,6 @@ export default function ResultPage({
     const currentBuddies = useMemo(() => {
         return currentPersonality?.buddies || [];
     }, [currentPersonality]);
-
-    // Apply GPU acceleration to overlay layers individually
-    useEffect(() => {
-        // Apply GPU acceleration to each overlay layer
-        if (multiplyRef.current) {
-            multiplyRef.current.style.transform = 'translateZ(0)';
-            multiplyRef.current.style.backfaceVisibility = 'hidden';
-            multiplyRef.current.style.willChange = 'transform';
-        }
-
-        if (softlightRef.current) {
-            softlightRef.current.style.transform = 'translateZ(0)';
-            softlightRef.current.style.backfaceVisibility = 'hidden';
-            softlightRef.current.style.willChange = 'transform';
-        }
-
-        if (hardlightRef.current) {
-            hardlightRef.current.style.transform = 'translateZ(0)';
-            hardlightRef.current.style.backfaceVisibility = 'hidden';
-            hardlightRef.current.style.willChange = 'transform';
-        }
-    }, []);
 
     return (
         <div className="flex flex-col items-center h-full p-6 lg:p-12">
@@ -115,49 +87,6 @@ export default function ResultPage({
                         >
                             <div className="relative w-full h-full">
                                 <FaceTrackingVideo personalityType={personalityType.toLowerCase()} />
-
-                                {/* Individual overlays with direct blend modes */}
-                                <div
-                                    ref={multiplyRef}
-                                    className="absolute inset-0 pointer-events-none mix-blend-multiply"
-                                >
-                                    <Image
-                                        src="/7. multiply.png"
-                                        alt=""
-                                        fill
-                                        sizes="(max-width: 768px) 100vw, 60vw"
-                                        style={{ objectFit: 'fill' }}
-                                        priority
-                                    />
-                                </div>
-
-                                <div
-                                    ref={softlightRef}
-                                    className="absolute inset-0 pointer-events-none mix-blend-soft-light"
-                                >
-                                    <Image
-                                        src="/2. softlight.png"
-                                        alt=""
-                                        fill
-                                        sizes="(max-width: 768px) 100vw, 60vw"
-                                        style={{ objectFit: 'fill' }}
-                                        priority
-                                    />
-                                </div>
-
-                                <div
-                                    ref={hardlightRef}
-                                    className="absolute inset-0 pointer-events-none mix-blend-hard-light"
-                                >
-                                    <Image
-                                        src="/1. hardlight.png"
-                                        alt=""
-                                        fill
-                                        sizes="(max-width: 768px) 100vw, 60vw"
-                                        style={{ objectFit: 'fill' }}
-                                        priority
-                                    />
-                                </div>
                             </div>
                         </MotionCard>
 
