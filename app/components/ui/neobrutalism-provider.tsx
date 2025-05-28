@@ -16,11 +16,11 @@ interface NeoBrutalismContextProps {
 const defaultNeoBrutalismConfig: NeoBrutalismContextProps = {
     borderWidth: '2px',
     borderColor: 'black',
-    shadowOffset: '4px',
+    shadowOffset: '-4px',
     shadowColor: 'rgba(0,0,0,1)',
     cornerRadius: 'rounded-lg',
-    hoverOffset: '1px',
-    activeOffset: '4px',
+    hoverOffset: '-1px',
+    activeOffset: '-4px',
 };
 
 const NeoBrutalismContext = createContext<NeoBrutalismContextProps>(defaultNeoBrutalismConfig);
@@ -47,7 +47,7 @@ export const NeoBrutalismProvider: React.FC<NeoBrutalismProviderProps> = ({
 
 // Helper to create neobrutalism shadow style
 export const createShadowStyle = (offset: string, color: string) => {
-    return `${offset} ${offset} 0px 0px ${color}`;
+    return `${offset} ${offset.replace('-', '')} 0px 0px ${color}`;
 };
 
 // Custom hook to get hover styles
@@ -55,8 +55,8 @@ export const useNeoBrutalismHover = () => {
     const { hoverOffset, activeOffset } = useNeoBrutalism();
 
     return {
-        hoverStyles: `hover:translate-x-[${hoverOffset}] hover:translate-y-[${hoverOffset}] hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]`,
-        activeStyles: `active:translate-x-[${activeOffset}] active:translate-y-[${activeOffset}] active:shadow-none`,
+        hoverStyles: `hover:translate-x-[${hoverOffset}] hover:translate-y-[${hoverOffset.replace('-', '')}] hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]`,
+        activeStyles: `active:translate-x-[${activeOffset}] active:translate-y-[${activeOffset.replace('-', '')}] active:shadow-none`,
     };
 };
 

@@ -21,37 +21,18 @@ export const MotionButton = forwardRef<HTMLButtonElement, MotionButtonProps>(({
     children,
     ...props
 }, ref) => {
-    // Define variants based on button type
-    const buttonVariants = {
-        primary: {
-            background: "rgb(236, 72, 153)", // pink-500
-            color: "white",
-            border: "2px solid black",
-        },
-        secondary: {
-            background: "rgb(59, 130, 246)", // blue-500
-            color: "white",
-            border: "2px solid black",
-        },
-        neutral: {
-            background: "white",
-            color: "black",
-            border: "2px solid black",
-        },
-        destructive: {
-            background: "rgb(239, 68, 68)", // red-500
-            color: "white",
-            border: "2px solid black",
-        },
-        outline: {
-            background: "transparent",
-            color: "black",
-            border: "2px solid black",
-        },
+    // Define variant classes using Tailwind
+    const variantClasses = {
+        primary: "bg-pink-500 text-white border-2 border-black",
+        secondary: "bg-blue-500 text-white border-2 border-black",
+        neutral: "bg-white text-black border-2 border-black",
+        destructive: "bg-red-500 text-white border-2 border-black",
+        outline: "bg-transparent text-black border-2 border-black",
+        noShadow: "bg-white text-black border-2 border-black",
     };
 
     // Define sizes
-    const buttonSizes = {
+    const sizeClasses = {
         default: "h-10 px-5 py-3 text-sm",
         sm: "h-9 px-4 py-2 text-sm",
         lg: "h-11 px-8 py-4 text-lg",
@@ -69,16 +50,25 @@ export const MotionButton = forwardRef<HTMLButtonElement, MotionButtonProps>(({
         <button
             ref={ref}
             className={cn(
+                // Base styles
                 "inline-flex items-center justify-center whitespace-nowrap rounded-full font-medium",
                 "transition-colors gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0",
                 "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
                 "disabled:pointer-events-none disabled:opacity-50",
-                buttonSizes[size as keyof typeof buttonSizes],
                 "motion-button",
+                
+                // Variant styles (can be overridden by className)
+                variantClasses[variant],
+                
+                // Size styles
+                sizeClasses[size],
+                
+                // State styles
                 stateClasses,
+                
+                // Custom className (will override variant styles due to order)
                 className
             )}
-            style={buttonVariants[variant as keyof typeof buttonVariants]}
             {...props}
         >
             {children}

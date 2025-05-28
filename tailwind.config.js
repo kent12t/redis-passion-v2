@@ -8,12 +8,17 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['var(--font-overused-grotesk)', 'system-ui', 'sans-serif'],
-                title: ['var(--font-futura-bold)', 'system-ui', 'sans-serif'],
+                sans: ['var(--font-circular-bold)', 'system-ui', 'sans-serif'],
+                title: ['var(--font-circular-bold)', 'system-ui', 'sans-serif'],
             },
             colors: {
                 background: 'var(--background)',
                 foreground: 'var(--foreground)',
+                darkblue: '#418ccb',
+                green: '#1dad6b',
+                purple: '#ac4e9d',
+                yellow: '#facb16',
+                orange: '#eb5529',
             },
         },
     },

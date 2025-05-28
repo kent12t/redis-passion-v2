@@ -3,15 +3,9 @@ import localFont from 'next/font/local';
 import "./globals.css";
 import { NeoBrutalismProvider } from "./components/ui/neobrutalism-provider";
 
-const overusedGrotesk = localFont({
-  src: './fonts/OverusedGroteskRoman-VF.ttf',
-  variable: '--font-overused-grotesk',
-  display: 'swap',
-});
-
-const futuraBold = localFont({
-  src: './fonts/FuturaBold.otf',
-  variable: '--font-futura-bold',
+const circularStdBold = localFont({
+  src: '../public/fonts/CircularStd-Bold.otf',
+  variable: '--font-circular-bold',
   display: 'swap',
 });
 
@@ -28,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${overusedGrotesk.variable} ${futuraBold.variable} antialiased`}
+        className={`${circularStdBold.variable} antialiased`}
       >
         <NeoBrutalismProvider>
           <div className="app-container">

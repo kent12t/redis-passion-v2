@@ -1,8 +1,6 @@
 'use client';
 
-import { CardContent } from './ui/card';
 import MotionButton from './ui/motion-button';
-import MotionCard from './ui/motion-card';
 import CostumeMarquee from './ui/costume-marquee';
 import Image from 'next/image';
 
@@ -14,61 +12,56 @@ export default function StartPage({ onStart }: StartPageProps) {
     return (
         <div className="relative h-full">
             {/* Frame overlay - floating and centered, constrained by app-content width */}
-            <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-1">
                 <div className="relative w-full h-full">
-                    <Image 
-                        src="/frame.png" 
-                        alt="Frame" 
+                    <Image
+                        src="/frame.png"
+                        alt="Frame"
                         fill
                         className="object-cover"
                         priority
                     />
                 </div>
             </div>
-            
+
+            {/* Costume marquee */}
+            <div className="absolute z-0 w-full top-1/12">
+                <CostumeMarquee direction="left" />
+            </div>
+
+            <div className="absolute w-dvw max-w-[1200px] aspect-[3/1] z-2 top-1/6">
+                <Image
+                    src="/logo.png"
+                    alt="Logo"
+                    fill
+                    priority
+                    sizes="(max-width: 768px) 80vw, (max-width: 1200px) 60vw, 1200px"
+                    className="object-contain"
+                />
+            </div>
+
+            {/* Costume marquee */}
+            <div className="absolute z-0 w-full bottom-1/12">
+                <CostumeMarquee direction="right" />
+            </div>
+
             {/* Main content */}
-            <div className="relative z-10 grid h-full grid-cols-1 p-6 font-sans">
-                <div className="flex flex-col items-center justify-center gap-6 md:gap-16">
-                    <div className="w-4/5 max-w-[1200px]">
-                        <div className="relative w-full aspect-[3/1]">
-                            <Image 
-                                src="/logo.png" 
-                                alt="Logo" 
-                                fill
-                                priority
-                                sizes="(max-width: 768px) 80vw, (max-width: 1200px) 60vw, 1200px"
-                                className="object-contain"
-                            />
-                        </div>
-                    </div>
+            <div className="absolute z-0 grid w-full h-auto grid-cols-1 px-32 font-sans top-2/5">
+                <div className="flex flex-col items-center justify-center">
 
-                    {/* Costume marquee */}
-                    <div className="w-full max-w-[1200px]">
-                        <CostumeMarquee height="h-24 md:h-32 lg:h-40" />
-                    </div>
+                    <p className="text-center text-[42px] mb-12 leading-normal text-[#3A3A3A]">
+                        Take this quick and fun quiz to find out what activities suit you best! There are no right or wrong answers, just choose what feels most like you.                     </p>
+                    <p className="text-center text-[42px] mb-24 leading-normal text-[#3A3A3A]">
+                        This will take about 3-5 minutes.<br/> At the end, you’ll get personalised suggestions for activities you might enjoy.
+                    </p>
 
-                    <MotionCard
-                        className="w-4/5 max-w-[1200px]"
-                        interactive={false}
-                    >
-                        <CardContent className="pt-6">
-                            <p className="text-center text-lg sm:text-xl lg:text-3xl mb-6 leading-normal text-[#3A3A3A]">
-                                Take this quick and fun quiz to find out what activities suit you best! There are no right or wrong answers, just choose what feels most like you.
-                            </p>
-                            <p className="text-center text-lg sm:text-xl lg:text-3xl leading-normal text-[#3A3A3A]">
-                                This will take about 3-5 minutes.
-                                <br />
-                                At the end, you&apos;ll get personalized suggestions for activities you might enjoy.
-                            </p>
-                        </CardContent>
-                    </MotionCard>
 
                     <MotionButton
                         onClick={onStart}
                         size="lg"
-                        className="w-4/5 h-16 max-w-[1200px] text-xl sm:h-20 lg:h-24 sm:text-2xl lg:text-3xl"
+                        className="h-auto w-auto px-32 py-4 text-[60px] bg-darkblue text-white"
                     >
-                        Get Started
+                        Get Started!
                     </MotionButton>
                 </div>
             </div>

@@ -4,41 +4,52 @@ import Image from 'next/image';
 import { cn } from '../../lib/utils';
 
 interface CostumeMarqueeProps {
-    height?: string;
     className?: string;
+    direction?: 'left' | 'right';
 }
 
-export default function CostumeMarquee({ height = "h-32", className = "" }: CostumeMarqueeProps) {
+export default function CostumeMarquee({ 
+    className = "", 
+    direction = 'left' 
+}: CostumeMarqueeProps) {
+    const animationClass = direction === 'left' ? 'animate-marquee' : 'animate-marquee-reverse';
+    
     return (
-        <div className={cn("relative overflow-hidden", height, className)}>
-            <div className="flex animate-marquee">
-                <div className="flex-shrink-0">
+        <div className={cn("relative overflow-hidden h-48", className)}>
+            <div className={cn("flex w-[300%] gap-8", animationClass)}>
+                {/* First set of images */}
+                <div className="flex-shrink-0 w-1/3">
                     <Image 
                         src="/costume/all-costumes.png" 
                         alt="All costumes" 
-                        width={1200}
-                        height={200}
-                        className="object-contain w-auto h-full"
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                        className="object-contain w-full h-full"
                         priority
                     />
                 </div>
-                <div className="flex-shrink-0">
+                {/* Second set (duplicate) */}
+                <div className="flex-shrink-0 w-1/3">
                     <Image 
                         src="/costume/all-costumes.png" 
                         alt="All costumes" 
-                        width={1200}
-                        height={200}
-                        className="object-contain w-auto h-full"
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                        className="object-contain w-full h-full"
                         priority
                     />
                 </div>
-                <div className="flex-shrink-0">
+                {/* Third set (duplicate) */}
+                <div className="flex-shrink-0 w-1/3">
                     <Image 
                         src="/costume/all-costumes.png" 
                         alt="All costumes" 
-                        width={1200}
-                        height={200}
-                        className="object-contain w-auto h-full"
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                        className="object-contain w-full h-full"
                         priority
                     />
                 </div>
