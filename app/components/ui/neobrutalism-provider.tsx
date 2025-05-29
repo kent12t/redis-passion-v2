@@ -14,13 +14,13 @@ interface NeoBrutalismContextProps {
 
 // Default neobrutalism styling configuration
 const defaultNeoBrutalismConfig: NeoBrutalismContextProps = {
-    borderWidth: '2px',
+    borderWidth: '12px',
     borderColor: 'black',
-    shadowOffset: '-4px',
+    shadowOffset: '-24px',
     shadowColor: 'rgba(0,0,0,1)',
     cornerRadius: 'rounded-lg',
     hoverOffset: '-1px',
-    activeOffset: '-4px',
+    activeOffset: '-24px',
 };
 
 const NeoBrutalismContext = createContext<NeoBrutalismContextProps>(defaultNeoBrutalismConfig);

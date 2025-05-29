@@ -1,26 +1,9 @@
 'use client';
 
 import { FaceTrackingVideo } from './';
-import { CardContent, CardTitle } from './ui/card';
 import MotionButton from './ui/motion-button';
-import MotionCard from './ui/motion-card';
-import { Users, RefreshCw } from 'lucide-react';
-import { useMemo } from 'react';
-import personalityData from '../data/personality.json';
-import BuddyCard from './ui/buddy-card';
+import { RefreshCw } from 'lucide-react';
 import Image from 'next/image';
-
-interface Buddy {
-    personality: string;
-}
-
-interface PersonalityData {
-    personality_en: string;
-    personality_cn: string;
-    activity: string;
-    buddy_reason: string;
-    buddies: Buddy[];
-}
 
 interface ResultPageProps {
     personalityType: string;
@@ -28,100 +11,99 @@ interface ResultPageProps {
     onHome?: () => void;
 }
 
+// Personality type to asset mapping
+const personalityAssets = {
+    "wellness warrior": {
+        card: '/results/wellness-warrior.png',
+        bg: '/costume/runner-shirt.png'
+    },
+    "art maestro": {
+        card: '/results/art-maestro.png',
+        bg: '/costume/artist-shirt.png'
+    },
+    "wise storyteller": {
+        card: '/results/wise-storyteller.png',
+        bg: '/costume/storyteller-shirt.png'
+    },
+    "master chef": {
+        card: '/results/master-chef.png',
+        bg: '/costume/chef-shirt.png'
+    },
+    "tree whisperer": {
+        card: '/results/tree-whisperer.png',
+        bg: '/costume/farmer-shirt.png'
+    },
+    "community champion": {
+        card: '/results/community-champion.png',
+        bg: '/costume/volunteer-shirt.png'
+    }
+};
+
 export default function ResultPage({
     personalityType,
     onStartOver,
     onHome,
 }: ResultPageProps) {
     // Get current personality data
-    const currentPersonality = useMemo(() => {
-        return personalityData.find(
-            (p: PersonalityData) => p.personality_en.toLowerCase() === personalityType.toLowerCase()
-        );
-    }, [personalityType]);
-
-    // Get buddies from personality data
-    const currentBuddies = useMemo(() => {
-        return currentPersonality?.buddies || [];
-    }, [currentPersonality]);
-
     return (
-        <div className="flex flex-col items-center h-full p-6 lg:p-12">
+        <div className="flex flex-col items-center h-full p-0">
             <div className="relative flex flex-col w-full h-full max-w-[1200px] mx-auto items-center justify-center">
                 {/* Home button */}
-                <div className="absolute right-0 top-6 lg:top-12">
+                <div className="absolute right-12 top-12">
                     <MotionButton
                         variant="primary"
-                        size="icon"
-                        className="flex items-center justify-center w-16 h-16 rounded-full sm:h-20 lg:h-24 sm:w-20 lg:w-24"
-                        onClick={onHome || onStartOver}
+                        className="flex items-center justify-center p-6 rounded-full w-28 h-28 bg-yellow"
+                        onClick={onHome}
                     >
-                        <Image 
-                            src="/icons/home.svg" 
-                            alt="Home" 
-                            width={32} 
-                            height={32} 
-                            className="w-8 h-8 sm:w-10 lg:w-12 sm:h-10 lg:h-12" 
+                        <Image
+                            src="/icons/home.svg"
+                            alt="Home"
+                            width={96}
+                            height={96}
+                            className="w-28 h-28"
                         />
                     </MotionButton>
                 </div>
 
                 {/* Main content with 3:2 ratio columns */}
-                <div className="grid w-full grid-cols-5 gap-6 mb-6 h-2/3 grid-rows-8 lg:mb-12">
+                <div className="grid w-full grid-cols-5 pl-[160px] pr-[90px] h-full pt-[360px] grid-rows-8 z-0">
                     {/* Left column (60%) */}
-                    <div className="flex flex-col col-span-3 gap-4 row-span-full md:gap-6">
+                    <div className="flex flex-col h-full col-span-3 row-span-full">
                         {/* Face tracking display - 5/8 height */}
-                        <MotionCard
-                            className="relative h-[62.5%] p-0 overflow-hidden"
-                            interactive={false}
-                        >
-                            <div className="relative w-full h-full">
-                                <FaceTrackingVideo 
-                                    key={`face-tracking-${personalityType}`}
-                                    personalityType={personalityType.toLowerCase()} 
-                                />
-                            </div>
-                        </MotionCard>
 
-                        {/* Places to go section - 3/8 height */}
-                        <MotionCard
-                            className="flex-grow"
-                            interactive={false}
-                        >
-                            <CardContent className="pt-6 lg:pt-8">
-                                <CardTitle className="flex items-center mb-4 text-md sm:text-lg lg:text-xl">
-                                    <Users className="w-4 h-4 mr-2 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
-                                    FIND YOUR BUDDIES
-                                </CardTitle>
-                                <div className="flex flex-col gap-2 md:gap-4">
-                                    <div className="grid grid-cols-2 gap-4 md:gap-6">
-                                        {currentBuddies.map((buddy: Buddy, index: number) => (
-                                            <BuddyCard
-                                                key={index}
-                                                personality={buddy.personality}
-                                            />
-                                        ))}
-                                    </div>
-                                    <p className="text-sm text-gray-500">
-                                        {currentPersonality?.buddy_reason}
-                                    </p>
-                                </div>
-                            </CardContent>
-                        </MotionCard>
+                        <div className="relative h-full p-0 overflow-hidden">
+                            <FaceTrackingVideo
+                                key={`face-tracking-${personalityType}`}
+                                personalityType={personalityType.toLowerCase()}
+                            />
+                        </div>
+
                     </div>
 
                 </div>
 
-                {/* Start over button spanning both columns at the bottom */}
-                <MotionButton
-                    onClick={onStartOver}
-                    size="lg"
-                    className="w-full h-16 text-lg sm:h-20 lg:h-24 sm:text-xl lg:text-3xl"
-                >
-                    <RefreshCw className="w-5 h-5 mr-2 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
-                    Start Over
-                </MotionButton>
+                <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full">
+                    <Image
+                        src={personalityAssets[personalityType as keyof typeof personalityAssets].card}
+                        alt={personalityType}
+                        sizes="80vw"
+                        className="relative object-contain w-5/6"
+                        width={1080}
+                        height={1966}
+                    />
+                </div>
+
+
             </div>
+            
+            <MotionButton
+                onClick={onStartOver}
+                size="lg"
+                className="px-12 h-24 text-[48px] text-orange bg-yellow absolute bottom-12"
+            >
+                <RefreshCw className="w-12 h-12 mr-2 stroke-3 text-orange" />
+                Start Over
+            </MotionButton>
         </div>
     );
 } 

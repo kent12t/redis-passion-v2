@@ -139,18 +139,11 @@ export default function QuestionPage({
 
                 {/* Bottom navigation section */}
                 <div className="flex flex-col w-full gap-4 md:gap-6">
-                    {/* Navigation */}
-                    <div className="flex items-center justify-between w-full">
-
-
-
-
-                    </div>
 
                     {/* Progress bar */}
-                    <div className="w-full h-3 overflow-hidden bg-white border-4 border-black rounded-full sm:h-4 lg:h-5">
+                    <div className="w-full h-8 overflow-hidden bg-white border-black rounded-full border-6">
                         <div
-                            className="h-full transition-all duration-300 ease-in-out bg-orange"
+                            className="h-full transition-all duration-300 ease-out bg-orange"
                             style={{ width: `${progress}%` }}
                         ></div>
                     </div>

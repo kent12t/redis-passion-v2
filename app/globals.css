@@ -7,7 +7,7 @@
   --foreground: #171717;
   --grid-size: 80px;
   --font-circular-bold: var(--font-circular-bold);
-  
+
   /* Page-specific colors */
   --start-result-bg: #facb16;
   --start-result-grid: #f6ae1e;
@@ -49,7 +49,7 @@ body {
 .app-content {
   position: relative;
   overflow: hidden;
-  
+
   /* Grid background with thicker lines */
   background-image: linear-gradient(to right, var(--start-result-grid) 6px, transparent 6px),
     linear-gradient(to bottom, var(--start-result-grid) 6px, transparent 6px);
@@ -81,6 +81,7 @@ body {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-33.333333%);
   }
@@ -90,6 +91,7 @@ body {
   0% {
     transform: translateX(-66.666667%);
   }
+
   100% {
     transform: translateX(-33.333333%);
   }
@@ -139,14 +141,22 @@ p {
 }
 
 /* Motion component styles */
-.motion-card,
-.motion-button {
+.motion-card {
   position: relative;
-  box-shadow: -4px 4px 0px 0px rgba(0, 0, 0, 1);
+  box-shadow: -10px 10px 0px 0px rgba(0, 0, 0, 1);
   transform: translate(0, 0);
   transition: transform 0.01s ease-out, box-shadow 0.01s ease-out;
   will-change: transform, box-shadow;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.motion-button {
+  position: relative;
+  box-shadow: -6px 6px 0px 0px rgba(0, 0, 0, 1);
+  transform: translate(0, 0);
+  transition: transform 0.01s ease-out, box-shadow 0.01s ease-out;
+  will-change: transform, box-shadow;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 .motion-card.selected,
@@ -168,4 +178,3 @@ p {
   transform: translate(-4px, 4px);
   transition: transform 0.01s ease-out, box-shadow 0.01s ease-out;
 }
-

@@ -23,11 +23,11 @@ export const MotionCard = forwardRef<HTMLDivElement, MotionCardProps>(({
 }, ref) => {
     // Define variant classes using Tailwind
     const variantClasses = {
-        primary: "bg-pink-500 text-white border-2 border-black",
-        secondary: "bg-blue-500 text-white border-2 border-black",
-        neutral: "bg-gray-300 text-[#3A3A3A] border-2 border-black",
+        primary: "bg-pink-500 text-white border-6 border-black",
+        secondary: "bg-blue-500 text-white border-6 border-black",
+        neutral: "bg-gray-3010 text-[#3A3A3A] border-6 border-black",
         white: cn(
-            "bg-white text-[#3A3A3A] border-4",
+            "bg-white text-[#3A3A3A] border-6",
             isSelected ? "border-white-500" : "border-black"
         ),
     };

@@ -23,12 +23,12 @@ export const MotionButton = forwardRef<HTMLButtonElement, MotionButtonProps>(({
 }, ref) => {
     // Define variant classes using Tailwind
     const variantClasses = {
-        primary: "bg-pink-500 text-white border-2 border-black",
-        secondary: "bg-blue-500 text-white border-2 border-black",
-        neutral: "bg-white text-black border-2 border-black",
-        destructive: "bg-red-500 text-white border-2 border-black",
-        outline: "bg-transparent text-black border-2 border-black",
-        noShadow: "bg-white text-black border-2 border-black",
+        primary: "bg-pink-500 text-white border-6 border-black",
+        secondary: "bg-blue-500 text-white border-6 border-black",
+        neutral: "bg-white text-black border-6 border-black",
+        destructive: "bg-red-500 text-white border-6 border-black",
+        outline: "bg-transparent text-black border-6 border-black",
+        noShadow: "bg-white text-black border-6 border-black",
     };
 
     // Define sizes

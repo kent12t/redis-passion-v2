@@ -245,7 +245,7 @@ export default function FaceTrackingVideo({
     }, [componentId]);
 
     // Target aspect ratio
-    const TARGET_ASPECT_RATIO = 0.76;
+    const TARGET_ASPECT_RATIO = 0.566;
 
     // Calculate dimensions and scale based on container size
     const updateDimensions = useCallback(() => {
@@ -762,12 +762,12 @@ export default function FaceTrackingVideo({
                         const faceScale = smoothScale(rawFaceScale);
 
                         // Scale multipliers - adjust these to fine-tune the effect
-                        const hatScaleBase = 3.3;
+                        const hatScaleBase = 3;
                         const shirtScaleBase = 6;
 
                         // Apply dynamic scaling based on face size with more conservative range
-                        const hatScale = hatScaleBase * (0.9 + faceScale * 0.2); // More conservative scaling
-                        const shirtScale = shirtScaleBase * (0.9 + faceScale * 0.2);
+                        const hatScale = hatScaleBase * (0.8 + faceScale * 0.4); // Less conservative scaling
+                        const shirtScale = shirtScaleBase * (0.8 + faceScale * 0.4);
 
                         if (debugMode) {
                             // Draw debug bounding box
@@ -794,7 +794,7 @@ export default function FaceTrackingVideo({
                         const shirtWidth = box.width * shirtScale;
                         const shirtHeight = shirtWidth * (shirt.height / shirt.width);
                         const shirtX = box.x - (shirtWidth - box.width) / 2;
-                        const shirtY = box.y;
+                        const shirtY = box.y + box.height * 0.2;
 
                         // Draw shirt
                         ctx.drawImage(shirt, shirtX, shirtY, shirtWidth, shirtHeight);
