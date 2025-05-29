@@ -1,9 +1,9 @@
 'use client';
 
-import { ArrowLeft, ArrowRight, House } from 'lucide-react';
 import MotionButton from './ui/motion-button';
 import MotionCard from './ui/motion-card';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 interface Option {
     option_text: string;
@@ -45,18 +45,42 @@ export default function QuestionPage({
             <div className="relative flex flex-col p-6 lg:p-12 w-full h-full max-w-[1200px] mx-auto items-center justify-center">
                 {/* Home button */}
                 <div className="absolute right-6 lg:right-12 top-6 lg:top-12">
-                    <MotionButton
-                        variant="primary"
-                        size="icon"
-                        className="flex items-center justify-center w-16 h-16 rounded-full sm:h-20 lg:h-24 sm:w-20 lg:w-24"
-                        onClick={onHome}
-                    >
-                        <House className="w-8 h-8 sm:w-10 lg:w-12 sm:h-10 lg:h-12" />
-                    </MotionButton>
+                    <div className="flex gap-4">
+                        {/* BACK BUTTON */}
+                        <MotionButton
+                            onClick={onPrevious}
+                            disabled={currentQuestionIndex === 0}
+                            variant="neutral"
+                            className="p-6 w-28 h-28 bg-yellow"
+
+                        >
+                            <Image
+                                src="/icons/back-arrow.svg"
+                                alt="Previous"
+                                width={96}
+                                height={96}
+                                className="w-28 h-28"
+                            />
+                        </MotionButton>
+
+                        <MotionButton
+                            variant="primary"
+                            className="flex items-center justify-center p-6 rounded-full w-28 h-28 bg-yellow"
+                            onClick={onHome}
+                        >
+                            <Image
+                                src="/icons/home.svg"
+                                alt="Home"
+                                width={96}
+                                height={96}
+                                className="w-28 h-28"
+                            />
+                        </MotionButton>
+                    </div>
                 </div>
 
                 {/* Main content area - centered vertically and horizontally */}
-                <div className="flex flex-col justify-center flex-grow w-4/5 gap-6 md:gap-16">
+                <div className="flex flex-col items-center justify-center flex-grow w-4/5 gap-6 md:gap-16">
                     {/* Question and Options - these will be animated */}
                     <AnimatePresence mode="wait">
                         <motion.div
@@ -94,31 +118,33 @@ export default function QuestionPage({
                             </div>
                         </motion.div>
                     </AnimatePresence>
+
+                    {/* NEXT BUTTON */}
+                    <MotionButton
+                        onClick={onNext}
+                        disabled={selectedAnswers[currentQuestionIndex] === undefined}
+                        variant={selectedAnswers[currentQuestionIndex] === undefined ? "neutral" : "primary"}
+                        className="flex-shrink px-12 h-24 text-[48px] bg-yellow text-orange"
+                    >
+                        Next
+                        <Image
+                            src="/icons/next-arrow.svg"
+                            alt="Next"
+                            width={64}
+                            height={64}
+                            className="w-16 h-16 ml-4"
+                        />
+                    </MotionButton>
                 </div>
 
                 {/* Bottom navigation section */}
                 <div className="flex flex-col w-full gap-4 md:gap-6">
                     {/* Navigation */}
                     <div className="flex items-center justify-between w-full">
-                        <MotionButton
-                            onClick={onPrevious}
-                            disabled={currentQuestionIndex === 0}
-                            variant="neutral"
-                            className="w-16 h-16 sm:h-20 lg:h-24 sm:w-20 lg:w-24"
-                            size="icon"
-                        >
-                            <ArrowLeft className="w-7 sm:w-8 lg:w-10 h-7 sm:h-8 lg:h-10" />
-                        </MotionButton>
 
-                        <MotionButton
-                            onClick={onNext}
-                            disabled={selectedAnswers[currentQuestionIndex] === undefined}
-                            variant={selectedAnswers[currentQuestionIndex] === undefined ? "neutral" : "primary"}
-                            className="h-16 px-8 text-lg sm:h-20 lg:h-24 sm:px-10 sm:text-xl lg:text-3xl"
-                        >
-                            Next
-                            <ArrowRight className="ml-2 w-7 sm:w-8 lg:w-10 h-7 sm:h-8 lg:h-10" />
-                        </MotionButton>
+
+
+
                     </div>
 
                     {/* Progress bar */}

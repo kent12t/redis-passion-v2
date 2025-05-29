@@ -151,9 +151,6 @@ export default function Quiz({ questions }: QuizProps) {
             {quizState === 'result' && (
                 <ResultPage
                     personalityType={personalityResult}
-                    personalityDescription="Your personalized description based on quiz results."
-                    activities={[]}
-                    resources={[]}
                     onStartOver={handleStartOver}
                     onHome={handleHome}
                 />

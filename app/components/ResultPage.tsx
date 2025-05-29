@@ -4,10 +4,11 @@ import { FaceTrackingVideo } from './';
 import { CardContent, CardTitle } from './ui/card';
 import MotionButton from './ui/motion-button';
 import MotionCard from './ui/motion-card';
-import { Home, Users, Calendar, BookOpen, RefreshCw, MapPin } from 'lucide-react';
+import { Users, RefreshCw } from 'lucide-react';
 import { useMemo } from 'react';
 import personalityData from '../data/personality.json';
 import BuddyCard from './ui/buddy-card';
+import Image from 'next/image';
 
 interface Buddy {
     personality: string;
@@ -23,19 +24,12 @@ interface PersonalityData {
 
 interface ResultPageProps {
     personalityType: string;
-    personalityDescription: string;
-    activities: string[];
-    resources: string[];
     onStartOver: () => void;
     onHome?: () => void;
 }
 
 export default function ResultPage({
     personalityType,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    personalityDescription, // Kept for API consistency
-    activities,
-    resources,
     onStartOver,
     onHome,
 }: ResultPageProps) {
@@ -62,18 +56,14 @@ export default function ResultPage({
                         className="flex items-center justify-center w-16 h-16 rounded-full sm:h-20 lg:h-24 sm:w-20 lg:w-24"
                         onClick={onHome || onStartOver}
                     >
-                        <Home className="w-8 h-8 sm:w-10 lg:w-12 sm:h-10 lg:h-12" />
+                        <Image 
+                            src="/icons/home.svg" 
+                            alt="Home" 
+                            width={32} 
+                            height={32} 
+                            className="w-8 h-8 sm:w-10 lg:w-12 sm:h-10 lg:h-12" 
+                        />
                     </MotionButton>
-                </div>
-
-                {/* Header spanning both columns */}
-                <div className="mb-6 text-center md:mb-16">
-                    <span className="text-2xl font-bold text-blue-600 sm:text-3xl lg:text-4xl font-title title-shadow">
-                        {personalityType.toLowerCase() === 'art maestro' ? 'YOU\'RE AN' : 'YOU\'RE A'}
-                    </span>
-                    <h1 className="text-5xl font-bold text-pink-500 sm:text-7xl lg:text-8xl font-title title-shadow">
-                        {personalityType.toUpperCase()}
-                    </h1>
                 </div>
 
                 {/* Main content with 3:2 ratio columns */}
@@ -120,81 +110,6 @@ export default function ResultPage({
                         </MotionCard>
                     </div>
 
-                    {/* Right column (40%) */}
-                    <div className="flex flex-col col-span-2 gap-4 pr-1 overflow-hidden row-span-full md:gap-6">
-                        {/* Find your buddies - 2/8 height */}
-                        <MotionCard
-                            className="h-[25%]"
-                            interactive={false}
-                        >
-                            <CardContent className="pt-6 lg:pt-8">
-                                <CardTitle className="flex items-center mb-4 text-md sm:text-lg lg:text-xl">
-                                    <MapPin className="w-4 h-4 mr-2 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
-                                    PLACES TO GO
-                                </CardTitle>
-                                <div className="flex flex-col gap-4 md:gap-6">
-                                    <div className="flex items-center p-4 text-lg border-2 border-black rounded-lg sm:text-xl lg:text-2xl sm:p-6 lg:p-8 bg-gray-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                                        <div className="flex items-center justify-center p-2 mr-3 text-white bg-blue-500 border-2 border-black rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
-                                        </div>
-                                        Local community gardens
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </MotionCard>
-
-                        {/* Activities - 3/8 height */}
-                        <MotionCard
-                            className="h-[37.5%] overflow-y-auto"
-                            interactive={false}
-                        >
-                            <CardContent className="pt-6 lg:pt-8">
-                                <CardTitle className="flex items-center mb-4 text-md sm:text-lg lg:text-xl">
-                                    <Calendar className="w-4 h-4 mr-2 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
-                                    ACTIVITIES
-                                </CardTitle>
-                                <div className="flex flex-col gap-4 md:gap-6">
-                                    {activities.map((activity, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex items-center p-4 text-lg border-2 border-black rounded-lg sm:text-xl lg:text-2xl sm:p-6 lg:p-8 bg-gray-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                                        >
-                                            <div className="flex items-center justify-center p-2 mr-3 text-white bg-pink-500 border-2 border-black rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                                <Calendar className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
-                                            </div>
-                                            {activity}
-                                        </div>
-                                    ))}
-                                </div>
-                            </CardContent>
-                        </MotionCard>
-
-                        {/* Resources - 3/8 height */}
-                        <MotionCard
-                            className="h-[37.5%] overflow-y-auto"
-                            interactive={false}
-                        >
-                            <CardContent className="pt-6 lg:pt-8">
-                                <CardTitle className="flex items-center mb-4 text-md sm:text-lg lg:text-xl">
-                                    <BookOpen className="w-4 h-4 mr-2 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
-                                    RESOURCES
-                                </CardTitle>
-                                <div className="flex flex-col gap-4 md:gap-6">
-                                    {resources.map((resource, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex items-center p-4 text-lg border-2 border-black rounded-lg sm:text-xl lg:text-2xl sm:p-6 lg:p-8 bg-gray-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                                        >
-                                            <div className="flex items-center justify-center p-2 mr-3 text-white bg-blue-500 border-2 border-black rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                                <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
-                                            </div>
-                                            {resource}
-                                        </div>
-                                    ))}
-                                </div>
-                            </CardContent>
-                        </MotionCard>
-                    </div>
                 </div>
 
                 {/* Start over button spanning both columns at the bottom */}
