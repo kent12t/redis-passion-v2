@@ -6,13 +6,7 @@ const nextConfig: NextConfig = {
     buildActivity: false,
   },
   webpack: (config) => {
-    // Suppress the face-api warning
-    config.module.rules.push({
-      test: /node_modules\/@vladmandic\/face-api/,
-      loader: 'ignore-loader'
-    });
-    
-    // Ignore warnings from face-api
+    // Ignore warnings from face-api instead of trying to use ignore-loader
     config.ignoreWarnings = [
       ...(config.ignoreWarnings || []),
       {
@@ -27,10 +21,7 @@ const nextConfig: NextConfig = {
   images: {
     formats: ['image/webp', 'image/avif'],
   },
-  // Enable experimental features for better performance
-  experimental: {
-    optimizeCss: true,
-  },
+  // Remove the problematic optimizeCss experiment that's causing the critters error
 };
 
 export default nextConfig;
