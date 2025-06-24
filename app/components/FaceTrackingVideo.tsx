@@ -161,6 +161,7 @@ interface TrackedFace {
 
 interface FaceTrackingVideoProps {
     personalityType: string;
+    onCanvasReady?: (getCanvasData: () => { canvas: HTMLCanvasElement | null; video: HTMLVideoElement | null }) => void;
 }
 
 // Personality type to asset mapping
@@ -197,7 +198,8 @@ const INITIAL_DETECTION_THRESHOLD = 0.65; // Higher threshold for new faces
 const TRACKING_CONFIDENCE_THRESHOLD = 0.4; // Existing threshold for continuous tracking
 
 export default function FaceTrackingVideo({
-    personalityType
+    personalityType,
+    onCanvasReady
 }: FaceTrackingVideoProps) {
     console.log('FaceTrackingVideo: Component mounting for personality:', personalityType);
     
@@ -813,6 +815,16 @@ export default function FaceTrackingVideo({
 
         detectFaces();
     };
+
+    // Expose canvas and video data to parent component
+    useEffect(() => {
+        if (onCanvasReady) {
+            onCanvasReady(() => ({
+                canvas: canvasRef.current,
+                video: videoRef.current
+            }));
+        }
+    }, [onCanvasReady]);
 
     return (
         <div ref={containerRef} className="relative w-full h-full overflow-hidden">
