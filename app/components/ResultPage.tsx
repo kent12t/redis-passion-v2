@@ -2,6 +2,7 @@
 
 import { FaceTrackingVideo } from './';
 import MotionButton from './ui/motion-button';
+import { QRModal } from './ui';
 import { RefreshCw, Camera } from 'lucide-react';
 import Image from 'next/image';
 import { useRef, useCallback, useState } from 'react';
@@ -49,6 +50,7 @@ export default function ResultPage({
     const getCanvasDataRef = useRef<(() => { canvas: HTMLCanvasElement | null; video: HTMLVideoElement | null }) | null>(null);
     const [isUploading, setIsUploading] = useState(false);
     const [uploadUrl, setUploadUrl] = useState<string | null>(null);
+    const [showQRModal, setShowQRModal] = useState(false);
 
     // Screenshot functionality with layer flattening and R2 upload
     const takeScreenshot = useCallback(async () => {
@@ -173,6 +175,7 @@ export default function ResultPage({
 
             if (result.success && result.url) {
                 setUploadUrl(result.url);
+                setShowQRModal(true);
                 console.log('Screenshot uploaded successfully:', result.url);
             } else {
                 console.error('Upload failed:', result.error);
@@ -279,6 +282,16 @@ export default function ResultPage({
                 <RefreshCw className="mr-2 w-12 h-12 stroke-3 text-orange" />
                 Start Over
             </MotionButton>
+
+            {/* QR Modal */}
+            {uploadUrl && (
+                <QRModal
+                    isOpen={showQRModal}
+                    onClose={() => setShowQRModal(false)}
+                    imageUrl={uploadUrl}
+                    personalityType={personalityType}
+                />
+            )}
         </div>
     );
 } 
