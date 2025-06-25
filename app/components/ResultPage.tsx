@@ -4,7 +4,8 @@ import { FaceTrackingVideo } from './';
 import MotionButton from './ui/motion-button';
 import { RefreshCw, Camera } from 'lucide-react';
 import Image from 'next/image';
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
+import { uploadImage, canvasToBlob } from '../lib/upload-utils';
 
 interface ResultPageProps {
     personalityType: string;
@@ -46,8 +47,10 @@ export default function ResultPage({
     onHome,
 }: ResultPageProps) {
     const getCanvasDataRef = useRef<(() => { canvas: HTMLCanvasElement | null; video: HTMLVideoElement | null }) | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadUrl, setUploadUrl] = useState<string | null>(null);
 
-    // Screenshot functionality with layer flattening
+    // Screenshot functionality with layer flattening and R2 upload
     const takeScreenshot = useCallback(async () => {
         if (!getCanvasDataRef.current) {
             console.error('Canvas data not available');
@@ -60,6 +63,9 @@ export default function ResultPage({
             console.error('Face tracking canvas or video not available');
             return;
         }
+
+        setIsUploading(true);
+        setUploadUrl(null);
 
         try {
             // Create master canvas for compositing
@@ -161,20 +167,25 @@ export default function ResultPage({
             
             masterCtx.drawImage(resultCardImage, cardX, cardY, cardWidth, cardHeight);
 
-            // Step 5: Download the final composited image
-            const link = document.createElement('a');
-            link.download = `${personalityType.replace(/\s+/g, '-')}-result-${Date.now()}.png`;
-            link.href = masterCanvas.toDataURL('image/png');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            // Step 5: Convert to blob and upload to R2
+            const blob = await canvasToBlob(masterCanvas);
+            const result = await uploadImage(blob, personalityType);
 
-            console.log('Screenshot saved successfully');
+            if (result.success && result.url) {
+                setUploadUrl(result.url);
+                console.log('Screenshot uploaded successfully:', result.url);
+            } else {
+                console.error('Upload failed:', result.error);
+            }
 
         } catch (error) {
             console.error('Error taking screenshot:', error);
+        } finally {
+            setIsUploading(false);
         }
     }, [personalityType]);
+
+
 
     const handleCanvasReady = useCallback((getCanvasData: () => { canvas: HTMLCanvasElement | null; video: HTMLVideoElement | null }) => {
         getCanvasDataRef.current = getCanvasData;
@@ -201,16 +212,32 @@ export default function ResultPage({
                     </MotionButton>
                 </div>
 
-                {/* Screenshot button */}
+                {/* Screenshot & Upload button */}
                 <div className="absolute right-12 top-44 z-20">
                     <MotionButton
                         variant="primary"
                         className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-orange"
                         onClick={takeScreenshot}
+                        disabled={isUploading}
                     >
-                        <Camera className="w-16 h-16 text-white" />
+                        <Camera className={`w-16 h-16 text-white ${isUploading ? 'animate-pulse' : ''}`} />
                     </MotionButton>
                 </div>
+
+                {/* Upload URL display */}
+                {uploadUrl && (
+                    <div className="absolute right-12 top-80 z-20 bg-white rounded-lg p-4 shadow-lg max-w-xs">
+                        <p className="mb-2 text-sm text-gray-600">Image uploaded!</p>
+                        <a 
+                            href={uploadUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-xs text-blue-500 break-all hover:underline"
+                        >
+                            View Image
+                        </a>
+                    </div>
+                )}
 
                 {/* Main content with 3:2 ratio columns */}
                 <div className="grid w-full grid-cols-5 pl-[160px] pr-[90px] h-full pt-[360px] grid-rows-8 z-0">
