@@ -226,7 +226,7 @@ export default function ResultPage({
 
                 {/* Upload URL display */}
                 {uploadUrl && (
-                    <div className="absolute right-12 top-80 z-20 bg-white rounded-lg p-4 shadow-lg max-w-xs">
+                    <div className="absolute right-12 top-80 z-20 p-4 max-w-xs bg-white rounded-lg shadow-lg">
                         <p className="mb-2 text-sm text-gray-600">Image uploaded!</p>
                         <a 
                             href={uploadUrl} 
