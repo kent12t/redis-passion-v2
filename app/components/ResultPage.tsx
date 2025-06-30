@@ -53,26 +53,6 @@ export default function ResultPage({
     const [showQRModal, setShowQRModal] = useState(false);
     const [countdown, setCountdown] = useState<number | null>(null);
 
-    // Countdown functionality
-    const startCountdown = useCallback(() => {
-        setCountdown(3);
-        
-        const countdownInterval = setInterval(() => {
-            setCountdown(prev => {
-                if (prev === null || prev <= 1) {
-                    clearInterval(countdownInterval);
-                    return null;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-
-        // Take screenshot after countdown completes
-        setTimeout(() => {
-            takeScreenshotInternal();
-        }, 3000);
-    }, []);
-
     // Screenshot functionality with layer flattening and R2 upload
     const takeScreenshotInternal = useCallback(async () => {
         if (!getCanvasDataRef.current) {
@@ -208,6 +188,26 @@ export default function ResultPage({
             setIsUploading(false);
         }
     }, [personalityType]);
+
+    // Countdown functionality
+    const startCountdown = useCallback(() => {
+        setCountdown(3);
+        
+        const countdownInterval = setInterval(() => {
+            setCountdown(prev => {
+                if (prev === null || prev <= 1) {
+                    clearInterval(countdownInterval);
+                    return null;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        // Take screenshot after countdown completes
+        setTimeout(() => {
+            takeScreenshotInternal();
+        }, 3000);
+    }, [takeScreenshotInternal]);
 
     const handleCanvasReady = useCallback((getCanvasData: () => { canvas: HTMLCanvasElement | null; video: HTMLVideoElement | null }) => {
         getCanvasDataRef.current = getCanvasData;
