@@ -166,7 +166,7 @@ interface FaceTrackingVideoProps {
 
 // Personality type to asset mapping
 const personalityAssets = {
-    "warrior": {
+    "runner": {
         hat: '/costume/runner-hat.png',
         shirt: '/costume/runner-shirt.png'
     },

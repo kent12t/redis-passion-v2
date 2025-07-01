@@ -20,7 +20,7 @@ export interface Question {
 type QuizState = 'start' | 'question' | 'result';
 
 const personalityTypes = [
-    'warrior',
+    'runner',
     'artist',
     'gamer',
     'crafter',

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 
 const personalityAssets = {
-    "warrior": {
+    "runner": {
         hat: '/costume/runner-hat.png',
         shirt: '/costume/runner-shirt.png'
     },

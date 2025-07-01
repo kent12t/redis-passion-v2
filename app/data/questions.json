@@ -1,39 +1,39 @@
 [
     {
         "question_number": 1,
-        "question_text": "Which setting would you rather spend your morning in?",
+        "question_text": "When an unexpected opportunity appears, what sparks your excitement?",
         "options": [
             {
-                "option_text": "A peaceful park, feeling the fresh air and noticing the greenery.",
+                "option_text": "The idea of organising a memorable group event that brings people together.",
                 "points": {
-                    "wellness warrior": 2,
-                    "farmer": 2
+                    "volunteer": 3,
+                    "gamer": 1
                 }
             },
             {
-                "option_text": "A cozy café, admiring the art on the walls and sampling a new pastry.",
+                "option_text": "The chance to test personal limits with a burst of energy and fresh outdoor challenges.",
                 "points": {
-                    "artist": 3,
-                    "crafter": 1
+                    "runner": 3,
+                    "farmer": 1
                 }
             }
         ]
     },
     {
         "question_number": 2,
-        "question_text": "You're given a blank notebook. What do you do first?",
+        "question_text": "When you encounter a complex problem, your instinct is to:",
         "options": [
             {
-                "option_text": "Write down a story or memory that comes to mind.",
+                "option_text": "Break it down strategically, analyse patterns, and find the most efficient solution.",
                 "points": {
-                    "gamer": 3,
-                    "volunteer": 1
+                    "artist": 3,
+                    "gamer": 1
                 }
             },
             {
-                "option_text": "Decorate the cover with colors and patterns that make you happy.",
+                "option_text": "Roll up your sleeves and experiment with different hands-on approaches until something works.",
                 "points": {
-                    "warrior": 3,
+                    "crafter": 3,
                     "artist": 1
                 }
             }
@@ -41,160 +41,160 @@
     },
     {
         "question_number": 3,
-        "question_text": "Which gift would you be most excited to receive?",
+        "question_text": "What kind of legacy would you like to leave behind?",
         "options": [
             {
-                "option_text": "A festive hamper filled with delicious snacks and handy kitchen tools.",
+                "option_text": "A thriving natural space you helped cultivate, promoting health and tranquility for future generations.",
                 "points": {
-                    "crafter": 3,
-                    "artist": 1
+                    "farmer": 3,
+                    "runner": 1
                 }
             },
             {
-                "option_text": "Tickets to a community event or group outing.",
+                "option_text": "A groundbreaking piece of art or a unique handcrafted item that inspires awe and bold creativity.",
                 "points": {
-                    "volunteer": 3,
-                    "gamer": 1
+                    "artist": 3,
+                    "crafter": 1
                 }
             }
         ]
     },
     {
         "question_number": 4,
-        "question_text": "How do you prefer to spend a quiet afternoon?",
+        "question_text": "When planning something special, you prioritise:",
         "options": [
             {
-                "option_text": "Tending to your plants or strolling through a community garden, reminiscing about old times.",
-                "points": {
-                    "farmer": 3,
-                    "gamer": 2
-                }
-            },
-            {
-                "option_text": "Cooking a new dish and sharing it with friends.",
-                "points": {
-                    "crafter": 3,
-                    "volunteer": 1
-                }
-            }
-        ]
-    },
-    {
-        "question_number": 5,
-        "question_text": "Which activity sounds more appealing?",
-        "options": [
-            {
-                "option_text": "Organizing a gathering for friends and neighbors.",
+                "option_text": "Making sure everyone feels included and that the experience brings people closer together.",
                 "points": {
                     "volunteer": 3,
                     "crafter": 1
                 }
             },
             {
-                "option_text": "Arranging flowers or going for a nature walk.",
+                "option_text": "Creating an engaging challenge or activity that gets people thinking and participating actively.",
                 "points": {
-                    "farmer": 3,
-                    "warrior": 1
-                }
-            }
-        ]
-    },
-    {
-        "question_number": 6,
-        "question_text": "When you have free time, what do you gravitate towards?",
-        "options": [
-            {
-                "option_text": "Painting, drawing, or making something with your hands.",
-                "points": {
-                    "artist": 3,
-                    "warrior": 1
-                }
-            },
-            {
-                "option_text": "Sharing stories or listening to others' life experiences in a garden.",
-                "points": {
-                    "gamer": 3,
+                    "gamer": 2,
                     "farmer": 1
                 }
             }
         ]
     },
     {
-        "question_number": 7,
-        "question_text": "Which phrase resonates more with you?",
+        "question_number": 5,
+        "question_text": "If you were to start a new club, what would its focus be?",
         "options": [
             {
-                "option_text": "A healthy body is a happy body.",
+                "option_text": "A workshop for creating unique, handcrafted art pieces from unconventional or adventurous materials.",
                 "points": {
-                    "warrior": 3,
-                    "crafter": 1
+                    "crafter": 3,
+                    "artist": 1
                 }
             },
             {
-                "option_text": "Creativity brings people together.",
+                "option_text": "A group dedicated to exploring local nature trails and identifying plants, perhaps with a mapping or strategic challenge.",
+                "points": {
+                    "farmer": 3,
+                    "gamer": 1
+                }
+            }
+        ]
+    },
+    {
+        "question_number": 6,
+        "question_text": "What kind of weekend plans would you prefer?",
+        "options": [
+            {
+                "option_text": "A lively getaway with friends focused on team-based strategy games and fun social challenges.",
+                "points": {
+                    "gamer": 3,
+                    "volunteer": 1
+                }
+            },
+            {
+                "option_text": "A relaxing retreat focused on healthy cooking workshops and learning a new hands-on craft.",
+                "points": {
+                    "runner": 3,
+                    "crafter": 1
+                }
+            }
+        ]
+    },
+    {
+        "question_number": 7,
+        "question_text": "When you have free time, you're drawn to:",
+        "options": [
+            {
+                "option_text": "Activities that get your heart pumping and make you feel energized and alive.",
+                "points": {
+                    "runner": 3,
+                    "farmer": 1
+                }
+            },
+            {
+                "option_text": "Projects where you can experiment with new techniques and express your unique vision.",
                 "points": {
                     "artist": 3,
-                    "volunteer": 2
+                    "crafter": 1
                 }
             }
         ]
     },
     {
         "question_number": 8,
-        "question_text": "If you could plan a special day, which would you choose?",
+        "question_text": "What motivates you to take on a challenge?",
         "options": [
             {
-                "option_text": "Hosting a cooking session or potluck for friends and family.",
+                "option_text": "The chance to bring people together and make a positive impact on your community.",
                 "points": {
-                    "crafter": 3,
-                    "volunteer": 2
+                    "volunteer": 3,
+                    "farmer": 1
                 }
             },
             {
-                "option_text": "Attending a wellness workshop and sharing your story.",
+                "option_text": "The thrill of pushing creative boundaries and discovering new ways to express yourself.",
                 "points": {
-                    "warrior": 2,
-                    "gamer": 3
+                    "artist": 2,
+                    "runner": 2
                 }
             }
         ]
     },
     {
         "question_number": 9,
-        "question_text": "Which of these would you enjoy more?",
+        "question_text": "What kind of community improvement project would you lead?",
         "options": [
             {
-                "option_text": "Arranging a beautiful plant display at home.",
+                "option_text": "Setting up a regular community game night or a local esports tournament for all ages.",
                 "points": {
-                    "farmer": 3,
-                    "artist": 1
+                    "volunteer": 2,
+                    "gamer": 2
                 }
             },
             {
-                "option_text": "Leading a brisk walk or group exercise at the community center.",
+                "option_text": "Building a community garden or creating handcrafted benches and nature-inspired planters for public spaces.",
                 "points": {
-                    "volunteer": 2,
-                    "warrior": 2
+                    "crafter": 3,
+                    "farmer": 1
                 }
             }
         ]
     },
     {
         "question_number": 10,
-        "question_text": "Which type of club would you join?",
+        "question_text": "If someone gave you a surprise gift for fun, which would excite you most?",
         "options": [
             {
-                "option_text": "A book or storytelling club that meets in the park.",
+                "option_text": "Something that challenges my mind or lets me get close to nature.",
                 "points": {
-                    "gamer": 2,
-                    "farmer": 2
+                    "gamer": 3,
+                    "farmer": 1
                 }
             },
             {
-                "option_text": "An art and cooking club that meets in a cozy community space.",
+                "option_text": "Tickets to a lively community fair or a voucher for a relaxing spa day.",
                 "points": {
-                    "artist": 2,
-                    "crafter": 2
+                    "volunteer": 2,
+                    "runner": 2
                 }
             }
         ]

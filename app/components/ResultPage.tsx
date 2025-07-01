@@ -16,7 +16,7 @@ interface ResultPageProps {
 
 // Personality type to asset mapping
 const personalityAssets = {
-    "warrior": {
+    "runner": {
         card: '/results/wellness-warrior.png',
         bg: '/costume/runner-shirt.png'
     },
