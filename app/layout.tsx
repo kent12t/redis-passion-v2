@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from 'next/font/local';
 import "./globals.css";
 import { NeoBrutalismProvider } from "./components/ui/neobrutalism-provider";
+import { Analytics } from "@vercel/analytics/next";
 
 const circularStdBold = localFont({
   src: '../public/fonts/CircularStd-Bold.otf',
@@ -31,6 +32,7 @@ export default function RootLayout({
             </div>
           </div>
         </NeoBrutalismProvider>
+        <Analytics />
       </body>
     </html>
   );
