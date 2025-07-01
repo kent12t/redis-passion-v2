@@ -1,85 +1,85 @@
 [
     {
-        "personality_en": "Wellness Warrior",
+        "personality_en": "The Wellness Warrior",
         "personality_cn": "健康达人",
         "activity": "ActiveSG programs (swimming, brisk walking), Tai Chi at community centers, line dancing groups, chair yoga, gardening, cycling at park connectors.",
-        "buddy_reason": "You love staying active and feeling good. The Tree Whisperer shares your appreciation for the outdoors, while the Community Champion loves group activities – perfect for healthy fun together!",
+        "buddy_reason": "You love staying active and feeling good. The Urban Gardener shares your appreciation for the outdoors, while the Community Champion loves group activities – perfect for healthy fun together!",
         "buddies": [
             {
-                "personality": "Tree Whisperer"
+                "personality": "The Urban Gardener"
             },
             {
-                "personality": "Community Champion"
+                "personality": "The Community Champion"
             }
         ]
     },
     {
-        "personality_en": "Art Maestro",
+        "personality_en": "The Adventurous Artist",
         "personality_cn": "艺术达人",
         "activity": "Pottery classes at community clubs, Chinese calligraphy workshops, watercolour painting, joining a choir, learning a musical instrument (ukulele, erhu), visiting art exhibitions at the National Gallery Singapore, attending theatre performances.",
-        "buddy_reason": "Your creativity shines through in art and expression. The Storyteller shares your love for culture, while the Master Chef brings creativity to the kitchen – both appreciate a touch of flair!",
+        "buddy_reason": "Your creativity shines through in art and expression. The Tech Explorer shares your love for culture, while the Everyday Creator brings creativity to the kitchen – both appreciate a touch of flair!",
         "buddies": [
             {
-                "personality": "Wise Storyteller"
+                "personality": "The Tech Explorer"
             },
             {
-                "personality": "Master Chef"
+                "personality": "The Everyday Creator"
             }
         ]
     },
     {
-        "personality_en": "Wise Storyteller",
+        "personality_en": "The Tech Explorer",
         "personality_cn": "讲古人",
         "activity": "Sharing stories at community events, participating in oral history projects, teaching younger generations about traditional crafts or customs, visiting heritage centers, learning about their family history, journaling, attending cultural festivals.",
-        "buddy_reason": "You love sharing history, culture, and personal stories. The Art Maestro appreciates creative expression, while the Master Chef celebrates heritage through food – both love enriching experiences!",
+        "buddy_reason": "You love sharing history, culture, and personal stories. The Adventurous Artist appreciates creative expression, while the Everyday Creator celebrates heritage through food – both love enriching experiences!",
         "buddies": [
             {
-                "personality": "Art Maestro"
+                "personality": "The Adventurous Artist"
             },
             {
-                "personality": "Master Chef"
+                "personality": "The Everyday Creator"
             }
         ]
     },
     {
-        "personality_en": "Master Chef",
+        "personality_en": "The Everyday Creator",
         "personality_cn": "大厨",
         "activity": "Cooking classes at community centers (focus on healthy Singaporean cuisine), baking workshops, visiting wet markets to learn about local ingredients, joining a community garden and using the produce in cooking, food tours, hawker food appreciation.",
-        "buddy_reason": "You bring joy through delicious food and warm hospitality. The Art Maestro sees cooking as a creative art, while the Storyteller shares culture through food stories – both love a rich experience!",
+        "buddy_reason": "You bring joy through delicious food and warm hospitality. The Adventurous Artist sees cooking as a creative art, while the Tech Explorer shares culture through food stories – both love a rich experience!",
         "buddies": [
             {
-                "personality": "Art Maestro"
+                "personality": "The Adventurous Artist"
             },
             {
-                "personality": "Wise Storyteller"
+                "personality": "The Tech Explorer"
             }
         ]
     },
     {
-        "personality_en": "Tree Whisperer",
+        "personality_en": "The Urban Gardener",
         "personality_cn": "绿手指",
         "activity": "Gardening at community gardens, joining nature walks at the Botanic Gardens or other nature reserves, volunteering for park cleanup initiatives, attending workshops on plant propagation, visiting farms.",
         "buddy_reason": "You feel most at peace surrounded by nature and greenery. The Wellness Warrior enjoys the outdoors for health, while the Community Champion loves group activities like community gardening – both appreciate green spaces!",
         "buddies": [
             {
-                "personality": "Wellness Warrior"
+                "personality": "The Wellness Warrior"
             },
             {
-                "personality": "Community Champion"
+                "personality": "The Community Champion"
             }
         ]
     },
     {
-        "personality_en": "Community Champion",
+        "personality_en": "The Community Champion",
         "personality_cn": "社区之光",
         "activity": "Joining senior citizen clubs, volunteering at community events, participating in mahjong groups, joining dance groups, attending community center activities, going on group outings to local attractions, karaoke sessions.",
-        "buddy_reason": "You love connecting people and creating a lively atmosphere. The Wellness Warrior enjoys group activities for health, while the Tree Whisperer appreciates nature – both enjoy shared experiences!",
+        "buddy_reason": "You love connecting people and creating a lively atmosphere. The Wellness Warrior enjoys group activities for health, while the Urban Gardener appreciates nature – both enjoy shared experiences!",
         "buddies": [
             {
-                "personality": "Wellness Warrior"
+                "personality": "The Wellness Warrior"
             },
             {
-                "personality": "Tree Whisperer"
+                "personality": "The Urban Gardener"
             }
         ]
     }

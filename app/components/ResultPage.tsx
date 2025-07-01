@@ -16,27 +16,27 @@ interface ResultPageProps {
 
 // Personality type to asset mapping
 const personalityAssets = {
-    "wellness warrior": {
+    "warrior": {
         card: '/results/wellness-warrior.png',
         bg: '/costume/runner-shirt.png'
     },
-    "art maestro": {
-        card: '/results/art-maestro.png',
+    "artist": {
+        card: '/results/adventurous-artist.png',
         bg: '/costume/artist-shirt.png'
     },
-    "wise storyteller": {
-        card: '/results/wise-storyteller.png',
-        bg: '/costume/storyteller-shirt.png'
+    "gamer": {
+        card: '/results/tech-explorer.png',
+        bg: '/costume/gamer-shirt.png'
     },
-    "master chef": {
-        card: '/results/master-chef.png',
-        bg: '/costume/chef-shirt.png'
+    "crafter": {
+        card: '/results/everyday-creator.png',
+        bg: '/costume/crafter-shirt.png'
     },
-    "tree whisperer": {
-        card: '/results/tree-whisperer.png',
+    "farmer": {
+        card: '/results/urban-gardener.png',
         bg: '/costume/farmer-shirt.png'
     },
-    "community champion": {
+    "volunteer": {
         card: '/results/community-champion.png',
         bg: '/costume/volunteer-shirt.png'
     }

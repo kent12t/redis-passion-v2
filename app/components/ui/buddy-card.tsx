@@ -3,27 +3,27 @@
 import Image from 'next/image';
 
 const personalityAssets = {
-    "wellness warrior": {
+    "warrior": {
         hat: '/costume/runner-hat.png',
         shirt: '/costume/runner-shirt.png'
     },
-    "art maestro": {
+    "artist": {
         hat: '/costume/artist-hat.png',
         shirt: '/costume/artist-shirt.png'
     },
-    "wise storyteller": {
-        hat: '/costume/storyteller-hat.png',
-        shirt: '/costume/storyteller-shirt.png'
+    "gamer": {
+        hat: '/costume/gamer-hat.png',
+        shirt: '/costume/gamer-shirt.png'
     },
-    "master chef": {
-        hat: '/costume/chef-hat.png',
-        shirt: '/costume/chef-shirt.png'
+    "crafter": {
+        hat: '/costume/crafter-hat.png',
+        shirt: '/costume/crafter-shirt.png'
     },
-    "tree whisperer": {
+    "farmer": {
         hat: '/costume/farmer-hat.png',
         shirt: '/costume/farmer-shirt.png'
     },
-    "community champion": {
+    "volunteer": {
         hat: '/costume/volunteer-hat.png',
         shirt: '/costume/volunteer-shirt.png'
     }

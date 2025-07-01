@@ -20,12 +20,12 @@ export interface Question {
 type QuizState = 'start' | 'question' | 'result';
 
 const personalityTypes = [
-    'wellness warrior',
-    'art maestro',
-    'wise storyteller',
-    'master chef',
-    'tree whisperer',
-    'community champion'
+    'warrior',
+    'artist',
+    'gamer',
+    'crafter',
+    'farmer',
+    'volunteer'
 ];
 
 interface QuizProps {
