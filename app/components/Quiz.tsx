@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { StartPage, QuestionPage, ResultPage } from './';
+import { generateSessionId, createActivityRecord, updateActivityRecord } from '../lib/supabase';
 
 // Types
 export interface Option {
@@ -28,6 +29,21 @@ const personalityTypes = [
     'volunteer'
 ];
 
+// Mapping from internal nicknames to official personality names
+const personalityMapping: Record<string, string> = {
+    'runner': 'The Wellness Warrior',
+    'artist': 'The Adventurous Artist',
+    'gamer': 'The Tech Explorer',
+    'crafter': 'The Everyday Creator',
+    'farmer': 'The Urban Gardener',
+    'volunteer': 'The Community Champion'
+};
+
+// Function to get official personality name
+function getOfficialPersonalityName(nickname: string): string {
+    return personalityMapping[nickname] || nickname;
+}
+
 interface QuizProps {
     questions: unknown[]; // More specific than any, we'll type assert inside
 }
@@ -38,6 +54,27 @@ export default function Quiz({ questions }: QuizProps) {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
     const [personalityResult, setPersonalityResult] = useState('');
+    const [sessionId, setSessionId] = useState<string>('');
+
+    // Initialize session on component mount
+    useEffect(() => {
+        initializeSession();
+    }, []);
+
+    // Initialize a new session
+    const initializeSession = async () => {
+        const newSessionId = generateSessionId();
+        setSessionId(newSessionId);
+        
+        try {
+            const { error } = await createActivityRecord(newSessionId);
+            if (error) {
+                console.error('Error creating activity record:', error);
+            }
+        } catch (error) {
+            console.error('Error initializing session:', error);
+        }
+    };
 
     // Apply container classes based on quiz state
     useEffect(() => {
@@ -87,20 +124,24 @@ export default function Quiz({ questions }: QuizProps) {
     };
 
     // Handle returning to home/start screen
-    const handleHome = () => {
+    const handleHome = async () => {
         setQuizState('start');
+        // Create new session when returning to home
+        await initializeSession();
     };
 
     // Handle starting the quiz over
-    const handleStartOver = () => {
+    const handleStartOver = async () => {
         setQuizState('start');
         setCurrentQuestionIndex(0);
         setSelectedAnswers({});
         setPersonalityResult('');
+        // Create new session when starting over
+        await initializeSession();
     };
 
     // Calculate quiz results
-    const calculateResults = () => {
+    const calculateResults = async () => {
         // Initialize scores for each personality type
         const scores: Record<string, number> = {};
         personalityTypes.forEach(type => {
@@ -126,11 +167,22 @@ export default function Quiz({ questions }: QuizProps) {
             .find(([, score]) => score === maxScore)?.[0] || personalityTypes[0];
 
         setPersonalityResult(winner);
+
+        // Update the activity record with the official personality name
+        try {
+            const officialPersonalityName = getOfficialPersonalityName(winner);
+            const { error } = await updateActivityRecord(sessionId, officialPersonalityName);
+            if (error) {
+                console.error('Error updating activity record:', error);
+            }
+        } catch (error) {
+            console.error('Error saving quiz result:', error);
+        }
     };
 
     // Simple render without complex animations for now
     return (
-        <div className="relative w-full h-full overflow-hidden">
+        <div className="overflow-hidden relative w-full h-full">
             {quizState === 'start' && (
                 <StartPage onStart={handleStart} />
             )}
