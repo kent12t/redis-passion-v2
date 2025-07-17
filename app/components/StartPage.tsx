@@ -12,11 +12,11 @@ export default function StartPage({ onStart }: StartPageProps) {
     return (
         <div className="relative h-full bg-yellow">
             {/* Costume marquee */}
-            <div className="absolute z-0 w-full top-1/12">
+            <div className="absolute z-0 w-full top-[5%]">
                 <CostumeMarquee direction="left" />
             </div>
 
-            <div className="absolute w-dvw max-w-[1200px] aspect-[3/1] z-2 top-1/6">
+            <div className="absolute left-1/2 -translate-x-1/2 w-dvw max-w-[1200px] aspect-[3/1] z-2 top-[22%]">
                 <Image
                     src="/logo.png"
                     alt="Logo"
@@ -28,27 +28,28 @@ export default function StartPage({ onStart }: StartPageProps) {
             </div>
 
             {/* Costume marquee */}
-            <div className="absolute z-0 w-full bottom-1/12">
+            <div className="absolute z-0 w-full bottom-[5%]">
                 <CostumeMarquee direction="right" />
             </div>
 
             {/* Main content */}
-            <div className="grid absolute z-0 grid-cols-1 px-32 w-full h-auto font-sans top-2/5">
+            <div className="grid absolute z-0 grid-cols-1 px-32 w-full h-auto font-sans top-[47%]">
                 <div className="flex flex-col justify-center items-center">
 
-                    <p className="text-center text-[42px] mb-12 leading-normal text-[#3A3A3A]">
-                        Take this quick and fun quiz to find out what activities suit you best! There are no right or wrong answers, just choose what feels most like you.                     </p>
-                    <p className="text-center text-[42px] mb-24 leading-normal text-[#3A3A3A]">
-                        This will take about 3-5 minutes.<br/> At the end, you’ll get personalised suggestions for activities you might enjoy.
+                    <p className="text-center text-[48px] mb-12 leading-tight text-black">
+                    Unlock your next adventure<br/>
+                    by tailoring suggestions to<br/>
+                    what excites you. Whether it’s<br/>
+                    Play, Purpose, or Passion,<br/>
+                    we’ll help you find the perfect fit.
                     </p>
-
 
                     <MotionButton
                         onClick={onStart}
                         size="lg"
-                        className="h-auto w-auto px-32 py-4 text-[60px] bg-darkblue text-white"
+                        className="h-auto w-auto px-12 py-4 text-[48px] font-sans bg-midblue text-white"
                     >
-                        Get Started!
+                        GET STARTED!
                     </MotionButton>
                 </div>
             </div>

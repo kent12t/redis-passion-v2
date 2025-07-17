@@ -8,7 +8,7 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['var(--font-circular-bold)', 'system-ui', 'sans-serif'],
+                sans: ['var(--font-circular-medium)', 'system-ui', 'sans-serif'],
                 title: ['var(--font-circular-bold)', 'system-ui', 'sans-serif'],
             },
             colors: {
@@ -23,6 +23,7 @@ module.exports = {
                 yellow: '#facc19',
                 darkyellow: '#e8b628',
                 orange: '#d96038',
+                black: '#231f20',
             },
         },
     },

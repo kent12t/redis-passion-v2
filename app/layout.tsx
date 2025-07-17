@@ -4,8 +4,15 @@ import "./globals.css";
 import { NeoBrutalismProvider } from "./components/ui/neobrutalism-provider";
 import { Analytics } from "@vercel/analytics/next";
 
+const circularStdMedium = localFont({
+  src: '../public/fonts/circular-std-medium-500.ttf',
+  variable: '--font-circular-medium',
+  display: 'swap',
+  preload: true,
+});
+
 const circularStdBold = localFont({
-  src: '../public/fonts/CircularStd-Bold.otf',
+  src: '../public/fonts/CircularStd-Bold.ttf',
   variable: '--font-circular-bold',
   display: 'swap',
   preload: true,
@@ -24,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${circularStdBold.variable} antialiased`}
+        className={`${circularStdMedium.variable} ${circularStdBold.variable} antialiased`}
       >
         <NeoBrutalismProvider>
           <div className="app-container">
