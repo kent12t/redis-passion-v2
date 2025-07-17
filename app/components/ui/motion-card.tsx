@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from "../../lib/utils";
+import { cn } from '@/app/lib/utils';
 import { forwardRef, ReactNode } from "react";
 
 interface MotionCardProps {

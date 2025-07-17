@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { StartPage, QuestionPage, ResultPage } from './';
-import { generateSessionId, createActivityRecord, updateActivityRecord, isSupabaseAvailable } from '../lib/supabase';
+import { generateSessionId, createActivityRecord, updateActivityRecord, isSupabaseAvailable } from '@/app/lib/supabase';
 
 // Types
 export interface Option {

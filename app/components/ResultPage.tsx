@@ -6,7 +6,9 @@ import { QRModal } from './ui';
 import { RefreshCw, Camera } from 'lucide-react';
 import Image from 'next/image';
 import { useRef, useCallback, useState } from 'react';
-import { uploadImage, canvasToBlob } from '../lib/upload-utils';
+import { uploadImage, canvasToBlob } from '@/app/lib/upload-utils';
+import { createScreenshotCanvas } from '@/app/lib/screenshot-utils';
+import { personalityAssets } from '@/app/data/personality-assets';
 
 interface ResultPageProps {
     personalityType: string;
@@ -14,33 +16,7 @@ interface ResultPageProps {
     onHome?: () => void;
 }
 
-// Personality type to asset mapping
-const personalityAssets = {
-    "runner": {
-        card: '/results/runner.png',
-        bg: '/costume/runner-shirt.png'
-    },
-    "artist": {
-        card: '/results/artist.png',
-        bg: '/costume/artist-shirt.png'
-    },
-    "gamer": {
-        card: '/results/gamer.png',
-        bg: '/costume/gamer-shirt.png'
-    },
-    "crafter": {
-        card: '/results/crafter.png',
-        bg: '/costume/crafter-shirt.png'
-    },
-    "farmer": {
-        card: '/results/farmer.png',
-        bg: '/costume/farmer-shirt.png'
-    },
-    "volunteer": {
-        card: '/results/volunteer.png',
-        bg: '/costume/volunteer-shirt.png'
-    }
-};
+
 
 export default function ResultPage({
     personalityType,
@@ -91,106 +67,14 @@ export default function ResultPage({
         setUploadUrl(null);
 
         try {
-            // Create master canvas for compositing
-            const masterCanvas = document.createElement('canvas');
-            const masterCtx = masterCanvas.getContext('2d');
-            
-            if (!masterCtx) {
-                console.error('Could not get master canvas context');
-                return;
-            }
-
-            // Set master canvas size to match the result page layout
-            const resultCardImage = document.createElement('img');
-            resultCardImage.crossOrigin = 'anonymous';
-            
-            await new Promise<void>((resolve, reject) => {
-                resultCardImage.onload = () => resolve();
-                resultCardImage.onerror = () => reject(new Error('Failed to load result card image'));
-                resultCardImage.src = personalityAssets[personalityType as keyof typeof personalityAssets].card;
+            // Create screenshot canvas using the utility function
+            const masterCanvas = await createScreenshotCanvas({
+                faceTrackingCanvas,
+                video,
+                personalityType
             });
 
-            // Set canvas dimensions to 9:16 aspect ratio
-            const canvasWidth = 1080;
-            const canvasHeight = Math.round(canvasWidth * (16 / 9)); // 9:16 aspect ratio
-            
-            masterCanvas.width = canvasWidth;
-            masterCanvas.height = canvasHeight;
-
-            // Step 1: Draw background (#facb16)
-            masterCtx.fillStyle = '#facb16';
-            masterCtx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-            // Step 2: Draw camera feed with face tracking overlays
-            // Calculate the position and size of the face tracking area (same as before)
-            const faceTrackingAreaWidth = Math.round(canvasWidth * 0.6); // 3/5 of the width
-            const faceTrackingAreaHeight = Math.round(canvasHeight * 0.6); // Approximate height based on layout
-            const faceTrackingX = Math.round(canvasWidth * 0.13); // Left padding approximation
-            const faceTrackingY = Math.round(canvasHeight * 0.18); // Top padding approximation
-
-            // Create a temporary canvas to composite camera content
-            const tempCanvas = document.createElement('canvas');
-            const tempCtx = tempCanvas.getContext('2d');
-            
-            if (!tempCtx) {
-                console.error('Could not get temp canvas context');
-                return;
-            }
-
-            tempCanvas.width = faceTrackingAreaWidth;
-            tempCanvas.height = faceTrackingAreaHeight;
-
-            // Draw video frame first
-            const videoAspectRatio = video.videoWidth / video.videoHeight;
-            const areaAspectRatio = faceTrackingAreaWidth / faceTrackingAreaHeight;
-            
-            let drawWidth, drawHeight, drawX, drawY;
-            
-            if (videoAspectRatio > areaAspectRatio) {
-                // Video is wider - fit height and crop sides
-                drawHeight = faceTrackingAreaHeight;
-                drawWidth = drawHeight * videoAspectRatio;
-                drawX = (faceTrackingAreaWidth - drawWidth) / 2;
-                drawY = 0;
-            } else {
-                // Video is taller - fit width and crop top/bottom
-                drawWidth = faceTrackingAreaWidth;
-                drawHeight = drawWidth / videoAspectRatio;
-                drawX = 0;
-                drawY = (faceTrackingAreaHeight - drawHeight) / 2;
-            }
-
-            // Mirror the video horizontally to match the display
-            tempCtx.save();
-            tempCtx.translate(drawX + drawWidth, drawY);
-            tempCtx.scale(-1, 1);
-            tempCtx.drawImage(video, 0, 0, drawWidth, drawHeight);
-            tempCtx.restore();
-
-            // Draw face tracking overlays on top of video at their original size
-            // The face tracking canvas should align with the video position but maintain its aspect ratio
-            const faceCanvasScale = Math.min(drawWidth / faceTrackingCanvas.width, drawHeight / faceTrackingCanvas.height);
-            const scaledFaceWidth = faceTrackingCanvas.width * faceCanvasScale;
-            const scaledFaceHeight = faceTrackingCanvas.height * faceCanvasScale;
-            const faceCanvasX = drawX + (drawWidth - scaledFaceWidth) / 2;
-            const faceCanvasY = drawY + (drawHeight - scaledFaceHeight) / 2;
-            
-            tempCtx.drawImage(faceTrackingCanvas, faceCanvasX, faceCanvasY, scaledFaceWidth, scaledFaceHeight);
-
-            // Draw the composited camera content onto the master canvas
-            masterCtx.drawImage(tempCanvas, faceTrackingX, faceTrackingY, faceTrackingAreaWidth, faceTrackingAreaHeight);
-
-            // Step 3: Draw card overlay on top
-            // Scale and position the result card to overlay on the composition
-            const cardScale = 0.9; // Scale down the card to fit nicely
-            const cardWidth = canvasWidth * cardScale;
-            const cardHeight = (cardWidth / resultCardImage.width) * resultCardImage.height;
-            const cardX = (canvasWidth - cardWidth) / 2; // Center horizontally
-            const cardY = (canvasHeight - cardHeight) / 2; // Center vertically
-            
-            masterCtx.drawImage(resultCardImage, cardX, cardY, cardWidth, cardHeight);
-
-            // Step 5: Convert to blob and upload to R2
+            // Convert to blob and upload to R2
             const blob = await canvasToBlob(masterCanvas);
             const result = await uploadImage(blob, personalityType);
 

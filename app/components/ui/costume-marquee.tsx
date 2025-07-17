@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { cn } from '../../lib/utils';
+import { cn } from '@/app/lib/utils';
 
 interface CostumeMarqueeProps {
     className?: string;
@@ -15,7 +15,7 @@ export default function CostumeMarquee({
     const animationClass = direction === 'left' ? 'animate-marquee' : 'animate-marquee-reverse';
     
     return (
-        <div className={cn("relative overflow-hidden h-48", className)}>
+        <div className={cn("overflow-hidden relative h-48", className)}>
             <div className={cn("flex w-[300%] gap-8", animationClass)}>
                 {/* First set of images */}
                 <div className="flex-shrink-0 w-1/3">

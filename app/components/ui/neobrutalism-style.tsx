@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { cn } from '../../lib/utils';
+import { cn } from '@/app/lib/utils';
 import { useNeoBrutalism } from './neobrutalism-provider';
 
 interface NeoBrutalStyleProps extends React.HTMLAttributes<HTMLDivElement> {
