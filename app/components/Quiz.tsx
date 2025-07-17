@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { StartPage, IntroPage, QuestionPage, RevealPage, ResultPage } from './';
+import { StartPage, IntroPage, QuestionPage, RevealPage, ResultPage, SharePage } from './';
 import { generateSessionId, createActivityRecord, updateActivityRecord, isSupabaseAvailable } from '@/app/lib/supabase';
 
 // Types
@@ -18,7 +18,7 @@ export interface Question {
     options: Option[];
 }
 
-type QuizState = 'start' | 'intro' | 'question' | 'reveal' | 'result';
+type QuizState = 'start' | 'intro' | 'question' | 'reveal' | 'result' | 'share';
 
 const personalityTypes = [
     'runner',
@@ -55,6 +55,7 @@ export default function Quiz({ questions }: QuizProps) {
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
     const [personalityResult, setPersonalityResult] = useState('');
     const [sessionId, setSessionId] = useState<string>('');
+    const [shareImageUrl, setShareImageUrl] = useState<string>('');
 
     // Initialize session on component mount
     useEffect(() => {
@@ -122,19 +123,19 @@ export default function Quiz({ questions }: QuizProps) {
     };
 
     // Handle navigating to the next question
-    const handleNext = () => {
+    const handleNext = async () => {
         if (currentQuestionIndex < typedQuestions.length - 1) {
             setCurrentQuestionIndex(prev => prev + 1);
         } else {
-            // Move to reveal page after last question
+            // Calculate results first, then move to reveal page so ResultPage can preload
+            await calculateResults();
             setQuizState('reveal');
         }
     };
 
     // Handle revealing results
     const handleReveal = () => {
-        // Calculate results and move to result page
-        calculateResults();
+        // Results already calculated, just transition to result page
         setQuizState('result');
     };
 
@@ -151,8 +152,20 @@ export default function Quiz({ questions }: QuizProps) {
         setCurrentQuestionIndex(0);
         setSelectedAnswers({});
         setPersonalityResult('');
+        setShareImageUrl('');
         // Create new session when returning to home
         await initializeSession();
+    };
+
+    // Handle transitioning to share page
+    const handleShare = (imageUrl: string) => {
+        setShareImageUrl(imageUrl);
+        setQuizState('share');
+    };
+
+    // Handle going back from share to result
+    const handleBackToResult = () => {
+        setQuizState('result');
     };
 
     // Calculate quiz results
@@ -223,13 +236,24 @@ export default function Quiz({ questions }: QuizProps) {
                 />
             )}
 
-            {quizState === 'reveal' && (
-                <RevealPage onReveal={handleReveal} />
-            )}
-
-            {quizState === 'result' && (
+            {(quizState === 'reveal' || quizState === 'result') && (
                 <ResultPage
                     personalityType={personalityResult}
+                    onHome={handleHome}
+                    onShare={handleShare}
+                />
+            )}
+
+            {quizState === 'reveal' && (
+                <div className="absolute inset-0 z-50">
+                    <RevealPage onReveal={handleReveal} />
+                </div>
+            )}
+
+            {quizState === 'share' && (
+                <SharePage
+                    imageUrl={shareImageUrl}
+                    onBack={handleBackToResult}
                     onHome={handleHome}
                 />
             )}

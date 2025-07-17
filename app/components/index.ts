@@ -3,6 +3,7 @@ export { default as IntroPage } from './IntroPage';
 export { default as QuestionPage } from './QuestionPage';
 export { default as RevealPage } from './RevealPage';
 export { default as ResultPage } from './ResultPage';
+export { default as SharePage } from './SharePage';
 export { default as StartPage } from './StartPage';
 export { default as Quiz } from './Quiz';
 export { default as PageTransition } from './PageTransition';

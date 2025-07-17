@@ -12,6 +12,7 @@ import { personalityAssets } from '@/app/data/personality-assets';
 interface ResultPageProps {
     personalityType: string;
     onHome?: () => void;
+    onShare?: (imageUrl: string) => void;
 }
 
 
@@ -19,6 +20,7 @@ interface ResultPageProps {
 export default function ResultPage({
     personalityType,
     onHome,
+    onShare,
 }: ResultPageProps) {
     const getCanvasDataRef = useRef<(() => { canvas: HTMLCanvasElement | null; video: HTMLVideoElement | null }) | null>(null);
     const [isUploading, setIsUploading] = useState(false);
@@ -77,7 +79,11 @@ export default function ResultPage({
 
             if (result.success && result.url) {
                 setUploadUrl(result.url);
-                setShowQRModal(true);
+                if (onShare) {
+                    onShare(result.url);
+                } else {
+                    setShowQRModal(true);
+                }
                 console.log('Screenshot uploaded successfully:', result.url);
             } else {
                 console.error('Upload failed:', result.error);
@@ -88,7 +94,7 @@ export default function ResultPage({
         } finally {
             setIsUploading(false);
         }
-    }, [personalityType]);
+    }, [onShare, personalityType]);
 
     // Countdown functionality
     const startCountdown = useCallback(() => {
@@ -113,6 +119,11 @@ export default function ResultPage({
     const handleCanvasReady = useCallback((getCanvasData: () => { canvas: HTMLCanvasElement | null; video: HTMLVideoElement | null }) => {
         getCanvasDataRef.current = getCanvasData;
     }, []);
+
+    // Don't render anything if personalityType is not set yet (during preloading)
+    if (!personalityType) {
+        return null;
+    }
 
     // Get current personality data
     return (

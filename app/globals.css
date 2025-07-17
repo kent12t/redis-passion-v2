@@ -130,22 +130,23 @@ h5,
 h6,
 .question {
   font-family: var(--font-circular-bold), system-ui, sans-serif;
+  font-weight: 600;
 }
 
 button,
 .motion-button {
   font-family: var(--font-circular-medium), system-ui, sans-serif;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .answer-button {
   font-family: var(--font-circular-medium), system-ui, sans-serif;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 p {
   font-family: var(--font-circular-medium), system-ui, sans-serif;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* Motion component styles */

@@ -9,26 +9,24 @@ import {
 } from './dialog';
 import MotionButton from './motion-button';
 
-// QR Code component - we'll use a simple fallback if react-fancy-qrcode doesn't work
+import QRCode from 'react-fancy-qrcode';
+
+// QR Code component using react-fancy-qrcode
 interface QRCodeProps {
   value: string;
   size?: number;
-  bgColor?: string;
-  fgColor?: string;
 }
 
 function SimpleQRCode({ value, size = 200 }: QRCodeProps) {
   return (
     <div className="flex items-center justify-center">
-      <div 
-        className="bg-white p-4 rounded-lg border-2 border-gray-200"
-        style={{ width: size, height: size }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img 
-          src={`https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(value)}`}
-          alt="QR Code"
-          className="w-full h-full"
+      <div className="p-4 bg-white rounded-lg border-2 border-gray-200">
+        <QRCode
+          value={value}
+          size={size}
+          backgroundColor="#ffffff"
+          color="#000000"
+          errorCorrection="M"
         />
       </div>
     </div>

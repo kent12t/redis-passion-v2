@@ -26,11 +26,11 @@ export default function IntroPage({ onBegin, onBack }: IntroPageProps) {
             <div className="grid absolute top-1/2 z-0 grid-cols-1 px-32 w-full h-auto font-sans -translate-y-1/2">
                 <div className="flex flex-col gap-8 justify-center items-center">
                     {/* Two paragraphs */}
-                    <p className="text-center text-[60px] mb-8 leading-tight text-white">
+                    <p className="text-center text-[60px] mb-8 font-sans leading-tight text-white">
                         Live Life Unstoppable!
                     </p>
 
-                    <p className="text-center text-[42px] mb-12 leading-tight text-white">
+                    <p className="text-center text-[42px] mb-12 font-sans leading-tight text-white">
                         Take this quick and fun quiz to find out what activities suit you best! There are no right or wrong answers, just choose what feels most like you.
 
                         <br />

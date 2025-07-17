@@ -9,7 +9,7 @@ module.exports = {
         extend: {
             fontFamily: {
                 sans: ['var(--font-circular-medium)', 'system-ui', 'sans-serif'],
-                title: ['var(--font-circular-bold)', 'system-ui', 'sans-serif'],
+                title: ['var(--font-circular-medium)', 'system-ui', 'sans-serif'],
             },
             colors: {
                 background: 'var(--background)',
