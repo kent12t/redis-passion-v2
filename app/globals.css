@@ -74,11 +74,7 @@ body {
 .app-content {
   position: relative;
   overflow: hidden;
-
-  /* Grid background with thicker lines */
-  background-image: linear-gradient(to right, var(--start-result-grid) 6px, transparent 6px),
-    linear-gradient(to bottom, var(--start-result-grid) 6px, transparent 6px);
-  background-size: var(--grid-size) var(--grid-size);
+  /* Grid background removed */
 }
 
 /* Default: Wider than 9:16 (landscape) - constrain by height */
@@ -95,11 +91,7 @@ body {
   }
 }
 
-/* Question page grid colors with thicker lines */
-.question-page .app-content {
-  background-image: linear-gradient(to right, var(--question-grid) 6px, transparent 6px),
-    linear-gradient(to bottom, var(--question-grid) 6px, transparent 6px);
-}
+/* Question page grid colors removed */
 
 /* Marquee animation */
 @keyframes marquee {

@@ -41,10 +41,10 @@ export default function QuestionPage({
     const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
     return (
-        <div className="flex flex-col items-center h-full font-sans">
+        <div className="flex flex-col items-center h-full font-sans bg-midblue">
             <div className="relative flex flex-col p-6 lg:p-12 w-full h-full max-w-[1200px] mx-auto items-center justify-center">
                 {/* Home button */}
-                <div className="absolute right-6 lg:right-12 top-6 lg:top-12">
+                <div className="absolute top-6 right-6 lg:right-12 lg:top-12">
                     <div className="flex gap-4">
                         {/* BACK BUTTON */}
                         <MotionButton
@@ -55,7 +55,7 @@ export default function QuestionPage({
 
                         >
                             <Image
-                                src="/icons/back-arrow.svg"
+                                src="/icons/back.svg"
                                 alt="Previous"
                                 width={96}
                                 height={96}
@@ -65,7 +65,7 @@ export default function QuestionPage({
 
                         <MotionButton
                             variant="primary"
-                            className="flex items-center justify-center p-6 rounded-full w-28 h-28 bg-yellow"
+                            className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-yellow"
                             onClick={onHome}
                         >
                             <Image
@@ -80,7 +80,7 @@ export default function QuestionPage({
                 </div>
 
                 {/* Main content area - centered vertically and horizontally */}
-                <div className="flex flex-col items-center justify-center flex-grow w-4/5 gap-6 md:gap-16">
+                <div className="flex flex-col flex-grow gap-6 justify-center items-center w-4/5 md:gap-16">
                     {/* Question and Options - these will be animated */}
                     <AnimatePresence mode="wait">
                         <motion.div
@@ -95,7 +95,7 @@ export default function QuestionPage({
                             className="flex flex-col items-center w-full"
                         >
                             {/* Question */}
-                            <div className="flex flex-col items-center justify-center mb-6 md:mb-16">
+                            <div className="flex flex-col justify-center items-center mb-6 md:mb-16">
                                 <h2 className="text-4xl font-bold text-center text-white sm:text-6xl lg:text-7xl question">
                                     {currentQuestion.question_text}
                                 </h2>
@@ -103,12 +103,12 @@ export default function QuestionPage({
 
                             {/* Options */}
                             <div className="flex flex-col items-center w-full">
-                                <div className="flex flex-col w-full gap-4 md:gap-6">
+                                <div className="flex flex-col gap-4 w-full md:gap-6">
                                     {currentQuestion.options.map((option, index) => (
                                         <MotionCard
                                             key={index}
                                             isSelected={selectedAnswers[currentQuestionIndex] === index}
-                                            className={`p-12 text-[40px] text-white font-medium leading-normal text-center ${index > 0 ? 'bg-green' : 'bg-purple'}`}
+                                            className={`p-12 text-[40px] text-white font-medium leading-normal text-center ${selectedAnswers[currentQuestionIndex] === index ? 'bg-green' : 'bg-purple'}`}
                                             onClick={() => onSelectAnswer(currentQuestionIndex, index)}
                                         >
                                             {option.option_text}
@@ -128,20 +128,20 @@ export default function QuestionPage({
                     >
                         Next
                         <Image
-                            src="/icons/next-arrow.svg"
+                            src="/icons/next.svg"
                             alt="Next"
                             width={64}
                             height={64}
-                            className="w-16 h-16 ml-4"
+                            className="ml-4 w-16 h-16"
                         />
                     </MotionButton>
                 </div>
 
                 {/* Bottom navigation section */}
-                <div className="flex flex-col w-full gap-4 md:gap-6">
+                <div className="flex flex-col gap-4 w-full md:gap-6">
 
                     {/* Progress bar */}
-                    <div className="w-full h-8 overflow-hidden bg-white border-black rounded-full border-6">
+                    <div className="overflow-hidden w-full h-8 bg-white rounded-full border-black border-6">
                         <div
                             className="h-full transition-all duration-300 ease-out bg-orange"
                             style={{ width: `${progress}%` }}

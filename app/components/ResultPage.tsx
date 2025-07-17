@@ -17,27 +17,27 @@ interface ResultPageProps {
 // Personality type to asset mapping
 const personalityAssets = {
     "runner": {
-        card: '/results/wellness-warrior.png',
+        card: '/results/runner.png',
         bg: '/costume/runner-shirt.png'
     },
     "artist": {
-        card: '/results/adventurous-artist.png',
+        card: '/results/artist.png',
         bg: '/costume/artist-shirt.png'
     },
     "gamer": {
-        card: '/results/tech-explorer.png',
+        card: '/results/gamer.png',
         bg: '/costume/gamer-shirt.png'
     },
     "crafter": {
-        card: '/results/everyday-creator.png',
+        card: '/results/crafter.png',
         bg: '/costume/crafter-shirt.png'
     },
     "farmer": {
-        card: '/results/urban-gardener.png',
+        card: '/results/farmer.png',
         bg: '/costume/farmer-shirt.png'
     },
     "volunteer": {
-        card: '/results/community-champion.png',
+        card: '/results/volunteer.png',
         bg: '/costume/volunteer-shirt.png'
     }
 };
@@ -52,6 +52,26 @@ export default function ResultPage({
     const [uploadUrl, setUploadUrl] = useState<string | null>(null);
     const [showQRModal, setShowQRModal] = useState(false);
     const [countdown, setCountdown] = useState<number | null>(null);
+
+    // Get background color based on personality type
+    const getBackgroundColor = () => {
+        switch (personalityType.toLowerCase()) {
+            case 'artist':
+                return 'bg-purple';
+            case 'volunteer':
+                return 'bg-green';
+            case 'crafter':
+                return 'bg-darkblue';
+            case 'runner':
+                return 'bg-lightblue';
+            case 'farmer':
+                return 'bg-palegreen';
+            case 'gamer':
+                return 'bg-darkyellow';
+            default:
+                return 'bg-yellow'; // fallback
+        }
+    };
 
     // Screenshot functionality with layer flattening and R2 upload
     const takeScreenshotInternal = useCallback(async () => {
@@ -215,7 +235,7 @@ export default function ResultPage({
 
     // Get current personality data
     return (
-        <div className="flex flex-col items-center p-0 h-full">
+        <div className={`flex flex-col items-center p-0 h-full ${getBackgroundColor()}`}>
             <div className="relative flex flex-col w-full h-full max-w-[1200px] mx-auto items-center justify-center">
                 {/* Home button */}
                 <div className="absolute top-12 right-12 z-20">

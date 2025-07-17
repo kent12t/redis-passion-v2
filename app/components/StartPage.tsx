@@ -10,20 +10,7 @@ interface StartPageProps {
 
 export default function StartPage({ onStart }: StartPageProps) {
     return (
-        <div className="relative h-full">
-            {/* Frame overlay - floating and centered, constrained by app-content width */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-1">
-                <div className="relative w-full h-full">
-                    <Image
-                        src="/frame.png"
-                        alt="Frame"
-                        fill
-                        className="object-cover"
-                        priority
-                    />
-                </div>
-            </div>
-
+        <div className="relative h-full bg-yellow">
             {/* Costume marquee */}
             <div className="absolute z-0 w-full top-1/12">
                 <CostumeMarquee direction="left" />
@@ -46,8 +33,8 @@ export default function StartPage({ onStart }: StartPageProps) {
             </div>
 
             {/* Main content */}
-            <div className="absolute z-0 grid w-full h-auto grid-cols-1 px-32 font-sans top-2/5">
-                <div className="flex flex-col items-center justify-center">
+            <div className="grid absolute z-0 grid-cols-1 px-32 w-full h-auto font-sans top-2/5">
+                <div className="flex flex-col justify-center items-center">
 
                     <p className="text-center text-[42px] mb-12 leading-normal text-[#3A3A3A]">
                         Take this quick and fun quiz to find out what activities suit you best! There are no right or wrong answers, just choose what feels most like you.                     </p>
