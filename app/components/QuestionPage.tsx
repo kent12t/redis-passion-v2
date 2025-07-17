@@ -149,7 +149,7 @@ export default function QuestionPage({
                 </div>
 
                 {/* Bottom navigation section */}
-                <div className="flex z-10 flex-col gap-4 px-24 py-8 mb-32 w-full">
+                <div className="flex z-10 flex-col gap-4 px-32 py-8 mb-32 w-full">
 
                     {/* Progress bar */}
                     <div className="overflow-hidden w-full h-8 bg-white rounded-full border-black border-6">

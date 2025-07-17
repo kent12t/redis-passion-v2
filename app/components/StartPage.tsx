@@ -16,7 +16,7 @@ export default function StartPage({ onStart }: StartPageProps) {
                 <CostumeMarquee direction="left" />
             </div>
 
-            <div className="absolute left-1/2 -translate-x-1/2 w-dvw max-w-[1200px] aspect-[3/1] z-2 top-[22%]">
+            <div className="absolute left-1/2 -translate-x-1/2 w-dvw max-w-[1200px] aspect-[3/1] z-2 top-[24%]">
                 <Image
                     src="/logo.png"
                     alt="Logo"

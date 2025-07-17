@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { StartPage, QuestionPage, ResultPage } from './';
+import { StartPage, IntroPage, QuestionPage, RevealPage, ResultPage } from './';
 import { generateSessionId, createActivityRecord, updateActivityRecord, isSupabaseAvailable } from '@/app/lib/supabase';
 
 // Types
@@ -18,7 +18,7 @@ export interface Question {
     options: Option[];
 }
 
-type QuizState = 'start' | 'question' | 'result';
+type QuizState = 'start' | 'intro' | 'question' | 'reveal' | 'result';
 
 const personalityTypes = [
     'runner',
@@ -98,9 +98,19 @@ export default function Quiz({ questions }: QuizProps) {
 
     // Handle starting the quiz
     const handleStart = () => {
+        setQuizState('intro');
+    };
+
+    // Handle moving from intro to questions
+    const handleBegin = () => {
         setQuizState('question');
         setCurrentQuestionIndex(0);
         setSelectedAnswers({});
+    };
+
+    // Handle going back from intro to start
+    const handleBackToStart = () => {
+        setQuizState('start');
     };
 
     // Handle selecting an answer
@@ -116,10 +126,16 @@ export default function Quiz({ questions }: QuizProps) {
         if (currentQuestionIndex < typedQuestions.length - 1) {
             setCurrentQuestionIndex(prev => prev + 1);
         } else {
-            // Calculate results and move to result page
-            calculateResults();
-            setQuizState('result');
+            // Move to reveal page after last question
+            setQuizState('reveal');
         }
+    };
+
+    // Handle revealing results
+    const handleReveal = () => {
+        // Calculate results and move to result page
+        calculateResults();
+        setQuizState('result');
     };
 
     // Handle navigating to the previous question
@@ -197,6 +213,10 @@ export default function Quiz({ questions }: QuizProps) {
                 <StartPage onStart={handleStart} />
             )}
 
+            {quizState === 'intro' && (
+                <IntroPage onBegin={handleBegin} onBack={handleBackToStart} />
+            )}
+
             {quizState === 'question' && (
                 <QuestionPage
                     questions={typedQuestions}
@@ -208,6 +228,10 @@ export default function Quiz({ questions }: QuizProps) {
                     onHome={handleHome}
                     totalQuestions={typedQuestions.length}
                 />
+            )}
+
+            {quizState === 'reveal' && (
+                <RevealPage onReveal={handleReveal} />
             )}
 
             {quizState === 'result' && (
