@@ -247,7 +247,7 @@ export default function FaceTrackingVideo({
     }, [componentId]);
 
     // Target aspect ratio
-    const TARGET_ASPECT_RATIO = 0.566;
+    const TARGET_ASPECT_RATIO = 0.775;
 
     // Calculate dimensions and scale based on container size
     const updateDimensions = useCallback(() => {
@@ -827,7 +827,7 @@ export default function FaceTrackingVideo({
     }, [onCanvasReady]);
 
     return (
-        <div ref={containerRef} className="relative w-full h-full overflow-hidden">
+        <div ref={containerRef} className="overflow-hidden relative w-full h-full">
             <div
                 className="relative w-full h-full"
                 style={{
@@ -842,7 +842,7 @@ export default function FaceTrackingVideo({
                     muted
                     playsInline
                     onPlay={handleVideoPlay}
-                    className="absolute top-0 left-0 object-cover w-full h-full"
+                    className="object-cover absolute top-0 left-0 w-full h-full"
                     style={{
                         objectFit: 'cover',
                         transform: 'scaleX(-1)' // Mirror the video display
@@ -853,8 +853,8 @@ export default function FaceTrackingVideo({
                     className="absolute top-0 left-0 w-full h-full"
                 />
                 {(!modelsLoaded || !imagesLoaded) && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                        <div className="p-4 bg-white border-2 border-black rounded-lg">
+                    <div className="flex absolute inset-0 justify-center items-center bg-black/30">
+                        <div className="p-4 bg-white rounded-lg border-2 border-black">
                             Loading camera...
                         </div>
                     </div>

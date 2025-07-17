@@ -148,17 +148,10 @@ export default function Quiz({ questions }: QuizProps) {
     // Handle returning to home/start screen
     const handleHome = async () => {
         setQuizState('start');
-        // Create new session when returning to home
-        await initializeSession();
-    };
-
-    // Handle starting the quiz over
-    const handleStartOver = async () => {
-        setQuizState('start');
         setCurrentQuestionIndex(0);
         setSelectedAnswers({});
         setPersonalityResult('');
-        // Create new session when starting over
+        // Create new session when returning to home
         await initializeSession();
     };
 
@@ -237,7 +230,6 @@ export default function Quiz({ questions }: QuizProps) {
             {quizState === 'result' && (
                 <ResultPage
                     personalityType={personalityResult}
-                    onStartOver={handleStartOver}
                     onHome={handleHome}
                 />
             )}

@@ -3,7 +3,6 @@
 import { FaceTrackingVideo } from './';
 import MotionButton from './ui/motion-button';
 import { QRModal } from './ui';
-import { RefreshCw, Camera } from 'lucide-react';
 import Image from 'next/image';
 import { useRef, useCallback, useState } from 'react';
 import { uploadImage, canvasToBlob } from '@/app/lib/upload-utils';
@@ -12,7 +11,6 @@ import { personalityAssets } from '@/app/data/personality-assets';
 
 interface ResultPageProps {
     personalityType: string;
-    onStartOver: () => void;
     onHome?: () => void;
 }
 
@@ -20,7 +18,6 @@ interface ResultPageProps {
 
 export default function ResultPage({
     personalityType,
-    onStartOver,
     onHome,
 }: ResultPageProps) {
     const getCanvasDataRef = useRef<(() => { canvas: HTMLCanvasElement | null; video: HTMLVideoElement | null }) | null>(null);
@@ -119,10 +116,10 @@ export default function ResultPage({
 
     // Get current personality data
     return (
-        <div className={`flex flex-col items-center p-0 h-full ${getBackgroundColor()}`}>
+        <div className={`flex flex-col items-center p-0 w-full h-full ${getBackgroundColor()}`}>
             <div className="relative flex flex-col w-full h-full max-w-[1200px] mx-auto items-center justify-center">
                 {/* Home button */}
-                <div className="absolute top-12 right-12 z-20">
+                <div className="absolute top-[900px] right-[190px] z-30">
                     <MotionButton
                         variant="primary"
                         className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-yellow"
@@ -131,30 +128,36 @@ export default function ResultPage({
                         <Image
                             src="/icons/home.svg"
                             alt="Home"
-                            width={96}
-                            height={96}
-                            className="w-28 h-28"
+                            width={80}
+                            height={80}
+                            className="w-20 h-20"
                         />
                     </MotionButton>
                 </div>
 
                 {/* Screenshot & Upload button */}
-                <div className="absolute right-12 top-44 z-20">
+                <div className="absolute right-[330px] top-[900px] z-30">
                     <MotionButton
                         variant="primary"
-                        className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-orange"
+                        className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-green"
                         onClick={startCountdown}
                         disabled={isUploading || countdown !== null}
                     >
-                        <Camera className={`w-16 h-16 text-white ${isUploading ? 'animate-pulse' : ''}`} />
+                        <Image
+                            src="/icons/camera.svg"
+                            alt="Camera"
+                            width={64}
+                            height={64}
+                            className={`w-16 h-16 ${isUploading ? 'animate-pulse' : ''}`}
+                        />
                     </MotionButton>
                 </div>
 
                 {/* Countdown display */}
                 {countdown !== null && (
-                    <div className="flex fixed inset-0 z-30 justify-center items-center w-full h-full" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                        <div className="flex justify-center items-center w-48 h-48 bg-white rounded-full border-8 shadow-2xl border-orange">
-                            <span className="text-8xl font-bold animate-pulse text-orange">
+                    <div className="flex absolute inset-0 z-10 justify-center items-center w-full h-full" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+                        <div className="absolute top-[460px] right-[25px] flex justify-center items-center w-[600px] h-[445px]">
+                            <span className="text-9xl font-bold text-white">
                                 {countdown}
                             </span>
                         </div>
@@ -163,38 +166,19 @@ export default function ResultPage({
 
                 {/* Processing loader */}
                 {isUploading && (
-                    <div className="flex fixed inset-0 z-30 justify-center items-center w-full h-full" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }}>
-                        <div className="flex flex-col justify-center items-center p-8 bg-white rounded-2xl border-4 shadow-2xl border-orange">
+                    <div className="flex absolute inset-0 z-10 justify-center items-center w-full h-full" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+                        <div className="absolute top-[460px] right-[25px] flex flex-col justify-center items-center w-[600px] h-[450px]">
                             <div className="flex justify-center items-center mb-4">
-                                <div className="w-12 h-12 rounded-full border-4 animate-spin border-orange border-t-transparent"></div>
+                                <div className="w-12 h-12 rounded-full border-4 border-white animate-spin border-t-transparent"></div>
                             </div>
-                            <span className="text-2xl font-bold text-orange">Processing...</span>
-                            <span className="mt-2 text-sm text-gray-600">Capturing and uploading your image</span>
+                            <span className="text-[40px] font-bold text-white">Processing...</span>
                         </div>
                     </div>
                 )}
 
-                {/* Upload URL display */}
-                {uploadUrl && (
-                    <div className="absolute right-12 top-80 z-20 p-4 max-w-xs bg-white rounded-lg shadow-lg">
-                        <p className="mb-2 text-sm text-gray-600">Image uploaded!</p>
-                        <a 
-                            href={uploadUrl} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-xs text-blue-500 break-all hover:underline"
-                        >
-                            View Image
-                        </a>
-                    </div>
-                )}
-
-                {/* Main content with 3:2 ratio columns */}
-                <div className="grid w-full grid-cols-5 pl-[160px] pr-[90px] h-full pt-[360px] grid-rows-8 z-0">
-                    {/* Left column (60%) */}
-                    <div className="flex flex-col col-span-3 row-span-full h-full">
-                        {/* Face tracking display - 5/8 height */}
-
+                <div className="grid w-full grid-cols-5 pl-[190px] pr-[90px] h-full pt-[400px] grid-rows-8 z-2">
+                    <div className="col-span-2 row-span-full"></div>
+                    <div className="flex flex-col col-span-3 row-span-3 row-start-1 h-full">
                         <div className="overflow-hidden relative p-0 h-full">
                             <FaceTrackingVideo
                                 key={`face-tracking-${personalityType}`}
@@ -202,34 +186,24 @@ export default function ResultPage({
                                 onCanvasReady={handleCanvasReady}
                             />
                         </div>
-
                     </div>
 
                 </div>
 
-                <div className="flex absolute top-0 left-0 justify-center items-center w-full h-full">
+                <div className="absolute top-0 left-0 z-20 justify-center items-center w-full h-full">
                     <Image
                         src={personalityAssets[personalityType as keyof typeof personalityAssets].card}
                         alt={personalityType}
-                        sizes="80vw"
-                        className="object-contain relative w-5/6"
+                        sizes="100vw"
+                        className="object-contain relative w-full"
                         width={1080}
-                        height={1966}
+                        height={1920}
                     />
                 </div>
 
 
             </div>
             
-            <MotionButton
-                onClick={onStartOver}
-                size="lg"
-                className="px-12 h-24 text-[48px] text-orange bg-yellow absolute bottom-12 z-20"
-            >
-                <RefreshCw className="mr-2 w-12 h-12 stroke-3 text-orange" />
-                Start Over
-            </MotionButton>
-
             {/* QR Modal */}
             {uploadUrl && (
                 <QRModal
