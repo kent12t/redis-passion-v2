@@ -8,6 +8,7 @@ const circularStdBold = localFont({
   src: '../public/fonts/CircularStd-Bold.otf',
   variable: '--font-circular-bold',
   display: 'swap',
+  preload: true,
 });
 
 export const metadata: Metadata = {

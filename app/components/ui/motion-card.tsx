@@ -44,7 +44,7 @@ export const MotionCard = forwardRef<HTMLDivElement, MotionCardProps>(({
             ref={ref}
             className={cn(
                 // Base styles
-                "rounded-2xl font-sans",
+                "font-sans rounded-[48px]",
                 "motion-card",
                 
                 // Variant styles (can be overridden by className)

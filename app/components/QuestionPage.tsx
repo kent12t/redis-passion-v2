@@ -56,10 +56,10 @@ export default function QuestionPage({
                         >
                             <Image
                                 src="/icons/back.svg"
-                                alt="Previous"
-                                width={96}
-                                height={96}
-                                className="w-28 h-28"
+                                alt="Back"
+                                width={72}
+                                height={72}
+                                className="w-16 h-16"
                             />
                         </MotionButton>
 
@@ -73,7 +73,7 @@ export default function QuestionPage({
                                 alt="Home"
                                 width={96}
                                 height={96}
-                                className="w-28 h-28"
+                                className="w-20 h-20"
                             />
                         </MotionButton>
                     </div>
@@ -124,15 +124,15 @@ export default function QuestionPage({
                         onClick={onNext}
                         disabled={selectedAnswers[currentQuestionIndex] === undefined}
                         variant={selectedAnswers[currentQuestionIndex] === undefined ? "neutral" : "primary"}
-                        className="flex-shrink px-12 h-24 text-[48px] bg-yellow text-orange"
+                        className="flex-shrink px-12 h-24 text-[48px] bg-orange text-white"
                     >
-                        Next
+                        NEXT 
                         <Image
                             src="/icons/next.svg"
                             alt="Next"
-                            width={64}
-                            height={64}
-                            className="ml-4 w-16 h-16"
+                            width={48}
+                            height={48}
+                            className="ml-4 w-12 h-12"
                         />
                     </MotionButton>
                 </div>

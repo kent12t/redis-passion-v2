@@ -8,6 +8,11 @@ export const supabase: SupabaseClient | null = supabaseUrl && supabaseKey
   ? createClient(supabaseUrl, supabaseKey)
   : null
 
+// Helper function to check if Supabase is available
+export const isSupabaseAvailable = (): boolean => {
+  return supabase !== null;
+}
+
 export interface ActivityRecord {
   id?: number
   created_at?: string
@@ -24,41 +29,56 @@ export function generateSessionId(): string {
 // Create a new activity record
 export async function createActivityRecord(sessionId: string): Promise<{ data: ActivityRecord | null, error: PostgrestError | null }> {
   if (!supabase) {
-    console.warn('Supabase client not initialized - missing environment variables')
+    // Don't log warnings in production or when Supabase is intentionally not configured
+    if (process.env.NODE_ENV === 'development') {
+      console.info('Supabase not configured - skipping activity record creation');
+    }
     return { data: null, error: null }
   }
   
-  const { data, error } = await supabase
-    .from('activity_record')
-    .insert([
-      {
-        session_id: sessionId,
-        personality: null,
-        completed: false
-      }
-    ])
-    .select()
-    .single()
-  
-  return { data, error }
+  try {
+    const { data, error } = await supabase
+      .from('activity_record')
+      .insert([
+        {
+          session_id: sessionId,
+          personality: null,
+          completed: false
+        }
+      ])
+      .select()
+      .single()
+    
+    return { data, error }
+  } catch (error) {
+    console.error('Error creating activity record:', error)
+    return { data: null, error: null }
+  }
 }
 
 // Update activity record with personality result
 export async function updateActivityRecord(sessionId: string, personality: string): Promise<{ data: ActivityRecord | null, error: PostgrestError | null }> {
   if (!supabase) {
-    console.warn('Supabase client not initialized - missing environment variables')
+    if (process.env.NODE_ENV === 'development') {
+      console.info('Supabase not configured - skipping activity record update');
+    }
     return { data: null, error: null }
   }
   
-  const { data, error } = await supabase
-    .from('activity_record')
-    .update({
-      personality,
-      completed: true
-    })
-    .eq('session_id', sessionId)
-    .select()
-    .single()
-  
-  return { data, error }
+  try {
+    const { data, error } = await supabase
+      .from('activity_record')
+      .update({
+        personality,
+        completed: true
+      })
+      .eq('session_id', sessionId)
+      .select()
+      .single()
+    
+    return { data, error }
+  } catch (error) {
+    console.error('Error updating activity record:', error)
+    return { data: null, error: null }
+  }
 } 
