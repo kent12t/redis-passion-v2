@@ -74,7 +74,12 @@ export default function QuestionPage({
                             {/* Question */}
                             <div className="flex flex-col justify-center items-center mb-16">
                                 <h2 className="text-6xl leading-snug text-center text-white question">
-                                    {currentQuestion.question_text}
+                                    {currentQuestion.question_text.split('\n').map((line, lineIndex) => (
+                                        <span key={lineIndex}>
+                                            {line}
+                                            {lineIndex < currentQuestion.question_text.split('\n').length - 1 && <br />}
+                                        </span>
+                                    ))}
                                 </h2>
                             </div>
 
@@ -88,7 +93,12 @@ export default function QuestionPage({
                                             className={`p-12 text-[40px] text-white font-medium leading-normal text-center ${selectedAnswers[currentQuestionIndex] === index ? 'bg-green' : 'bg-purple'}`}
                                             onClick={() => onSelectAnswer(currentQuestionIndex, index)}
                                         >
-                                            {option.option_text}
+                                            {option.option_text.split('\n').map((line, lineIndex) => (
+                                                <span key={lineIndex}>
+                                                    {line}
+                                                    {lineIndex < option.option_text.split('\n').length - 1 && <br />}
+                                                </span>
+                                            ))}
                                         </MotionCard>
                                     ))}
                                 </div>

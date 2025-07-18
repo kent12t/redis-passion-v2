@@ -19,7 +19,7 @@ const circularStdBold = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Rediscover Your Passion",
+  title: "Ideal Pursuits",
   description: "Personalized recommendations for your unique interests and passions.",
 };
 

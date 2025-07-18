@@ -30,16 +30,17 @@ export default function IntroPage({ onBegin, onBack }: IntroPageProps) {
                         Live Life Unstoppable!
                     </p>
 
-                    <p className="text-center text-[42px] mb-12 font-sans leading-tight text-white">
-                        Take this quick and fun quiz to find out what activities suit you best! There are no right or wrong answers, just choose what feels most like you.
+                    <p className="text-center text-[40px] mb-12 font-sans leading-tight text-white">
+                        Take this quick and fun quiz to find out what activities suit you best! No right or wrong answers, just choose what feels most like you.
+                        <br />
+                        It’ll only take 3-5 minutes.
 
                         <br />
-                        <br />
-
-                        This will take only 3–5 minutes.
                         <br />
 
                         At the end, you’ll receive activity suggestions that you’re likely to enjoy.
+                        <br />
+                        Live Life Unstoppable!
                     </p>
 
                     {/* Navigation buttons */}

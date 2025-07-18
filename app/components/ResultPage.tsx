@@ -130,7 +130,7 @@ export default function ResultPage({
         <div className={`flex flex-col items-center p-0 w-full h-full ${getBackgroundColor()}`}>
             <div className="relative flex flex-col w-full h-full max-w-[1200px] mx-auto items-center justify-center">
                 {/* Home button */}
-                <div className="absolute top-[900px] right-[190px] z-30">
+                <div className="absolute top-[47%] right-[18%] z-30">
                     <MotionButton
                         variant="primary"
                         className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-yellow"
@@ -147,7 +147,7 @@ export default function ResultPage({
                 </div>
 
                 {/* Screenshot & Upload button */}
-                <div className="absolute right-[330px] top-[900px] z-30">
+                <div className="absolute right-[31%] top-[47%] z-60">
                     <MotionButton
                         variant="primary"
                         className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-green"
