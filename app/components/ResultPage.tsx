@@ -8,7 +8,7 @@ import { useRef, useCallback, useState } from 'react';
 import { uploadImage, canvasToBlob } from '@/app/lib/upload-utils';
 import { createScreenshotCanvas } from '@/app/lib/screenshot-utils';
 import { personalityAssets } from '@/app/data/personality-assets';
-import textContent from '@/app/lib/text-utils';
+import { useLanguage } from '@/app/lib/text-utils';
 
 interface ResultPageProps {
     personalityType: string;
@@ -23,6 +23,7 @@ export default function ResultPage({
     onHome,
     onShare,
 }: ResultPageProps) {
+    const { textContent } = useLanguage();
     const getCanvasDataRef = useRef<(() => { canvas: HTMLCanvasElement | null; video: HTMLVideoElement | null }) | null>(null);
     const [isUploading, setIsUploading] = useState(false);
     const [uploadUrl, setUploadUrl] = useState<string | null>(null);

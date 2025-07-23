@@ -3,13 +3,15 @@
 import MotionButton from './ui/motion-button';
 import CostumeMarquee from './ui/costume-marquee';
 import Image from 'next/image';
-import textContent from '@/app/lib/text-utils';
+import { useLanguage, languages } from '@/app/lib/text-utils';
 
 interface StartPageProps {
     onStart: () => void;
 }
 
 export default function StartPage({ onStart }: StartPageProps) {
+    const { textContent, currentLanguage, setLanguage } = useLanguage();
+
     return (
         <div className="relative h-full bg-yellow">
             {/* Costume marquee */}
@@ -45,6 +47,21 @@ export default function StartPage({ onStart }: StartPageProps) {
                             </span>
                         ))}
                     </p>
+
+                    {/* Language selection buttons */}
+                    <div className="flex flex-row gap-4 mb-8">
+                        {languages.map((language) => (
+                            <MotionButton
+                                key={language.code}
+                                onClick={() => setLanguage(language.code)}
+                                className={`px-8 py-8 text-[30px] font-sans text-white ${
+                                    currentLanguage === language.code ? 'bg-green' : 'bg-purple'
+                                }`}
+                            >
+                                {language.name}
+                            </MotionButton>
+                        ))}
+                    </div>
 
                     <MotionButton
                         onClick={onStart}

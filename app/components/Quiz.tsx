@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { StartPage, IntroPage, QuestionPage, RevealPage, ResultPage, SharePage } from './';
 import { generateSessionId, createActivityRecord, updateActivityRecord, isSupabaseAvailable } from '@/app/lib/supabase';
+import { useLanguage } from '@/app/lib/text-utils';
 
 // Types
 export interface Option {
@@ -44,18 +45,32 @@ function getOfficialPersonalityName(nickname: string): string {
     return personalityMapping[nickname] || nickname;
 }
 
-interface QuizProps {
-    questions: unknown[]; // More specific than any, we'll type assert inside
-}
-
-export default function Quiz({ questions }: QuizProps) {
-    const typedQuestions = questions as Question[];
+export default function Quiz() {
+    const { currentLanguage } = useLanguage();
+    const [questions, setQuestions] = useState<Question[]>([]);
     const [quizState, setQuizState] = useState<QuizState>('start');
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
     const [personalityResult, setPersonalityResult] = useState('');
     const [sessionId, setSessionId] = useState<string>('');
     const [shareImageUrl, setShareImageUrl] = useState<string>('');
+
+    // Load questions based on current language
+    useEffect(() => {
+        const loadQuestions = async () => {
+            try {
+                const questionsModule = await import(`@/app/data/questions_${currentLanguage}.json`);
+                setQuestions(questionsModule.default as unknown as Question[]);
+            } catch (error) {
+                console.error(`Failed to load questions for language: ${currentLanguage}`, error);
+                // Fallback to English questions
+                const fallback = await import('@/app/data/questions_en.json');
+                setQuestions(fallback.default as unknown as Question[]);
+            }
+        };
+
+        loadQuestions();
+    }, [currentLanguage]);
 
     // Initialize session on component mount
     useEffect(() => {
@@ -124,7 +139,7 @@ export default function Quiz({ questions }: QuizProps) {
 
     // Handle navigating to the next question
     const handleNext = async () => {
-        if (currentQuestionIndex < typedQuestions.length - 1) {
+        if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(prev => prev + 1);
         } else {
             // Calculate results first, then move to reveal page so ResultPage can preload
@@ -178,7 +193,7 @@ export default function Quiz({ questions }: QuizProps) {
 
         // Calculate points for each answer
         Object.entries(selectedAnswers).forEach(([questionIndex, optionIndex]) => {
-            const question = typedQuestions[parseInt(questionIndex)];
+            const question = questions[parseInt(questionIndex)];
             const option = question.options[optionIndex];
 
             // Add points to personality types
@@ -223,16 +238,16 @@ export default function Quiz({ questions }: QuizProps) {
                 <IntroPage onBegin={handleBegin} onBack={handleBackToStart} />
             )}
 
-            {quizState === 'question' && (
+            {quizState === 'question' && questions.length > 0 && (
                 <QuestionPage
-                    questions={typedQuestions}
+                    questions={questions}
                     currentQuestionIndex={currentQuestionIndex}
                     selectedAnswers={selectedAnswers}
                     onSelectAnswer={handleSelectAnswer}
                     onNext={handleNext}
                     onPrevious={handlePrevious}
                     onHome={handleHome}
-                    totalQuestions={typedQuestions.length}
+                    totalQuestions={questions.length}
                 />
             )}
 

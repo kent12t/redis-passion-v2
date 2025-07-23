@@ -2,13 +2,15 @@
 
 import MotionButton from './ui/motion-button';
 import CostumeMarquee from './ui/costume-marquee';
-import textContent from '@/app/lib/text-utils';
+import { useLanguage } from '@/app/lib/text-utils';
 
 interface RevealPageProps {
     onReveal: () => void;
 }
 
 export default function RevealPage({ onReveal }: RevealPageProps) {
+    const { textContent } = useLanguage();
+
     return (
         <div className="relative h-full bg-midblue">
             {/* Top marquees */}

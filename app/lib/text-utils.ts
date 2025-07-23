@@ -1,10 +1,11 @@
-import textContent from '@/app/data/text_content_en.json';
+// Re-export language functionality from the new language context
+export { 
+  useLanguage, 
+  LanguageProvider, 
+  languages, 
+  type Language, 
+  type LanguageConfig, 
+  type TextContent 
+} from './language-context';
 
-/**
- * Get text content from the JSON file
- */
-export function getTextContent() {
-  return textContent;
-}
-
-export default textContent; 
+// Legacy default export removed - use useLanguage hook instead 

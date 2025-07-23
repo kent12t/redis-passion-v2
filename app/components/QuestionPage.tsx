@@ -4,7 +4,7 @@ import MotionButton from './ui/motion-button';
 import MotionCard from './ui/motion-card';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import textContent from '@/app/lib/text-utils';
+import { useLanguage } from '@/app/lib/text-utils';
 
 interface Option {
     option_text: string;
@@ -38,6 +38,7 @@ export default function QuestionPage({
     onHome,
     totalQuestions,
 }: QuestionPageProps) {
+    const { textContent } = useLanguage();
     const currentQuestion = questions[currentQuestionIndex];
     const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 

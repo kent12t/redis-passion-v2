@@ -3,7 +3,7 @@
 import MotionButton from './ui/motion-button';
 import Image from 'next/image';
 import QRCode from 'react-fancy-qrcode';
-import textContent from '@/app/lib/text-utils';
+import { useLanguage } from '@/app/lib/text-utils';
 
 // QR Code component using react-fancy-qrcode
 interface QRCodeProps {
@@ -36,6 +36,8 @@ interface SharePageProps {
 }
 
 export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) {
+    const { textContent } = useLanguage();
+
     return (
         <div className="overflow-hidden relative p-0 w-full h-full bg-midblue">
             {/* Title */}

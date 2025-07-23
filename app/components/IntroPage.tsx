@@ -3,7 +3,7 @@
 import MotionButton from './ui/motion-button';
 import CostumeMarquee from './ui/costume-marquee';
 import Image from 'next/image';
-import textContent from '@/app/lib/text-utils';
+import { useLanguage } from '@/app/lib/text-utils';
 
 interface IntroPageProps {
     onBegin: () => void;
@@ -11,6 +11,8 @@ interface IntroPageProps {
 }
 
 export default function IntroPage({ onBegin, onBack }: IntroPageProps) {
+    const { textContent } = useLanguage();
+
     return (
         <div className="relative h-full bg-purple">
             {/* Costume marquee */}
