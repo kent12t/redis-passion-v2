@@ -4,6 +4,7 @@ import MotionButton from './ui/motion-button';
 import MotionCard from './ui/motion-card';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import textContent from '@/app/lib/text-utils';
 
 interface Option {
     option_text: string;
@@ -117,7 +118,7 @@ export default function QuestionPage({
                         >
                             <Image
                                 src="/icons/back.svg"
-                                alt="Back"
+                                alt={textContent.common.altTexts.back}
                                 width={40}
                                 height={40}
                                 className="w-10 h-10"
@@ -131,10 +132,10 @@ export default function QuestionPage({
                             variant={selectedAnswers[currentQuestionIndex] === undefined ? "neutral" : "primary"}
                             className="flex-shrink px-24 h-28 text-[48px] bg-orange text-white"
                         >
-                            NEXT 
+                            {textContent.questionPage.buttons.next}
                             <Image
                                 src="/icons/next.svg"
-                                alt="Next"
+                                alt={textContent.common.altTexts.next}
                                 width={40}
                                 height={40}
                                 className="ml-4 w-10 h-10"

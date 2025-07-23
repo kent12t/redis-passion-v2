@@ -3,6 +3,7 @@
 import MotionButton from './ui/motion-button';
 import CostumeMarquee from './ui/costume-marquee';
 import Image from 'next/image';
+import textContent from '@/app/lib/text-utils';
 
 interface StartPageProps {
     onStart: () => void;
@@ -37,11 +38,12 @@ export default function StartPage({ onStart }: StartPageProps) {
                 <div className="flex flex-col justify-center items-center">
 
                     <p className="text-center text-[48px] mb-12 leading-tight text-black">
-                    Unlock your next adventure<br/>
-                    by tailoring suggestions to<br/>
-                    what excites you. Whether it’s<br/>
-                    Play, Purpose, or Passion,<br/>
-                    we’ll help you find the perfect fit.
+                        {textContent.startPage.heroText.split('\n').map((line, index, array) => (
+                            <span key={index}>
+                                {line}
+                                {index < array.length - 1 && <br />}
+                            </span>
+                        ))}
                     </p>
 
                     <MotionButton
@@ -49,7 +51,7 @@ export default function StartPage({ onStart }: StartPageProps) {
                         size="lg"
                         className="h-auto w-auto px-12 py-4 text-[48px] font-sans bg-midblue text-white"
                     >
-                        GET STARTED!
+                        {textContent.startPage.button.getStarted}
                     </MotionButton>
                 </div>
             </div>

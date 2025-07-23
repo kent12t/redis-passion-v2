@@ -1,5 +1,5 @@
 import { Quiz } from './components';
-import questions from './data/questions.json';
+import questions from './data/questions_en.json';
 
 export default function Home() {
   return (

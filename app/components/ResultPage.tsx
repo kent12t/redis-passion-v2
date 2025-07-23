@@ -8,6 +8,7 @@ import { useRef, useCallback, useState } from 'react';
 import { uploadImage, canvasToBlob } from '@/app/lib/upload-utils';
 import { createScreenshotCanvas } from '@/app/lib/screenshot-utils';
 import { personalityAssets } from '@/app/data/personality-assets';
+import textContent from '@/app/lib/text-utils';
 
 interface ResultPageProps {
     personalityType: string;
@@ -138,7 +139,7 @@ export default function ResultPage({
                     >
                         <Image
                             src="/icons/home.svg"
-                            alt="Home"
+                            alt={textContent.common.altTexts.home}
                             width={80}
                             height={80}
                             className="w-20 h-20"
@@ -147,7 +148,7 @@ export default function ResultPage({
                 </div>
 
                 {/* Screenshot & Upload button */}
-                <div className="absolute right-[31%] top-[47%] z-60">
+                <div className="absolute right-[31%] top-[47%] z-30">
                     <MotionButton
                         variant="primary"
                         className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-green"
@@ -156,7 +157,7 @@ export default function ResultPage({
                     >
                         <Image
                             src="/icons/camera.svg"
-                            alt="Camera"
+                            alt={textContent.common.altTexts.camera}
                             width={64}
                             height={64}
                             className={`w-16 h-16 ${isUploading ? 'animate-pulse' : ''}`}
