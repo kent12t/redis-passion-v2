@@ -8,6 +8,12 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 let globalModelsLoaded = false;
 let globalModelLoadingPromise: Promise<void> | null = null;
 
+// Cache face-api module to avoid repeated dynamic imports
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let faceApiModule: Record<string, any> | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let faceApiModulePromise: Promise<Record<string, any>> | null = null;
+
 // Global video stream management
 let globalVideoStream: MediaStream | null = null;
 let globalStreamPromise: Promise<MediaStream> | null = null;
@@ -69,19 +75,21 @@ const getGlobalVideoStream = async (componentId: string): Promise<MediaStream | 
 
 // Function to release video stream globally with delay for React development mode
 const releaseGlobalVideoStream = (componentId: string) => {
+    console.log('FaceTrackingVideo: Release request from component:', componentId, 'Active component:', activeComponentId);
+    
     if (activeComponentId !== componentId) {
         console.log('FaceTrackingVideo: Not the active component, ignoring stream release');
         return;
     }
 
-    console.log('FaceTrackingVideo: Scheduling global video stream release in 1 second...');
+    console.log('FaceTrackingVideo: Scheduling global video stream release in 500ms...');
     
     // Clear any existing timeout
     if (releaseTimeout) {
         clearTimeout(releaseTimeout);
     }
     
-    // Delay the actual release to handle React development mode re-mounting
+    // Reduced delay to handle React development mode re-mounting but faster cleanup
     releaseTimeout = setTimeout(() => {
         console.log('FaceTrackingVideo: Executing delayed stream release');
         if (globalVideoStream) {
@@ -91,7 +99,47 @@ const releaseGlobalVideoStream = (componentId: string) => {
         globalStreamPromise = null;
         activeComponentId = null;
         releaseTimeout = null;
-    }, 1000); // 1 second delay
+        console.log('FaceTrackingVideo: Global stream fully released');
+    }, 500); // Reduced to 500ms for faster cleanup
+};
+
+// Function to immediately release video stream (for emergency cleanup)
+const forceReleaseGlobalVideoStream = () => {
+    console.log('FaceTrackingVideo: Force releasing global video stream');
+    
+    // Clear any pending timeout
+    if (releaseTimeout) {
+        clearTimeout(releaseTimeout);
+        releaseTimeout = null;
+    }
+    
+    // Immediately stop stream
+    if (globalVideoStream) {
+        globalVideoStream.getTracks().forEach(track => track.stop());
+        globalVideoStream = null;
+    }
+    globalStreamPromise = null;
+    activeComponentId = null;
+    console.log('FaceTrackingVideo: Force release completed');
+};
+
+// Function to get face-api module (cached to avoid HMR issues)
+const getFaceApiModule = async () => {
+    if (faceApiModule) {
+        return faceApiModule;
+    }
+
+    if (faceApiModulePromise) {
+        return await faceApiModulePromise;
+    }
+
+    faceApiModulePromise = import('@vladmandic/face-api').then(module => ({
+        detectSingleFace: module.detectSingleFace,
+        SsdMobilenetv1Options: module.SsdMobilenetv1Options
+    }));
+
+    faceApiModule = await faceApiModulePromise;
+    return faceApiModule;
 };
 
 // Function to load models globally
@@ -157,6 +205,8 @@ interface TrackedFace {
         y: number;
     };
     confidence: number;
+    stabilityFrames: number; // Track how many consecutive frames this face has been detected
+    lastArea: number; // Track face area for size consistency checks
 }
 
 interface FaceTrackingVideoProps {
@@ -164,38 +214,26 @@ interface FaceTrackingVideoProps {
     onCanvasReady?: (getCanvasData: () => { canvas: HTMLCanvasElement | null; video: HTMLVideoElement | null }) => void;
 }
 
-// Personality type to asset mapping
+// Personality type to costume asset mapping
 const personalityAssets = {
-    "runner": {
-        hat: '/costume/runner-hat.png',
-        shirt: '/costume/runner-shirt.png'
-    },
-    "artist": {
-        hat: '/costume/artist-hat.png',
-        shirt: '/costume/artist-shirt.png'
-    },
-    "gamer": {
-        hat: '/costume/gamer-hat.png',
-        shirt: '/costume/gamer-shirt.png'
-    },
-    "crafter": {
-        hat: '/costume/crafter-hat.png',
-        shirt: '/costume/crafter-shirt.png'
-    },
-    "farmer": {
-        hat: '/costume/farmer-hat.png',
-        shirt: '/costume/farmer-shirt.png'
-    },
-    "volunteer": {
-        hat: '/costume/volunteer-hat.png',
-        shirt: '/costume/volunteer-shirt.png'
-    }
+    "runner": '/costume/runner.png',
+    "artist": '/costume/artist.png',
+    "gamer": '/costume/gamer.png',
+    "crafter": '/costume/crafter.png',
+    "farmer": '/costume/farmer.png',
+    "volunteer": '/costume/volunteer.png'
 } as const;
 
-const debugMode = false;
-// Confidence thresholds
+// Costume image properties
+const COSTUME_SIZE = 1800; // Original costume image size (1800x1800)
+const COSTUME_FACE_CENTER = { x: 900, y: 650 }; // Face center position in costume image
+
+// Enhanced filtering thresholds
 const INITIAL_DETECTION_THRESHOLD = 0.65; // Higher threshold for new faces
 const TRACKING_CONFIDENCE_THRESHOLD = 0.4; // Existing threshold for continuous tracking
+const MIN_FACE_SIZE_RATIO = 0.03; // Minimum face size as ratio of video area (3%)
+const MIN_FACE_PIXELS = 1600; // Minimum face area in pixels (40x40px minimum)
+const FACE_STABILITY_FRAMES = 3; // Frames a face must be detected to be considered stable
 
 export default function FaceTrackingVideo({
     personalityType,
@@ -215,8 +253,7 @@ export default function FaceTrackingVideo({
     const trackedFacesRef = useRef<TrackedFace[]>([]);
     const nextIdRef = useRef(0);
     const prevPositionsRef = useRef<Array<{ x: number; y: number; width: number; height: number }>>([]);
-    const [hatImage, setHatImage] = useState<HTMLImageElement | null>(null);
-    const [shirtImage, setShirtImage] = useState<HTMLImageElement | null>(null);
+    const [costumeImage, setCostumeImage] = useState<HTMLImageElement | null>(null);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0, scale: 1 });
     // Add ref for scale smoothing
     const prevScaleRef = useRef<number>(1);
@@ -241,8 +278,13 @@ export default function FaceTrackingVideo({
             console.log('FaceTrackingVideo: Component unmounting, clearing mounted flag for:', componentId);
             isMountedRef.current = false;
             isActiveRef.current = false;
-            // Release the global video stream when component unmounts
-            releaseGlobalVideoStream(componentId);
+            
+            // For quiz flow transitions, do immediate cleanup to prevent "another component using camera" issue
+            if (activeComponentId === componentId) {
+                forceReleaseGlobalVideoStream();
+            } else {
+                releaseGlobalVideoStream(componentId);
+            }
         };
     }, [componentId]);
 
@@ -347,9 +389,9 @@ export default function FaceTrackingVideo({
             return;
         }
 
-        const assets = personalityAssets[personalityType as keyof typeof personalityAssets];
-        if (!assets) {
-            console.log('FaceTrackingVideo: No assets found for personality:', personalityType);
+        const costumePath = personalityAssets[personalityType as keyof typeof personalityAssets];
+        if (!costumePath) {
+            console.log('FaceTrackingVideo: No costume found for personality:', personalityType);
             return;
         }
 
@@ -362,20 +404,16 @@ export default function FaceTrackingVideo({
             });
         };
 
-        Promise.all([
-            loadImage(assets.hat),
-            loadImage(assets.shirt)
-        ]).then(([hat, shirt]) => {
+        loadImage(costumePath).then((costume) => {
             if (isActiveRef.current && isMountedRef.current) {
-                console.log('FaceTrackingVideo: Assets loaded successfully');
-                setHatImage(hat);
-                setShirtImage(shirt);
+                console.log('FaceTrackingVideo: Costume loaded successfully');
+                setCostumeImage(costume);
                 setImagesLoaded(true);
             } else {
-                console.log('FaceTrackingVideo: Component became inactive during asset loading');
+                console.log('FaceTrackingVideo: Component became inactive during costume loading');
             }
         }).catch((error) => {
-            console.error('FaceTrackingVideo: Error loading assets:', error);
+            console.error('FaceTrackingVideo: Error loading costume:', error);
         });
     }, [personalityType]);
 
@@ -395,7 +433,12 @@ export default function FaceTrackingVideo({
                     console.log('FaceTrackingVideo: Setting modelsLoaded to true');
                     setModelsLoaded(true);
                 } else {
-                    console.log('FaceTrackingVideo: Component became inactive after model loading');
+                    console.log('FaceTrackingVideo: Component became inactive after model loading, clearing active component');
+                    // If this component became inactive and it was the active component, clear it
+                    if (activeComponentId === componentId) {
+                        console.log('FaceTrackingVideo: Clearing stale activeComponentId:', activeComponentId);
+                        activeComponentId = null;
+                    }
                 }
             } catch (error) {
                 console.error('FaceTrackingVideo: Error loading models:', error);
@@ -449,6 +492,12 @@ export default function FaceTrackingVideo({
             
             // Mark component as inactive to prevent new operations
             isActiveRef.current = false;
+            
+            // Clear active component if this was the active one
+            if (activeComponentId === componentId) {
+                console.log('FaceTrackingVideo: Clearing activeComponentId during cleanup:', activeComponentId);
+                activeComponentId = null;
+            }
 
             // Stop animation frame
             if (animationFrameRef.current) {
@@ -504,7 +553,7 @@ export default function FaceTrackingVideo({
 
         const prev = prevPositionsRef.current[index];
         const positionEasing = 0.15; // Weaker position smoothing (was 0.3)
-        const scaleEasing = 0.8;    // Stronger scale smoothing
+        const scaleEasing = 0.8;
 
         // Apply different easing values for position and scale
         const smoothed = {
@@ -537,6 +586,33 @@ export default function FaceTrackingVideo({
         return dx * dx + dy * dy;
     };
 
+    // Check if face meets minimum size requirements
+    const isFaceSizeValid = (detection: FaceDetection, cropWidth: number, cropHeight: number) => {
+        const faceArea = detection.box.width * detection.box.height;
+        const videoArea = cropWidth * cropHeight;
+        const sizeRatio = faceArea / videoArea;
+        
+        // Face must meet both ratio and absolute pixel requirements
+        return sizeRatio >= MIN_FACE_SIZE_RATIO && faceArea >= MIN_FACE_PIXELS;
+    };
+
+    // Filter detections for quality and size
+    const filterValidDetections = (detections: FaceDetection[], cropWidth: number, cropHeight: number) => {
+        return detections.filter(detection => {
+            // Size validation
+            if (!isFaceSizeValid(detection, cropWidth, cropHeight)) {
+                return false;
+            }
+            
+            // Confidence validation (already handled by face-api threshold, but double-check)
+            if (detection.score < INITIAL_DETECTION_THRESHOLD) {
+                return false;
+            }
+            
+            return true;
+        });
+    };
+
     // Calculate similarity score between two faces
     const calculateSimilarity = (face1: TrackedFace, detection: FaceDetection) => {
         const center1 = getBoxCenter(face1.box);
@@ -555,71 +631,114 @@ export default function FaceTrackingVideo({
         const sizeDiff = Math.abs(face1.box.width - detection.box.width) / Math.max(face1.box.width, detection.box.width);
         const sizeScore = 1 - sizeDiff;
 
+        // Stability bonus for faces that have been tracked longer
+        const stabilityBonus = Math.min(face1.stabilityFrames / FACE_STABILITY_FRAMES, 1) * 0.1;
+
         // Combine scores with weights
-        return distanceScore * 0.7 + sizeScore * 0.3;
+        return distanceScore * 0.6 + sizeScore * 0.3 + stabilityBonus;
     };
 
-    // Assign detections to tracked faces or create new tracked faces
-    const updateTrackedFaces = (detections: FaceDetection[]) => {
+    // Enhanced single face tracking with size filtering
+    const updateTrackedFaces = (detections: FaceDetection[], cropWidth: number, cropHeight: number) => {
         const currentTime = Date.now();
         const trackedFaces = [...trackedFacesRef.current];
         const activeFaces = trackedFaces.filter(face => currentTime - face.lastSeen < 1000);
-        const assignedFaceIndices = new Set<number>();
-        const newAssignments: TrackedFace[] = [];
-
-        // Sort detections by size (larger faces first, as they're likely closer and more reliable)
-        const sortedDetections = [...detections].sort((a, b) => 
-            (b.box.width * b.box.height) - (a.box.width * a.box.height)
-        );
-
-        sortedDetections.forEach(detection => {
-            let bestMatch = {
-                index: -1,
-                similarity: 0
-            };
-
-            // Find best matching face
-            activeFaces.forEach((face, index) => {
-                if (assignedFaceIndices.has(index)) return;
-
-                const similarity = calculateSimilarity(face, detection);
-                if (similarity > bestMatch.similarity && similarity > TRACKING_CONFIDENCE_THRESHOLD) { // Using tracking threshold for continuous tracking
-                    bestMatch = { index, similarity };
+        
+        // Filter detections for size and quality
+        const validDetections = filterValidDetections(detections, cropWidth, cropHeight);
+        
+        // For single face tracking, select the best detection
+        let bestDetection: FaceDetection | null = null;
+        if (validDetections.length > 0) {
+            // Sort by combined score: size (40%), confidence (40%), stability preference (20%)
+            const scoredDetections = validDetections.map(detection => {
+                const area = detection.box.width * detection.box.height;
+                const videoArea = cropWidth * cropHeight;
+                const sizeScore = Math.min(area / (videoArea * 0.1), 1); // Normalize to video area, cap at 10%
+                const confidenceScore = detection.score;
+                
+                // Prefer faces that match existing tracked faces (stability)
+                let stabilityScore = 0;
+                if (activeFaces.length > 0) {
+                    const bestSimilarity = Math.max(...activeFaces.map(face => 
+                        calculateSimilarity(face, detection)
+                    ));
+                    stabilityScore = bestSimilarity > TRACKING_CONFIDENCE_THRESHOLD ? bestSimilarity : 0;
+                }
+                
+                const combinedScore = sizeScore * 0.4 + confidenceScore * 0.4 + stabilityScore * 0.2;
+                return { detection, score: combinedScore };
+            });
+            
+            // Select the highest scoring detection
+            scoredDetections.sort((a, b) => b.score - a.score);
+            bestDetection = scoredDetections[0].detection;
+        }
+        
+        // Handle single face tracking
+        if (bestDetection) {
+            let bestMatch: { face: TrackedFace | null; similarity: number } = { face: null, similarity: 0 };
+            
+            // Try to match with existing tracked face
+            activeFaces.forEach(face => {
+                const similarity = calculateSimilarity(face, bestDetection!);
+                if (similarity > bestMatch.similarity && similarity > TRACKING_CONFIDENCE_THRESHOLD) {
+                    bestMatch = { face, similarity };
                 }
             });
-
-            if (bestMatch.index !== -1) {
-                const face = activeFaces[bestMatch.index];
-                const timeDelta = (currentTime - face.lastSeen) / 1000; // Convert to seconds
-
+            
+            if (bestMatch.face) {
+                // Update existing face
+                const face = bestMatch.face;
+                const timeDelta = Math.max((currentTime - face.lastSeen) / 1000, 0.033); // Minimum 30fps
+                
                 // Update velocity
                 const oldCenter = getBoxCenter(face.box);
-                const newCenter = getBoxCenter(detection.box);
+                const newCenter = getBoxCenter(bestDetection.box);
                 const velocity = {
                     x: (newCenter.x - oldCenter.x) / timeDelta,
                     y: (newCenter.y - oldCenter.y) / timeDelta
                 };
-
+                
                 // Update face data
+                const newArea = bestDetection.box.width * bestDetection.box.height;
                 face.lastSeen = currentTime;
-                face.box = detection.box;
+                face.box = bestDetection.box;
                 face.velocity = velocity;
                 face.confidence = bestMatch.similarity;
-                assignedFaceIndices.add(bestMatch.index);
-                newAssignments.push(face);
+                face.stabilityFrames = Math.min(face.stabilityFrames + 1, FACE_STABILITY_FRAMES * 2);
+                face.lastArea = newArea;
+                
+                trackedFacesRef.current = [face]; // Single face tracking
+                return [face];
             } else {
                 // Create new tracked face
-                newAssignments.push({
+                const newArea = bestDetection.box.width * bestDetection.box.height;
+                const newFace: TrackedFace = {
                     id: nextIdRef.current++,
                     lastSeen: currentTime,
-                    box: detection.box,
-                    confidence: 1, // New faces start with full confidence
-                });
+                    box: bestDetection.box,
+                    confidence: bestDetection.score,
+                    stabilityFrames: 1,
+                    lastArea: newArea
+                };
+                
+                trackedFacesRef.current = [newFace]; // Single face tracking
+                return [newFace];
             }
-        });
-
-        trackedFacesRef.current = newAssignments;
-        return newAssignments;
+        } else {
+            // No valid detections - clear tracking if no face for too long
+            if (activeFaces.length === 0 || (activeFaces.length > 0 && currentTime - activeFaces[0].lastSeen > 2000)) {
+                trackedFacesRef.current = [];
+                return [];
+            }
+            
+            // Keep the most recent face but decrease its stability
+            const mostRecent = activeFaces[0];
+            mostRecent.stabilityFrames = Math.max(mostRecent.stabilityFrames - 1, 0);
+            trackedFacesRef.current = [mostRecent];
+            return [mostRecent];
+        }
     };
 
     // Add scale smoothing function
@@ -660,8 +779,8 @@ export default function FaceTrackingVideo({
             if (!video || !canvas || !isActiveRef.current) return;
 
             try {
-                // Dynamically import face-api for each detection cycle
-                const { detectAllFaces, SsdMobilenetv1Options } = await import('@vladmandic/face-api');
+                // Get cached face-api module to avoid HMR issues
+                const { detectSingleFace, SsdMobilenetv1Options } = await getFaceApiModule();
 
                 // Double-check active state after async import
                 if (!isActiveRef.current) return;
@@ -706,8 +825,8 @@ export default function FaceTrackingVideo({
                 // Check active state before expensive detection
                 if (!isActiveRef.current) return;
 
-                // Detect faces on the cropped region
-                const detections = await detectAllFaces(
+                // Detect single face on the cropped region - more efficient than detectAllFaces
+                const detection = await detectSingleFace(
                     tempCanvas,
                     new SsdMobilenetv1Options({ minConfidence: INITIAL_DETECTION_THRESHOLD })
                 );
@@ -715,13 +834,13 @@ export default function FaceTrackingVideo({
                 // Final check before processing results
                 if (!isActiveRef.current) return;
 
-                // Cast the detections to our simplified FaceDetection interface
-                const simplifiedDetections: FaceDetection[] = detections.map(d => ({
-                    box: d.box,
-                    score: d.score
-                }));
+                // Convert single detection to array format for consistency with existing code
+                const simplifiedDetections: FaceDetection[] = detection ? [{
+                    box: detection.box,
+                    score: detection.score
+                }] : [];
 
-                const persistentFaces = updateTrackedFaces(simplifiedDetections);
+                const persistentFaces = updateTrackedFaces(simplifiedDetections, cropWidth, cropHeight);
                 const ctx = canvas.getContext('2d');
                 if (!ctx || !isActiveRef.current) return;
 
@@ -751,10 +870,9 @@ export default function FaceTrackingVideo({
 
                     const box = smoothPosition(scaledBox, index);
 
-                    const hat = hatImage;
-                    const shirt = shirtImage;
+                    const costume = costumeImage;
 
-                    if (hat && shirt && isActiveRef.current) {
+                    if (costume && isActiveRef.current) {
                         // Calculate base scale factor based on face size relative to canvas
                         const faceArea = box.width * box.height;
                         const canvasArea = canvas.width * canvas.height;
@@ -763,43 +881,44 @@ export default function FaceTrackingVideo({
                         // Apply temporal smoothing to scale
                         const faceScale = smoothScale(rawFaceScale);
 
-                        // Scale multipliers - adjust these to fine-tune the effect
-                        const hatScaleBase = 3;
-                        const shirtScaleBase = 6;
+                        // Scale multiplier for costume - adjust to fine-tune the effect
+                        const costumeScaleBase = 7.5; // Base scale for costume overlay
 
-                        // Apply dynamic scaling based on face size with more conservative range
-                        const hatScale = hatScaleBase * (0.8 + faceScale * 0.4); // Less conservative scaling
-                        const shirtScale = shirtScaleBase * (0.8 + faceScale * 0.4);
+                        // Apply dynamic scaling based on face size
+                        const costumeScale = costumeScaleBase * (0.7 + faceScale * 0.6);
 
-                        if (debugMode) {
-                            // Draw debug bounding box
-                            ctx.strokeStyle = '#00ff00';
-                            ctx.lineWidth = 2;
-                            ctx.strokeRect(box.x, box.y, box.width, box.height);
+                        // // Draw debug bounding box for detected face
+                        // ctx.strokeStyle = '#00ff00';
+                        // ctx.lineWidth = 2;
+                        // ctx.strokeRect(box.x, box.y, box.width, box.height);
 
-                            // Add debug text for scale values
-                            ctx.fillStyle = '#00ff00';
-                            ctx.font = '24px Arial';
-                            ctx.fillText(`Scale: ${faceScale.toFixed(2)}`, box.x, box.y - 5);
-                        }
+                        // // Add debug text for scale and confidence values
+                        // ctx.fillStyle = '#00ff00';
+                        // ctx.font = '16px Arial';
+                        // ctx.fillText(`Scale: ${faceScale.toFixed(2)}`, box.x, box.y - 25);
+                        // ctx.fillText(`Conf: ${face.confidence.toFixed(2)}`, box.x, box.y - 5);
 
-                        // Position hat above the face with dynamic scaling
-                        const hatWidth = box.width * hatScale;
-                        const hatHeight = hatWidth * (hat.height / hat.width);
-                        const hatX = box.x - (hatWidth - box.width) / 2;
-                        const hatY = box.y - box.height * 1.4;
+                        // Calculate costume dimensions
+                        const costumeWidth = box.width * costumeScale;
+                        const costumeHeight = costumeWidth; // Square costume image
 
-                        // Draw hat
-                        ctx.drawImage(hat, hatX, hatY, hatWidth, hatHeight);
+                        // Calculate face center in detected box
+                        const faceCenterX = box.x + box.width / 2;
+                        const faceCenterY = box.y + box.height / 2;
 
-                        // Position shirt below the face with dynamic scaling
-                        const shirtWidth = box.width * shirtScale;
-                        const shirtHeight = shirtWidth * (shirt.height / shirt.width);
-                        const shirtX = box.x - (shirtWidth - box.width) / 2;
-                        const shirtY = box.y + box.height * 0.2;
+                        // Calculate offset from costume's face center to its top-left corner
+                        const costumeFaceCenterOffsetX = (COSTUME_FACE_CENTER.x / COSTUME_SIZE) * costumeWidth;
+                        const costumeFaceCenterOffsetY = (COSTUME_FACE_CENTER.y / COSTUME_SIZE) * costumeHeight;
 
-                        // Draw shirt
-                        ctx.drawImage(shirt, shirtX, shirtY, shirtWidth, shirtHeight);
+                        // Adjust costume position - move it by shifting Y position
+                        const verticalAdjustment = -box.height * 0.4;
+
+                        // Position costume so its face center aligns with detected face center
+                        const costumeX = faceCenterX - costumeFaceCenterOffsetX;
+                        const costumeY = faceCenterY - costumeFaceCenterOffsetY - verticalAdjustment;
+
+                        // Draw costume
+                        ctx.drawImage(costume, costumeX, costumeY, costumeWidth, costumeHeight);
                     }
                 });
 
