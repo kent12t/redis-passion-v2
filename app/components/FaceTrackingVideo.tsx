@@ -458,7 +458,7 @@ export default function FaceTrackingVideo({
             console.log('FaceTrackingVideo: Model loading effect cleanup');
             isActive = false;
         };
-    }, []);
+    }, [componentId]);
 
     // Start video when models and images are loaded
     useEffect(() => {
