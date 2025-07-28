@@ -3,6 +3,7 @@
 import MotionButton from './ui/motion-button';
 import CostumeMarquee from './ui/costume-marquee';
 import Image from 'next/image';
+import { useLanguage } from '@/app/lib/text-utils';
 
 interface IntroPageProps {
     onBegin: () => void;
@@ -10,6 +11,8 @@ interface IntroPageProps {
 }
 
 export default function IntroPage({ onBegin, onBack }: IntroPageProps) {
+    const { textContent } = useLanguage();
+
     return (
         <div className="relative h-full bg-purple">
             {/* Costume marquee */}
@@ -27,20 +30,16 @@ export default function IntroPage({ onBegin, onBack }: IntroPageProps) {
                 <div className="flex flex-col gap-8 justify-center items-center">
                     {/* Two paragraphs */}
                     <p className="text-center text-[60px] mb-8 font-sans leading-tight text-white">
-                        Live Life Unstoppable!
+                        {textContent.introPage.title}
                     </p>
 
                     <p className="text-center text-[40px] mb-12 font-sans leading-tight text-white">
-                        Take this quick and fun quiz to find out what activities suit you best! No right or wrong answers, just choose what feels most like you.
-                        <br />
-                        It’ll only take 3-5 minutes.
-
-                        <br />
-                        <br />
-
-                        At the end, you’ll receive activity suggestions that you’re likely to enjoy.
-                        <br />
-                        Live Life Unstoppable!
+                        {textContent.introPage.description.split('\n').map((line, index, array) => (
+                            <span key={index}>
+                                {line}
+                                {index < array.length - 1 && <br />}
+                            </span>
+                        ))}
                     </p>
 
                     {/* Navigation buttons */}
@@ -53,7 +52,7 @@ export default function IntroPage({ onBegin, onBack }: IntroPageProps) {
                         >
                             <Image
                                 src="/icons/back.svg"
-                                alt="Back"
+                                alt={textContent.common.altTexts.back}
                                 width={40}
                                 height={40}
                                 className="w-10 h-10"
@@ -66,10 +65,10 @@ export default function IntroPage({ onBegin, onBack }: IntroPageProps) {
                             variant="primary"
                             className="flex-shrink px-24 h-28 text-[48px] bg-orange text-white"
                         >
-                            BEGIN
+                            {textContent.introPage.buttons.begin}
                             <Image
                                 src="/icons/next.svg"
-                                alt="Next"
+                                alt={textContent.common.altTexts.next}
                                 width={40}
                                 height={40}
                                 className="ml-4 w-10 h-10"

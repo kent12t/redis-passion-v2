@@ -3,12 +3,15 @@
 import MotionButton from './ui/motion-button';
 import CostumeMarquee from './ui/costume-marquee';
 import Image from 'next/image';
+import { useLanguage, languages } from '@/app/lib/text-utils';
 
 interface StartPageProps {
     onStart: () => void;
 }
 
 export default function StartPage({ onStart }: StartPageProps) {
+    const { textContent, currentLanguage, setLanguage } = useLanguage();
+
     return (
         <div className="relative h-full bg-yellow">
             {/* Costume marquee */}
@@ -37,19 +40,35 @@ export default function StartPage({ onStart }: StartPageProps) {
                 <div className="flex flex-col justify-center items-center">
 
                     <p className="text-center text-[48px] mb-12 leading-tight text-black">
-                    Unlock your next adventure<br/>
-                    by tailoring suggestions to<br/>
-                    what excites you. Whether it’s<br/>
-                    Play, Purpose, or Passion,<br/>
-                    we’ll help you find the perfect fit.
+                        {textContent.startPage.heroText.split('\n').map((line, index, array) => (
+                            <span key={index}>
+                                {line}
+                                {index < array.length - 1 && <br />}
+                            </span>
+                        ))}
                     </p>
+
+                    {/* Language selection buttons */}
+                    <div className="flex flex-row gap-4 mb-8">
+                        {languages.map((language) => (
+                            <MotionButton
+                                key={language.code}
+                                onClick={() => setLanguage(language.code)}
+                                className={`px-8 py-8 text-[30px] font-sans text-white ${
+                                    currentLanguage === language.code ? 'bg-green' : 'bg-purple'
+                                }`}
+                            >
+                                {language.name}
+                            </MotionButton>
+                        ))}
+                    </div>
 
                     <MotionButton
                         onClick={onStart}
                         size="lg"
                         className="h-auto w-auto px-12 py-4 text-[48px] font-sans bg-midblue text-white"
                     >
-                        GET STARTED!
+                        {textContent.startPage.button.getStarted}
                     </MotionButton>
                 </div>
             </div>

@@ -1,0 +1,42 @@
+{
+    "startPage": {
+      "heroText": "Buka kunci pengembaraan\nanda seterusnya dengan\nmenyesuaikan cadangan\nmengikut minat anda.\nSama ada 'Main', 'Tujuan',\natau 'Keghairahan',\nkami akan membantu anda\nmencari padanan yang sempurna.",
+      "button": {
+        "getStarted": "MULAKAN!"
+      }
+    },
+    "introPage": {
+      "title": "Hidup Tanpa Henti!",
+      "description": "Ikuti kuiz ringkas dan menyeronokkan ini untuk mengetahui aktiviti yang paling sesuai untuk anda! Tiada jawapan yang salah atau betul, hanya pilih apa yang paling sesuai dengan anda.\nIa hanya mengambil masa 3-5 minit.\n\nPada akhirnya, anda akan menerima cadangan aktiviti yang mungkin anda nikmati.\nHidup Tanpa Henti!",
+      "buttons": {
+        "begin": "MULAKAN"
+      }
+    },
+    "revealPage": {
+      "buttons": {
+        "unveil": "DEDAHKAN USAHA\nIDEAL SAYA!"
+      }
+    },
+    "sharePage": {
+      "title": "Masa untuk\nMeneruskan Cita-cita Anda!",
+      "downloadText": "Muat turun cita-cita anda\ndan kongsi dengan rakan-rakan anda!"
+    },
+    "questionPage": {
+      "buttons": {
+        "next": "SETERUSNYA"
+      }
+    },
+    "common": {
+      "buttons": {
+        "back": "Kembali",
+        "home": "Laman Utama",
+        "camera": "Kamera"
+      },
+      "altTexts": {
+        "back": "Kembali",
+        "next": "Seterusnya",
+        "home": "Laman Utama",
+        "camera": "Kamera"
+      }
+    }
+  }

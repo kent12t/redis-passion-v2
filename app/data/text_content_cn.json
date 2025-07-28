@@ -1,0 +1,42 @@
+{
+    "startPage": {
+      "heroText": "通过根据你的兴趣\n定制建议，开启你的\n下一次冒险。无论是\n“玩乐”、“目标”\n还是“热情”，我们\n都会帮助你找到完美的选择。",
+      "button": {
+        "getStarted": "立即开始！"
+      }
+    },
+    "introPage": {
+      "title": "活出无尽精彩！",
+      "description": "参加这个快速有趣的测试，找出最适合你的活动！没有对错之分，只需选择最符合你感觉的。\n只需3-5分钟。\n\n最后，你将收到你可能会喜欢的活动建议。\n活出无尽精彩！",
+      "buttons": {
+        "begin": "开始"
+      }
+    },
+    "revealPage": {
+      "buttons": {
+        "unveil": "揭示我的\n理想追求！"
+      }
+    },
+    "sharePage": {
+      "title": "是时候\n追求你的理想了！",
+      "downloadText": "下载你的理想\n并与朋友分享！"
+    },
+    "questionPage": {
+      "buttons": {
+        "next": "下一页"
+      }
+    },
+    "common": {
+      "buttons": {
+        "back": "返回",
+        "home": "主页",
+        "camera": "相机"
+      },
+      "altTexts": {
+        "back": "返回",
+        "next": "下一页",
+        "home": "主页",
+        "camera": "相机"
+      }
+    }
+  }

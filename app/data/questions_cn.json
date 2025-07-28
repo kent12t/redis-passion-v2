@@ -1,0 +1,202 @@
+[
+    {
+        "question_number": 1,
+        "question_text": "当一个意想不到的\n机会出现时，什么\n让你感到兴奋？",
+        "options": [
+            {
+                "option_text": "组织一个难忘的\n团体活动，让人们\n聚集在一起的想法。",
+                "points": {
+                    "volunteer": 3,
+                    "gamer": 1
+                }
+            },
+            {
+                "option_text": "有机会通过爆发的\n能量和新鲜的户外\n挑战来测试个人极限。",
+                "points": {
+                    "runner": 3,
+                    "farmer": 1
+                }
+            }
+        ]
+    },
+    {
+        "question_number": 2,
+        "question_text": "当你遇到一个复杂\n的问题时，你的本能是：",
+        "options": [
+            {
+                "option_text": "战略性地分解它，\n分析模式，并找到\n最有效的解决方案。",
+                "points": {
+                    "artist": 3,
+                    "gamer": 1
+                }
+            },
+            {
+                "option_text": "卷起袖子，尝试\n不同的实践方法，\n直到奏效。",
+                "points": {
+                    "crafter": 3,
+                    "artist": 1
+                }
+            }
+        ]
+    },
+    {
+        "question_number": 3,
+        "question_text": "你希望留下什么样的\n遗产？",
+        "options": [
+            {
+                "option_text": "一个你帮助培育的\n繁荣自然空间，为\n后代促进健康和宁静。",
+                "points": {
+                    "farmer": 3,
+                    "runner": 1
+                }
+            },
+            {
+                "option_text": "一件开创性的艺术品\n或一件独特的手工\n制品，激发敬畏和大胆的\n创造力。",
+                "points": {
+                    "artist": 3,
+                    "crafter": 1
+                }
+            }
+        ]
+    },
+    {
+        "question_number": 4,
+        "question_text": "在计划一些特别的\n事情时，你优先考虑：",
+        "options": [
+            {
+                "option_text": "确保每个人都感到\n被包括在内，并且\n这种体验能让人们\n更亲近。",
+                "points": {
+                    "volunteer": 3,
+                    "crafter": 1
+                }
+            },
+            {
+                "option_text": "创造一个引人入胜\n的挑战或活动，让\n人们思考并积极参与。",
+                "points": {
+                    "gamer": 2,
+                    "farmer": 1
+                }
+            }
+        ]
+    },
+    {
+        "question_number": 5,
+        "question_text": "如果你要创办一个\n新俱乐部，它的重点会是？",
+        "options": [
+            {
+                "option_text": "一个用非传统或\n冒险材料制作独特\n手工艺术品的作坊。",
+                "points": {
+                    "crafter": 3,
+                    "artist": 1
+                }
+            },
+            {
+                "option_text": "一个致力于探索\n当地自然小径和识别\n植物的团体，也许\n伴随着地图绘制或\n战略挑战。",
+                "points": {
+                    "farmer": 3,
+                    "gamer": 1
+                }
+            }
+        ]
+    },
+    {
+        "question_number": 6,
+        "question_text": "你更喜欢哪种\n周末计划？",
+        "options": [
+            {
+                "option_text": "与朋友一起热闹的\n度假，专注于团队\n策略游戏和有趣的\n社交挑战。",
+                "points": {
+                    "gamer": 3,
+                    "volunteer": 1
+                }
+            },
+            {
+                "option_text": "一个轻松的休闲场所，\n专注于健康烹饪\n工作坊和学习一种\n新的手工工艺。",
+                "points": {
+                    "runner": 3,
+                    "crafter": 1
+                }
+            }
+        ]
+    },
+    {
+        "question_number": 7,
+        "question_text": "当你空闲时，你被\n什么吸引？",
+        "options": [
+            {
+                "option_text": "让你心跳加速，\n让你感觉充满活力\n的活动。",
+                "points": {
+                    "runner": 3,
+                    "farmer": 1
+                }
+            },
+            {
+                "option_text": "可以尝试新技巧并\n表达自己独特愿景的\n项目。",
+                "points": {
+                    "artist": 3,
+                    "crafter": 1
+                }
+            }
+        ]
+    },
+    {
+        "question_number": 8,
+        "question_text": "什么激励你\n接受挑战？",
+        "options": [
+            {
+                "option_text": "将人们聚集在一起，\n并对你的社区产生\n积极影响的机会。",
+                "points": {
+                    "volunteer": 3,
+                    "farmer": 1
+                }
+            },
+            {
+                "option_text": "突破创作界限，发现\n新的表达方式的刺激。",
+                "points": {
+                    "artist": 2,
+                    "runner": 2
+                }
+            }
+        ]
+    },
+    {
+        "question_number": 9,
+        "question_text": "你会领导哪种\n社区改善项目？",
+        "options": [
+            {
+                "option_text": "为所有年龄段的人\n建立一个定期的\n社区游戏之夜或\n当地的电子竞技比赛。",
+                "points": {
+                    "volunteer": 2,
+                    "gamer": 2
+                }
+            },
+            {
+                "option_text": "建造一个社区花园\n或为公共空间制作\n手工长凳和自然风格的\n花盆。",
+                "points": {
+                    "crafter": 3,
+                    "farmer": 1
+                }
+            }
+        ]
+    },
+    {
+        "question_number": 10,
+        "question_text": "如果有人送你一份\n惊喜礼物，哪个最\n让你兴奋？",
+        "options": [
+            {
+                "option_text": "挑战我思维或让\n我亲近自然的东西。",
+                "points": {
+                    "gamer": 3,
+                    "farmer": 1
+                }
+            },
+            {
+                "option_text": "一张热闹的社区\n集市门票或一张\n放松水疗日券。",
+                "points": {
+                    "volunteer": 2,
+                    "runner": 2
+                }
+            }
+        ]
+    }
+]

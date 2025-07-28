@@ -3,6 +3,7 @@
 import MotionButton from './ui/motion-button';
 import Image from 'next/image';
 import QRCode from 'react-fancy-qrcode';
+import { useLanguage } from '@/app/lib/text-utils';
 
 // QR Code component using react-fancy-qrcode
 interface QRCodeProps {
@@ -35,12 +36,19 @@ interface SharePageProps {
 }
 
 export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) {
+    const { textContent } = useLanguage();
+
     return (
         <div className="overflow-hidden relative p-0 w-full h-full bg-midblue">
             {/* Title */}
             <div className="absolute top-32 left-1/2 z-20 w-full transform -translate-x-1/2">
                 <h1 className="text-[64px] font-sans leading-tight text-center text-white">
-                    Time to<br />Pursue Your Ideals!
+                    {textContent.sharePage.title.split('\n').map((line, index, array) => (
+                        <span key={index}>
+                            {line}
+                            {index < array.length - 1 && <br />}
+                        </span>
+                    ))}
                 </h1>
             </div>
 
@@ -79,7 +87,7 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
                         >
                             <Image
                                 src="/icons/back.svg"
-                                alt="Back"
+                                alt={textContent.common.altTexts.back}
                                 width={64}
                                 height={64}
                                 className="w-16 h-16"
@@ -101,7 +109,7 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
                         >
                             <Image
                                 src="/icons/home.svg"
-                                alt="Home"
+                                alt={textContent.common.altTexts.home}
                                 width={80}
                                 height={80}
                                 className="w-20 h-20"
@@ -111,8 +119,12 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
                 </div>
 
                 <p className="w-full text-[40px] leading-tight font-sans text-center text-black">
-                    Download your ideals <br />
-                    and share with your friends!
+                    {textContent.sharePage.downloadText.split('\n').map((line, index, array) => (
+                        <span key={index}>
+                            {line}
+                            {index < array.length - 1 && <br />}
+                        </span>
+                    ))}
                 </p>
             </div>
         </div>

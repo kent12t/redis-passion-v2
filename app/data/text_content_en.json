@@ -1,0 +1,42 @@
+{
+  "startPage": {
+    "heroText": "Unlock your next adventure\nby tailoring suggestions to\nwhat excites you. Whether it's\nPlay, Purpose, or Passion,\nwe'll help you find the perfect fit.",
+    "button": {
+      "getStarted": "GET STARTED!"
+    }
+  },
+  "introPage": {
+    "title": "Live Life Unstoppable!",
+    "description": "Take this quick and fun quiz to find out what activities suit you best! No right or wrong answers, just choose what feels most like you.\nIt'll only take 3-5 minutes.\n\nAt the end, you'll receive activity suggestions that you're likely to enjoy.\nLive Life Unstoppable!",
+    "buttons": {
+      "begin": "BEGIN"
+    }
+  },
+  "revealPage": {
+    "buttons": {
+      "unveil": "UNVEIL MY\nIDEAL PURSUIT!"
+    }
+  },
+  "sharePage": {
+    "title": "Time to\nPursue Your Ideals!",
+    "downloadText": "Download your ideals\nand share with your friends!"
+  },
+  "questionPage": {
+    "buttons": {
+      "next": "NEXT"
+    }
+  },
+  "common": {
+    "buttons": {
+      "back": "Back",
+      "home": "Home",
+      "camera": "Camera"
+    },
+    "altTexts": {
+      "back": "Back",
+      "next": "Next",
+      "home": "Home",
+      "camera": "Camera"
+    }
+  }
+} 
