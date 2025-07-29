@@ -19,13 +19,13 @@ interface QRCodeProps {
 
 function SimpleQRCode({ value, size = 200 }: QRCodeProps) {
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex justify-center items-center">
       <div className="p-4 bg-white rounded-lg border-2 border-gray-200">
         <QRCode
           value={value}
           size={size}
           backgroundColor="#ffffff"
-          color="#000000"
+          color="#231f20"
           errorCorrection="M"
         />
       </div>
@@ -44,7 +44,7 @@ export default function QRModal({ isOpen, onClose, imageUrl, personalityType }: 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-white">
+      <DialogContent className="bg-white sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center text-gray-900">
             Scan to View Your Result! 📱
@@ -54,12 +54,12 @@ export default function QRModal({ isOpen, onClose, imageUrl, personalityType }: 
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col items-center space-y-6 py-8">
+        <div className="flex flex-col items-center py-8 space-y-6">
           {/* QR Code */}
           <SimpleQRCode value={imageUrl} size={250} />
           
           {/* Instructions */}
-          <div className="text-center space-y-2">
+          <div className="space-y-2 text-center">
             <p className="text-sm text-gray-500">
               Use your phone&apos;s camera or QR scanner app
             </p>
@@ -73,7 +73,7 @@ export default function QRModal({ isOpen, onClose, imageUrl, personalityType }: 
           <MotionButton
             onClick={onClose}
             variant="primary"
-            className="px-8 py-2 bg-gray-500 hover:bg-gray-600 text-white"
+            className="px-8 py-2 text-white bg-gray-500 hover:bg-gray-600"
           >
             Close
           </MotionButton>

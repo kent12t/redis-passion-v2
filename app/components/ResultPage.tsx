@@ -189,28 +189,25 @@ export default function ResultPage({
                     </div>
                 )}
 
-                <div className="grid w-full grid-cols-5 pl-[190px] pr-[90px] h-full pt-[400px] grid-rows-8 z-2">
-                    <div className="col-span-2 row-span-full"></div>
-                    <div className="flex flex-col col-span-3 row-span-3 row-start-1 h-full">
-                        <div className="overflow-hidden relative p-0 h-full">
-                            <FaceTrackingVideo
-                                key={`face-tracking-${personalityType}`}
-                                personalityType={personalityType.toLowerCase()}
-                                onCanvasReady={handleCanvasReady}
-                            />
-                        </div>
+                <div className="absolute top-[20%] right-[6%] w-[50%] h-[32%] z-2">
+                    <div className="overflow-hidden relative p-0 w-full h-full">
+                        <FaceTrackingVideo
+                            key={`face-tracking-${personalityType}`}
+                            personalityType={personalityType.toLowerCase()}
+                            onCanvasReady={handleCanvasReady}
+                        />
                     </div>
-
                 </div>
 
-                <div className="absolute top-0 left-0 z-20 justify-center items-center w-full h-full">
+                <div className="flex absolute top-1/2 left-1/2 z-20 justify-center items-center w-full h-full transform -translate-x-1/2 -translate-y-1/2">
                     <Image
                         src={personalityAssets[personalityType as keyof typeof personalityAssets].card}
                         alt={personalityType}
                         sizes="100vw"
-                        className="object-contain relative w-full"
+                        className="object-contain w-full h-full"
                         width={1080}
                         height={1920}
+                        style={{ transformOrigin: 'center center' }}
                     />
                 </div>
 

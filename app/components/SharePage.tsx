@@ -59,7 +59,7 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
                     <img
                         src={imageUrl}
                         alt="Your captured result"
-                        className="w-[650px] h-auto rounded-[32px] border-4 border-black shadow-[-24px_24px_0px_0px_rgba(0,0,0,1)]"
+                        className="w-[20dvw] h-auto rounded-[32px] border-4 border-black shadow-[-24px_24px_0px_0px_rgba(35,31,32,1)]"
                     />
                 </div>
             </div>
