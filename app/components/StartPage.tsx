@@ -10,7 +10,7 @@ interface StartPageProps {
 }
 
 export default function StartPage({ onStart }: StartPageProps) {
-    const { textContent, currentLanguage, setLanguage } = useLanguage();
+    const { textContent, currentLanguage, setLanguage, isLanguageSwitcherEnabled } = useLanguage();
 
     return (
         <div className="relative h-full bg-yellow">
@@ -48,20 +48,22 @@ export default function StartPage({ onStart }: StartPageProps) {
                         ))}
                     </p>
 
-                    {/* Language selection buttons */}
-                    <div className="flex flex-row gap-4 mb-8">
-                        {languages.map((language) => (
-                            <MotionButton
-                                key={language.code}
-                                onClick={() => setLanguage(language.code)}
-                                className={`px-8 py-8 text-[30px] font-sans text-white ${
-                                    currentLanguage === language.code ? 'bg-green' : 'bg-purple'
-                                }`}
-                            >
-                                {language.name}
-                            </MotionButton>
-                        ))}
-                    </div>
+                    {/* Language selection buttons - hidden for deployment (see ENABLE_LANGUAGE_SWITCHER in language-context.tsx) */}
+                    {isLanguageSwitcherEnabled && (
+                        <div className="flex flex-row gap-4 mb-8">
+                            {languages.map((language) => (
+                                <MotionButton
+                                    key={language.code}
+                                    onClick={() => setLanguage(language.code)}
+                                    className={`px-8 py-8 text-[30px] font-sans text-white ${
+                                        currentLanguage === language.code ? 'bg-green' : 'bg-purple'
+                                    }`}
+                                >
+                                    {language.name}
+                                </MotionButton>
+                            ))}
+                        </div>
+                    )}
 
                     <MotionButton
                         onClick={onStart}

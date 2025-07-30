@@ -2,6 +2,9 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+// Feature flag for language switcher (set to false to hide for deployment)
+const ENABLE_LANGUAGE_SWITCHER = false;
+
 // Language types
 export type Language = 'en' | 'cn' | 'ms' | 'ta';
 
@@ -68,6 +71,7 @@ interface LanguageContextType {
   textContent: TextContent;
   setLanguage: (language: Language) => void;
   isLoading: boolean;
+  isLanguageSwitcherEnabled: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -77,6 +81,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [currentLanguage, setCurrentLanguage] = useState<Language>('en');
   const [textContent, setTextContent] = useState<TextContent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Feature flag for language switcher
+  const isLanguageSwitcherEnabled = ENABLE_LANGUAGE_SWITCHER;
 
   // Load text content for a specific language
   const loadTextContent = async (language: Language) => {
@@ -111,7 +118,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     currentLanguage,
     textContent: textContent!,
     setLanguage,
-    isLoading
+    isLoading,
+    isLanguageSwitcherEnabled
   };
 
   // Don't render children until text content is loaded
