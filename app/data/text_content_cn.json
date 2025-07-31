@@ -19,7 +19,8 @@
     },
     "sharePage": {
       "title": "是时候\n追求你的理想了！",
-      "downloadText": "下载你的理想\n并与朋友分享！"
+      "qrText": "扫描二维码\n发现你的理想追求！",
+      "downloadText": "别忘了截图或保存图片\n到你的手机，随时查看！"
     },
     "questionPage": {
       "buttons": {

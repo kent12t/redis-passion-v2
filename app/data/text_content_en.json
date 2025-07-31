@@ -19,7 +19,8 @@
   },
   "sharePage": {
     "title": "Time to\nPursue Your Ideals!",
-    "downloadText": "Download your ideals\nand share with your friends!"
+    "qrText": "Scan the QR code to\ndiscover your Ideal Pursuits!",
+    "downloadText": "Don't forget to screenshot or save the image\nto your phone so you can refer to it anytime."
   },
   "questionPage": {
     "buttons": {

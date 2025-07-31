@@ -43,6 +43,7 @@ export interface TextContent {
   };
   sharePage: {
     title: string;
+    qrText: string;
     downloadText: string;
   };
   questionPage: {

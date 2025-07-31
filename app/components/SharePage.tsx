@@ -12,21 +12,21 @@ interface QRCodeProps {
 }
 
 function SimpleQRCode({ value, size = 200 }: QRCodeProps) {
-  return (
-    <div className="flex justify-center items-center">
-      <div className="bg-transparent rounded-lg">
-        <QRCode
-          value={value}
-          size={size}
-          color="#231f20"
-          backgroundColor="transparent"
-          errorCorrection="M"
-          logo="/aic-logo.png"
-          logoSize={size * 0.3}
-        />
-      </div>
-    </div>
-  );
+    return (
+        <div className="flex justify-center items-center">
+            <div className="bg-transparent rounded-lg">
+                <QRCode
+                    value={value}
+                    size={size}
+                    color="#231f20"
+                    backgroundColor="transparent"
+                    errorCorrection="M"
+                    logo="/aic-logo.png"
+                    logoSize={size * 0.3}
+                />
+            </div>
+        </div>
+    );
 }
 
 interface SharePageProps {
@@ -42,7 +42,7 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
         <div className="overflow-hidden relative p-0 w-full h-full bg-midblue">
             {/* Title */}
             <div className="absolute top-32 left-1/2 z-20 w-full transform -translate-x-1/2">
-                <h1 className="text-[64px] font-sans leading-tight text-center text-white">
+                <h1 className="text-[84px] font-sans leading-tight text-center text-white">
                     {textContent.sharePage.title.split('\n').map((line, index, array) => (
                         <span key={index}>
                             {line}
@@ -75,8 +75,18 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
                 />
             </div>
 
+
+
             {/* Navigation buttons and QR code */}
-            <div className="absolute bottom-0 left-0 right-0 z-20 pb-[150px] px-[10%] flex flex-col gap-10">
+            <div className="absolute bottom-0 left-0 right-0 z-20 pb-[150px] px-[10%] flex flex-col gap-20">
+                <p className="text-[64px] leading-tight font-sans text-center text-black">
+                    {textContent.sharePage.qrText.split('\n').map((line: string, index: number, array: string[]) => (
+                        <span key={index}>
+                            {line}
+                            {index < array.length - 1 && <br />}
+                        </span>
+                    ))}
+                </p>
                 <div className="flex justify-center items-center px-16">
                     {/* Back button */}
                     <div className="flex flex-1 justify-start">
@@ -96,7 +106,8 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
                     </div>
 
                     {/* QR Code centered */}
-                    <div className="flex flex-col flex-1 justify-center">
+                    <div className="flex flex-col flex-1 gap-4 justify-center items-center">
+
                         <SimpleQRCode value={imageUrl} size={300} />
                     </div>
 

@@ -168,24 +168,20 @@ export default function ResultPage({
 
                 {/* Countdown display */}
                 {countdown !== null && (
-                    <div className="flex absolute inset-0 z-10 justify-center items-center w-full h-full" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
-                        <div className="absolute top-[460px] right-[25px] flex justify-center items-center w-[600px] h-[445px]">
-                            <span className="text-9xl font-bold text-white">
-                                {countdown}
-                            </span>
-                        </div>
+                    <div className="absolute top-[20%] right-[6%] w-[50%] h-[32%] z-10 flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
+                        <span className="text-9xl font-bold text-white">
+                            {countdown}
+                        </span>
                     </div>
                 )}
 
                 {/* Processing loader */}
                 {isUploading && (
-                    <div className="flex absolute inset-0 z-10 justify-center items-center w-full h-full" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
-                        <div className="absolute top-[460px] right-[25px] flex flex-col justify-center items-center w-[600px] h-[450px]">
-                            <div className="flex justify-center items-center mb-4">
-                                <div className="w-12 h-12 rounded-full border-4 border-white animate-spin border-t-transparent"></div>
-                            </div>
-                            <span className="text-[40px] font-bold text-white">Processing...</span>
+                    <div className="absolute top-[20%] right-[6%] w-[50%] h-[32%] z-10 flex flex-col justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
+                        <div className="flex justify-center items-center mb-4">
+                            <div className="w-12 h-12 rounded-full border-4 border-white animate-spin border-t-transparent"></div>
                         </div>
+                        <span className="text-[40px] font-bold text-white">Processing...</span>
                     </div>
                 )}
 
