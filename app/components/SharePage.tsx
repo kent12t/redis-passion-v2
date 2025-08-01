@@ -53,13 +53,13 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
             </div>
 
             {/* Rotated captured image */}
-            <div className="flex absolute top-1/2 left-1/2 z-10 justify-center items-center w-full transform -translate-x-1/2 -translate-y-1/2">
+            <div className="flex absolute top-1/2 left-1/2 z-10 justify-center items-center w-[60%] transform -translate-x-1/2 -translate-y-1/2">
                 <div className="transform -rotate-8">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src={imageUrl}
                         alt="Your captured result"
-                        className="w-[20dvw] h-auto rounded-[32px] border-4 border-black shadow-[-24px_24px_0px_0px_rgba(35,31,32,1)]"
+                        className="w-full p-auto h-auto rounded-[32px] border-4 border-black shadow-[-24px_24px_0px_0px_rgba(35,31,32,1)]"
                     />
                 </div>
             </div>
