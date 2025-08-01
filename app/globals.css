@@ -130,7 +130,7 @@ h5,
 h6,
 .question {
   font-family: var(--font-circular-bold), system-ui, sans-serif;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 button,
