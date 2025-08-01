@@ -224,7 +224,9 @@ export default function ResultPage({
                 <div className="absolute right-[31%] top-[47%] z-30">
                     <MotionButton
                         variant="primary"
-                        className="flex items-center justify-center p-6 rounded-full w-28 h-28 bg-green"
+                        className={`flex items-center justify-center p-6 rounded-full w-28 h-28 bg-green ${
+                            (isCapturing || isUploading || countdown !== null) ? '' : 'animate-pulse-scale'
+                        }`}
                         onClick={startCountdown}
                         disabled={isCapturing || isUploading || countdown !== null}
                     >
@@ -233,7 +235,10 @@ export default function ResultPage({
                             alt={textContent.common.altTexts.camera}
                             width={64}
                             height={64}
-                            className={`w-16 h-16 ${(isCapturing || isUploading) ? 'animate-pulse' : ''}`}
+                            className={`w-16 h-16 ${
+                                (isCapturing || isUploading) ? 'animate-pulse' : 
+                                (countdown === null) ? 'animate-pulse-scale' : ''
+                            }`}
                         />
                     </MotionButton>
                 </div>
