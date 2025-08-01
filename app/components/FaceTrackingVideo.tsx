@@ -785,39 +785,46 @@ export default function FaceTrackingVideo({
                 // Double-check active state after async import
                 if (!isActiveRef.current) return;
 
-                // Calculate the center crop region of the video
+                // Calculate the center crop region of the video for display
                 const videoAspect = video.videoWidth / video.videoHeight;
-                let cropX = 0, cropY = 0, cropWidth = video.videoWidth, cropHeight = video.videoHeight;
+                let displayCropX = 0, displayCropY = 0, displayCropWidth = video.videoWidth, displayCropHeight = video.videoHeight;
 
                 if (videoAspect > TARGET_ASPECT_RATIO) {
                     // Video is wider - crop sides
-                    cropWidth = video.videoHeight * TARGET_ASPECT_RATIO;
-                    cropX = (video.videoWidth - cropWidth) / 2;
+                    displayCropWidth = video.videoHeight * TARGET_ASPECT_RATIO;
+                    displayCropX = (video.videoWidth - displayCropWidth) / 2;
                 } else {
                     // Video is taller - crop top/bottom
-                    cropHeight = video.videoWidth / TARGET_ASPECT_RATIO;
-                    cropY = (video.videoHeight - cropHeight) / 2;
+                    displayCropHeight = video.videoWidth / TARGET_ASPECT_RATIO;
+                    displayCropY = (video.videoHeight - displayCropHeight) / 2;
                 }
 
-                // Reuse or create temporary canvas
+                // For face detection: Create a square crop from the center of the video
+                // Use smaller dimensions for better performance (480x480)
+                const DETECTION_SIZE = 480;
+                const detectionCropSize = Math.min(video.videoWidth, video.videoHeight);
+                const detectionCropX = (video.videoWidth - detectionCropSize) / 2;
+                const detectionCropY = (video.videoHeight - detectionCropSize) / 2;
+
+                // Reuse or create temporary canvas for detection (480x480)
                 if (!tempCanvasRef.current) {
                     tempCanvasRef.current = document.createElement('canvas');
                 }
                 const tempCanvas = tempCanvasRef.current;
-                tempCanvas.width = cropWidth;
-                tempCanvas.height = cropHeight;
+                tempCanvas.width = DETECTION_SIZE;
+                tempCanvas.height = DETECTION_SIZE;
                 const tempCtx = tempCanvas.getContext('2d');
                 if (!tempCtx || !isActiveRef.current) return;
 
                 // Set up mirroring transform for detection input
                 tempCtx.save(); // Save the context state
-                tempCtx.translate(cropWidth, 0);
+                tempCtx.translate(DETECTION_SIZE, 0);
                 tempCtx.scale(-1, 1);
 
-                // Draw the cropped and mirrored region
+                // Draw the square cropped and mirrored region, scaled down to 480x480
                 tempCtx.drawImage(video,
-                    cropX, cropY, cropWidth, cropHeight,
-                    0, 0, cropWidth, cropHeight
+                    detectionCropX, detectionCropY, detectionCropSize, detectionCropSize,
+                    0, 0, DETECTION_SIZE, DETECTION_SIZE
                 );
 
                 tempCtx.restore(); // Restore the context state
@@ -840,7 +847,7 @@ export default function FaceTrackingVideo({
                     score: detection.score
                 }] : [];
 
-                const persistentFaces = updateTrackedFaces(simplifiedDetections, cropWidth, cropHeight);
+                const persistentFaces = updateTrackedFaces(simplifiedDetections, DETECTION_SIZE, DETECTION_SIZE);
                 const ctx = canvas.getContext('2d');
                 if (!ctx || !isActiveRef.current) return;
 
@@ -850,9 +857,19 @@ export default function FaceTrackingVideo({
                     prevPositionsRef.current = prevPositionsRef.current.slice(0, persistentFaces.length);
                 }
 
-                // Scale factor between cropped video and display
-                const scaleX = canvas.width / cropWidth;
-                const scaleY = canvas.height / cropHeight;
+                // Scale factor between detection canvas (480x480) and display canvas
+                // We need to map from detection coordinates to display coordinates
+                const detectionToVideoScale = detectionCropSize / DETECTION_SIZE;
+                const videoToDisplayScaleX = canvas.width / displayCropWidth;
+                const videoToDisplayScaleY = canvas.height / displayCropHeight;
+                
+                // Combined scale from detection space to display space
+                const scaleX = detectionToVideoScale * videoToDisplayScaleX;
+                const scaleY = detectionToVideoScale * videoToDisplayScaleY;
+                
+                // Offset to account for the different crop regions
+                const offsetX = (detectionCropX - displayCropX) * videoToDisplayScaleX;
+                const offsetY = (detectionCropY - displayCropY) * videoToDisplayScaleY;
 
                 // Check if we have valid faces with good tracking confidence
                 const hasValidTracking = persistentFaces.length > 0 && 
@@ -865,11 +882,11 @@ export default function FaceTrackingVideo({
 
                         const rawBox = face.box;
 
-                        // Scale the detection box to match display dimensions
+                        // Scale and offset the detection box to match display dimensions
                         // Note: x position is already mirrored from detection stage
                         const scaledBox = {
-                            x: rawBox.x * scaleX,
-                            y: rawBox.y * scaleY,
+                            x: rawBox.x * scaleX + offsetX,
+                            y: rawBox.y * scaleY + offsetY,
                             width: rawBox.width * scaleX,
                             height: rawBox.height * scaleY
                         };
