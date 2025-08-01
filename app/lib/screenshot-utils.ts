@@ -6,6 +6,29 @@ interface ScreenshotOptions {
     personalityType: string;
 }
 
+// Cache for preloaded result card images
+const imageCache = new Map<string, HTMLImageElement>();
+
+// Function to preload result card image
+export function preloadResultCardImage(personalityType: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+        // Check if already cached
+        if (imageCache.has(personalityType)) {
+            resolve(imageCache.get(personalityType)!);
+            return;
+        }
+
+        const image = document.createElement('img');
+        image.crossOrigin = 'anonymous';
+        image.onload = () => {
+            imageCache.set(personalityType, image);
+            resolve(image);
+        };
+        image.onerror = () => reject(new Error(`Failed to load result card image for ${personalityType}`));
+        image.src = personalityAssets[personalityType as keyof typeof personalityAssets].card;
+    });
+}
+
 export async function createScreenshotCanvas({
     faceTrackingCanvas,
     video,
@@ -19,15 +42,8 @@ export async function createScreenshotCanvas({
         throw new Error('Could not get master canvas context');
     }
 
-    // Set master canvas size to match the result page layout
-    const resultCardImage = document.createElement('img');
-    resultCardImage.crossOrigin = 'anonymous';
-    
-    await new Promise<void>((resolve, reject) => {
-        resultCardImage.onload = () => resolve();
-        resultCardImage.onerror = () => reject(new Error('Failed to load result card image'));
-        resultCardImage.src = personalityAssets[personalityType as keyof typeof personalityAssets].card;
-    });
+    // Get result card image from cache or load it
+    const resultCardImage = await preloadResultCardImage(personalityType);
 
     // Set canvas dimensions to 9:16 aspect ratio
     const canvasWidth = 1080;

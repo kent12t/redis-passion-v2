@@ -4,9 +4,9 @@ import { FaceTrackingVideo } from './';
 import MotionButton from './ui/motion-button';
 import { QRModal } from './ui';
 import Image from 'next/image';
-import { useRef, useCallback, useState } from 'react';
+import { useRef, useCallback, useState, useEffect } from 'react';
 import { uploadImage, canvasToBlob } from '@/app/lib/upload-utils';
-import { createScreenshotCanvas } from '@/app/lib/screenshot-utils';
+import { createScreenshotCanvas, preloadResultCardImage } from '@/app/lib/screenshot-utils';
 import { personalityAssets } from '@/app/data/personality-assets';
 import { useLanguage } from '@/app/lib/text-utils';
 
@@ -25,10 +25,12 @@ export default function ResultPage({
 }: ResultPageProps) {
     const { textContent } = useLanguage();
     const getCanvasDataRef = useRef<(() => { canvas: HTMLCanvasElement | null; video: HTMLVideoElement | null }) | null>(null);
+    const [isCapturing, setIsCapturing] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [uploadUrl, setUploadUrl] = useState<string | null>(null);
     const [showQRModal, setShowQRModal] = useState(false);
     const [countdown, setCountdown] = useState<number | null>(null);
+    const [capturedImageData, setCapturedImageData] = useState<string | null>(null);
 
     // Get background color based on personality type
     const getBackgroundColor = () => {
@@ -64,19 +66,70 @@ export default function ResultPage({
             return;
         }
 
-        setIsUploading(true);
+        // Phase 1: Capture the image
+        setIsCapturing(true);
         setUploadUrl(null);
 
         try {
+            // First, create a composite image for freezing the camera feed (video + costume overlays)
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            if (!tempCtx) {
+                throw new Error('Could not get temp canvas context');
+            }
+
+            // Set canvas size to match the face tracking canvas display area
+            tempCanvas.width = faceTrackingCanvas.width;
+            tempCanvas.height = faceTrackingCanvas.height;
+
+            // Calculate proper video scaling to maintain aspect ratio (same as FaceTrackingVideo component)
+            const videoAspect = video.videoWidth / video.videoHeight;
+            const canvasAspect = tempCanvas.width / tempCanvas.height;
+            
+            let drawWidth, drawHeight, drawX, drawY;
+            
+            if (videoAspect > canvasAspect) {
+                // Video is wider - fit height and center horizontally
+                drawHeight = tempCanvas.height;
+                drawWidth = drawHeight * videoAspect;
+                drawX = (tempCanvas.width - drawWidth) / 2;
+                drawY = 0;
+            } else {
+                // Video is taller - fit width and center vertically
+                drawWidth = tempCanvas.width;
+                drawHeight = drawWidth / videoAspect;
+                drawX = 0;
+                drawY = (tempCanvas.height - drawHeight) / 2;
+            }
+
+            // Draw the video frame first (mirrored to match display)
+            tempCtx.save();
+            tempCtx.translate(drawX + drawWidth, drawY);
+            tempCtx.scale(-1, 1);
+            tempCtx.drawImage(video, 0, 0, drawWidth, drawHeight);
+            tempCtx.restore();
+
+            // Draw the costume overlays on top
+            tempCtx.drawImage(faceTrackingCanvas, 0, 0);
+
+            // Capture the composite for freezing
+            const faceTrackingImageData = tempCanvas.toDataURL('image/jpeg', 0.9);
+            setCapturedImageData(faceTrackingImageData);
+
             // Create screenshot canvas using the utility function
             const masterCanvas = await createScreenshotCanvas({
                 faceTrackingCanvas,
                 video,
                 personalityType
             });
+            
+            // Phase 2: Upload the image
+            setIsCapturing(false);
+            setIsUploading(true);
 
-            // Convert to blob and upload to R2
-            const blob = await canvasToBlob(masterCanvas);
+            // Convert to blob with optimized settings for upload
+            const blob = await canvasToBlob(masterCanvas, 0.85); // Reduced quality for faster upload
             const result = await uploadImage(blob, personalityType);
 
             if (result.success && result.url) {
@@ -94,33 +147,48 @@ export default function ResultPage({
         } catch (error) {
             console.error('Error taking screenshot:', error);
         } finally {
+            setIsCapturing(false);
             setIsUploading(false);
         }
     }, [onShare, personalityType]);
 
+    // Reset captured state for new photo
+    const resetCapture = useCallback(() => {
+        setCapturedImageData(null);
+        setUploadUrl(null);
+    }, []);
+
     // Countdown functionality
     const startCountdown = useCallback(() => {
+        // Reset any previous capture
+        resetCapture();
         setCountdown(3);
         
         const countdownInterval = setInterval(() => {
             setCountdown(prev => {
                 if (prev === null || prev <= 1) {
                     clearInterval(countdownInterval);
+                    // Take screenshot immediately when countdown reaches 0
+                    takeScreenshotInternal();
                     return null;
                 }
                 return prev - 1;
             });
         }, 1000);
-
-        // Take screenshot after countdown completes
-        setTimeout(() => {
-            takeScreenshotInternal();
-        }, 3000);
-    }, [takeScreenshotInternal]);
+    }, [takeScreenshotInternal, resetCapture]);
 
     const handleCanvasReady = useCallback((getCanvasData: () => { canvas: HTMLCanvasElement | null; video: HTMLVideoElement | null }) => {
         getCanvasDataRef.current = getCanvasData;
     }, []);
+
+    // Preload result card image for faster capture
+    useEffect(() => {
+        if (personalityType) {
+            preloadResultCardImage(personalityType).catch(error => {
+                console.error('Failed to preload result card image:', error);
+            });
+        }
+    }, [personalityType]);
 
     // Don't render anything if personalityType is not set yet (during preloading)
     if (!personalityType) {
@@ -154,14 +222,14 @@ export default function ResultPage({
                         variant="primary"
                         className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-green"
                         onClick={startCountdown}
-                        disabled={isUploading || countdown !== null}
+                        disabled={isCapturing || isUploading || countdown !== null}
                     >
                         <Image
                             src="/icons/camera.svg"
                             alt={textContent.common.altTexts.camera}
                             width={64}
                             height={64}
-                            className={`w-16 h-16 ${isUploading ? 'animate-pulse' : ''}`}
+                            className={`w-16 h-16 ${(isCapturing || isUploading) ? 'animate-pulse' : ''}`}
                         />
                     </MotionButton>
                 </div>
@@ -175,23 +243,43 @@ export default function ResultPage({
                     </div>
                 )}
 
-                {/* Processing loader */}
+                {/* Capturing loader */}
+                {isCapturing && (
+                    <div className="absolute top-[20%] right-[6%] w-[50%] h-[32%] z-10 flex flex-col justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
+                        <div className="flex justify-center items-center mb-4">
+                            <div className="w-12 h-12 rounded-full border-4 border-white animate-spin border-t-transparent"></div>
+                        </div>
+                        <span className="text-[40px] font-bold text-white">Capturing...</span>
+                    </div>
+                )}
+
+                {/* Uploading loader */}
                 {isUploading && (
                     <div className="absolute top-[20%] right-[6%] w-[50%] h-[32%] z-10 flex flex-col justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
                         <div className="flex justify-center items-center mb-4">
                             <div className="w-12 h-12 rounded-full border-4 border-white animate-spin border-t-transparent"></div>
                         </div>
-                        <span className="text-[40px] font-bold text-white">Processing...</span>
+                        <span className="text-[40px] font-bold text-white">Uploading...</span>
                     </div>
                 )}
 
                 <div className="absolute top-[20%] right-[6%] w-[50%] h-[32%] z-2">
                     <div className="overflow-hidden relative p-0 w-full h-full">
-                        <FaceTrackingVideo
-                            key={`face-tracking-${personalityType}`}
-                            personalityType={personalityType.toLowerCase()}
-                            onCanvasReady={handleCanvasReady}
-                        />
+                        {capturedImageData ? (
+                            /* Show frozen captured image */
+                            <img 
+                                src={capturedImageData} 
+                                alt="Captured result"
+                                className="object-cover w-full h-full"
+                            />
+                        ) : (
+                            /* Show live face tracking video */
+                            <FaceTrackingVideo
+                                key={`face-tracking-${personalityType}`}
+                                personalityType={personalityType.toLowerCase()}
+                                onCanvasReady={handleCanvasReady}
+                            />
+                        )}
                     </div>
                 </div>
 

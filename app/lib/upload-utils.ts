@@ -20,7 +20,7 @@ export async function uploadImage(
     const formData = new FormData();
     
     // Convert blob to file
-    const file = blobToFile(blob, fileName || `${personalityType}-result.png`);
+    const file = blobToFile(blob, fileName || `${personalityType}-result.jpg`);
     formData.append('image', file);
     formData.append('personalityType', personalityType);
 
@@ -54,7 +54,7 @@ export async function uploadImage(
 /**
  * Converts canvas to blob
  */
-export function canvasToBlob(canvas: HTMLCanvasElement, quality = 0.9): Promise<Blob> {
+export function canvasToBlob(canvas: HTMLCanvasElement, quality = 0.85): Promise<Blob> {
   return new Promise((resolve, reject) => {
     canvas.toBlob(
       (blob) => {
@@ -64,7 +64,7 @@ export function canvasToBlob(canvas: HTMLCanvasElement, quality = 0.9): Promise<
           reject(new Error('Failed to convert canvas to blob'));
         }
       },
-      'image/png',
+      'image/jpeg', // Use JPEG for smaller file sizes
       quality
     );
   });
