@@ -264,6 +264,25 @@ p {
   * {
     @apply border-border outline-ring/50;
   }
+  
+  /* Gesture prevention - only applied when gestures are NOT enabled */
+  body:not(.gestures-enabled) * {
+    /* Disable text selection and touch gestures */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    /* Disable double-tap zoom and other touch actions */
+    touch-action: manipulation;
+    /* Disable iOS callout menu */
+    -webkit-touch-callout: none;
+    /* Remove tap highlight */
+    -webkit-tap-highlight-color: transparent;
+    /* Disable context menu (right-click) */
+    -webkit-context-menu: none;
+    -moz-context-menu: none;
+  }
+  
   body {
     @apply bg-background text-foreground;
   }

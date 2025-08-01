@@ -5,4 +5,6 @@ export * from './neobrutalism-style';
 export * from './motion-button';
 export * from './motion-card';
 export * from './dialog';
+export * from './debug-button';
+export * from './gesture-prevention';
 export { default as QRModal } from './qr-modal';

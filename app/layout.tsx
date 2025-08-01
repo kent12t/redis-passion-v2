@@ -3,6 +3,9 @@ import localFont from 'next/font/local';
 import "./globals.css";
 import { NeoBrutalismProvider } from "./components/ui/neobrutalism-provider";
 import { LanguageProvider } from "./lib/language-context";
+import { DebugProvider } from "./lib/debug-context";
+import { GesturePrevention } from "./components/ui/gesture-prevention";
+import { DebugButton } from "./components/ui/debug-button";
 import { Analytics } from "@vercel/analytics/next";
 
 const circularStdMedium = localFont({
@@ -34,15 +37,19 @@ export default function RootLayout({
       <body
         className={`${circularStdMedium.variable} ${circularStdBold.variable} antialiased`}
       >
-        <NeoBrutalismProvider>
-          <LanguageProvider>
-            <div className="app-container">
-              <div className="app-content">
-                {children}
+        <DebugProvider>
+          <NeoBrutalismProvider>
+            <LanguageProvider>
+              <GesturePrevention />
+              <div className="app-container">
+                <div className="app-content">
+                  {children}
+                </div>
               </div>
-            </div>
-          </LanguageProvider>
-        </NeoBrutalismProvider>
+              <DebugButton />
+            </LanguageProvider>
+          </NeoBrutalismProvider>
+        </DebugProvider>
         <Analytics />
       </body>
     </html>

@@ -19,4 +19,9 @@ export interface CloudflareR2Config {
   secretAccessKey: string;
   bucketName: string;
   publicUrl: string;
+}
+
+export interface DebugState {
+  isDebugMode: boolean;
+  enableGestures: boolean;
 } 
