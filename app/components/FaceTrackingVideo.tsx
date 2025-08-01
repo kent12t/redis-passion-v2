@@ -785,39 +785,46 @@ export default function FaceTrackingVideo({
                 // Double-check active state after async import
                 if (!isActiveRef.current) return;
 
-                // Calculate the center crop region of the video
+                // Calculate the center crop region of the video for display
                 const videoAspect = video.videoWidth / video.videoHeight;
-                let cropX = 0, cropY = 0, cropWidth = video.videoWidth, cropHeight = video.videoHeight;
+                let displayCropX = 0, displayCropY = 0, displayCropWidth = video.videoWidth, displayCropHeight = video.videoHeight;
 
                 if (videoAspect > TARGET_ASPECT_RATIO) {
                     // Video is wider - crop sides
-                    cropWidth = video.videoHeight * TARGET_ASPECT_RATIO;
-                    cropX = (video.videoWidth - cropWidth) / 2;
+                    displayCropWidth = video.videoHeight * TARGET_ASPECT_RATIO;
+                    displayCropX = (video.videoWidth - displayCropWidth) / 2;
                 } else {
                     // Video is taller - crop top/bottom
-                    cropHeight = video.videoWidth / TARGET_ASPECT_RATIO;
-                    cropY = (video.videoHeight - cropHeight) / 2;
+                    displayCropHeight = video.videoWidth / TARGET_ASPECT_RATIO;
+                    displayCropY = (video.videoHeight - displayCropHeight) / 2;
                 }
 
-                // Reuse or create temporary canvas
+                // For face detection: Create a square crop from the center of the video
+                // Use smaller dimensions for better performance (480x480)
+                const DETECTION_SIZE = 480;
+                const detectionCropSize = Math.min(video.videoWidth, video.videoHeight);
+                const detectionCropX = (video.videoWidth - detectionCropSize) / 2;
+                const detectionCropY = (video.videoHeight - detectionCropSize) / 2;
+
+                // Reuse or create temporary canvas for detection (480x480)
                 if (!tempCanvasRef.current) {
                     tempCanvasRef.current = document.createElement('canvas');
                 }
                 const tempCanvas = tempCanvasRef.current;
-                tempCanvas.width = cropWidth;
-                tempCanvas.height = cropHeight;
+                tempCanvas.width = DETECTION_SIZE;
+                tempCanvas.height = DETECTION_SIZE;
                 const tempCtx = tempCanvas.getContext('2d');
                 if (!tempCtx || !isActiveRef.current) return;
 
                 // Set up mirroring transform for detection input
                 tempCtx.save(); // Save the context state
-                tempCtx.translate(cropWidth, 0);
+                tempCtx.translate(DETECTION_SIZE, 0);
                 tempCtx.scale(-1, 1);
 
-                // Draw the cropped and mirrored region
+                // Draw the square cropped and mirrored region, scaled down to 480x480
                 tempCtx.drawImage(video,
-                    cropX, cropY, cropWidth, cropHeight,
-                    0, 0, cropWidth, cropHeight
+                    detectionCropX, detectionCropY, detectionCropSize, detectionCropSize,
+                    0, 0, DETECTION_SIZE, DETECTION_SIZE
                 );
 
                 tempCtx.restore(); // Restore the context state
@@ -840,7 +847,7 @@ export default function FaceTrackingVideo({
                     score: detection.score
                 }] : [];
 
-                const persistentFaces = updateTrackedFaces(simplifiedDetections, cropWidth, cropHeight);
+                const persistentFaces = updateTrackedFaces(simplifiedDetections, DETECTION_SIZE, DETECTION_SIZE);
                 const ctx = canvas.getContext('2d');
                 if (!ctx || !isActiveRef.current) return;
 
@@ -850,77 +857,132 @@ export default function FaceTrackingVideo({
                     prevPositionsRef.current = prevPositionsRef.current.slice(0, persistentFaces.length);
                 }
 
-                // Scale factor between cropped video and display
-                const scaleX = canvas.width / cropWidth;
-                const scaleY = canvas.height / cropHeight;
+                // Scale factor between detection canvas (480x480) and display canvas
+                // We need to map from detection coordinates to display coordinates
+                const detectionToVideoScale = detectionCropSize / DETECTION_SIZE;
+                const videoToDisplayScaleX = canvas.width / displayCropWidth;
+                const videoToDisplayScaleY = canvas.height / displayCropHeight;
+                
+                // Combined scale from detection space to display space
+                const scaleX = detectionToVideoScale * videoToDisplayScaleX;
+                const scaleY = detectionToVideoScale * videoToDisplayScaleY;
+                
+                // Offset to account for the different crop regions
+                const offsetX = (detectionCropX - displayCropX) * videoToDisplayScaleX;
+                const offsetY = (detectionCropY - displayCropY) * videoToDisplayScaleY;
 
-                persistentFaces.forEach((face, index) => {
-                    if (!isActiveRef.current) return;
+                // Check if we have valid faces with good tracking confidence
+                const hasValidTracking = persistentFaces.length > 0 && 
+                    persistentFaces.some(face => face.confidence >= TRACKING_CONFIDENCE_THRESHOLD && face.stabilityFrames >= FACE_STABILITY_FRAMES);
 
-                    const rawBox = face.box;
+                if (hasValidTracking) {
+                    // Normal face tracking - render costume on detected faces
+                    persistentFaces.forEach((face, index) => {
+                        if (!isActiveRef.current) return;
 
-                    // Scale the detection box to match display dimensions
-                    // Note: x position is already mirrored from detection stage
-                    const scaledBox = {
-                        x: rawBox.x * scaleX,
-                        y: rawBox.y * scaleY,
-                        width: rawBox.width * scaleX,
-                        height: rawBox.height * scaleY
-                    };
+                        const rawBox = face.box;
 
-                    const box = smoothPosition(scaledBox, index);
+                        // Scale and offset the detection box to match display dimensions
+                        // Note: x position is already mirrored from detection stage
+                        const scaledBox = {
+                            x: rawBox.x * scaleX + offsetX,
+                            y: rawBox.y * scaleY + offsetY,
+                            width: rawBox.width * scaleX,
+                            height: rawBox.height * scaleY
+                        };
 
+                        const box = smoothPosition(scaledBox, index);
+
+                        const costume = costumeImage;
+
+                        if (costume && isActiveRef.current) {
+                            // Calculate base scale factor based on face size relative to canvas
+                            const faceArea = box.width * box.height;
+                            const canvasArea = canvas.width * canvas.height;
+                            const rawFaceScale = Math.sqrt(faceArea / canvasArea);
+
+                            // Apply temporal smoothing to scale
+                            const faceScale = smoothScale(rawFaceScale);
+
+                            // Scale multiplier for costume - adjust to fine-tune the effect
+                            const costumeScaleBase = 7.5; // Base scale for costume overlay
+
+                            // Apply dynamic scaling based on face size
+                            const costumeScale = costumeScaleBase * (0.7 + faceScale * 0.6);
+
+                            // // Draw debug bounding box for detected face
+                            // ctx.strokeStyle = '#00ff00';
+                            // ctx.lineWidth = 2;
+                            // ctx.strokeRect(box.x, box.y, box.width, box.height);
+
+                            // // Add debug text for scale and confidence values
+                            // ctx.fillStyle = '#00ff00';
+                            // ctx.font = '16px Arial';
+                            // ctx.fillText(`Scale: ${faceScale.toFixed(2)}`, box.x, box.y - 25);
+                            // ctx.fillText(`Conf: ${face.confidence.toFixed(2)}`, box.x, box.y - 5);
+
+                            // Calculate costume dimensions
+                            const costumeWidth = box.width * costumeScale;
+                            const costumeHeight = costumeWidth; // Square costume image
+
+                            // Calculate face center in detected box
+                            const faceCenterX = box.x + box.width / 2;
+                            const faceCenterY = box.y + box.height / 2;
+
+                            // Calculate offset from costume's face center to its top-left corner
+                            const costumeFaceCenterOffsetX = (COSTUME_FACE_CENTER.x / COSTUME_SIZE) * costumeWidth;
+                            const costumeFaceCenterOffsetY = (COSTUME_FACE_CENTER.y / COSTUME_SIZE) * costumeHeight;
+
+                            // Adjust costume position - move it by shifting Y position
+                            const verticalAdjustment = -box.height * 0.4;
+
+                            // Position costume so its face center aligns with detected face center
+                            const costumeX = faceCenterX - costumeFaceCenterOffsetX;
+                            const costumeY = faceCenterY - costumeFaceCenterOffsetY - verticalAdjustment;
+
+                            // Draw costume
+                            ctx.drawImage(costume, costumeX, costumeY, costumeWidth, costumeHeight);
+                        }
+                    });
+                } else {
+                    // Fallback: No valid face tracking - show centered costume overlay
                     const costume = costumeImage;
-
+                    
                     if (costume && isActiveRef.current) {
-                        // Calculate base scale factor based on face size relative to canvas
-                        const faceArea = box.width * box.height;
+                        // Calculate default face size for centered overlay (based on canvas size)
                         const canvasArea = canvas.width * canvas.height;
-                        const rawFaceScale = Math.sqrt(faceArea / canvasArea);
-
-                        // Apply temporal smoothing to scale
-                        const faceScale = smoothScale(rawFaceScale);
-
-                        // Scale multiplier for costume - adjust to fine-tune the effect
-                        const costumeScaleBase = 7.5; // Base scale for costume overlay
-
-                        // Apply dynamic scaling based on face size
-                        const costumeScale = costumeScaleBase * (0.7 + faceScale * 0.6);
-
-                        // // Draw debug bounding box for detected face
-                        // ctx.strokeStyle = '#00ff00';
-                        // ctx.lineWidth = 2;
-                        // ctx.strokeRect(box.x, box.y, box.width, box.height);
-
-                        // // Add debug text for scale and confidence values
-                        // ctx.fillStyle = '#00ff00';
-                        // ctx.font = '16px Arial';
-                        // ctx.fillText(`Scale: ${faceScale.toFixed(2)}`, box.x, box.y - 25);
-                        // ctx.fillText(`Conf: ${face.confidence.toFixed(2)}`, box.x, box.y - 5);
-
+                        const defaultFaceRatio = 0.08; // 8% of canvas area for default face size
+                        const defaultFaceArea = canvasArea * defaultFaceRatio;
+                        const defaultFaceSize = Math.sqrt(defaultFaceArea);
+                        
+                        // Use similar scaling logic as normal tracking
+                        const defaultFaceScale = Math.sqrt(defaultFaceArea / canvasArea);
+                        const costumeScaleBase = 7.5;
+                        const costumeScale = costumeScaleBase * (0.7 + defaultFaceScale * 0.6);
+                        
                         // Calculate costume dimensions
-                        const costumeWidth = box.width * costumeScale;
+                        const costumeWidth = defaultFaceSize * costumeScale;
                         const costumeHeight = costumeWidth; // Square costume image
-
-                        // Calculate face center in detected box
-                        const faceCenterX = box.x + box.width / 2;
-                        const faceCenterY = box.y + box.height / 2;
-
+                        
+                        // Center the costume in the canvas
+                        const canvasCenterX = canvas.width / 2;
+                        const canvasCenterY = canvas.height * 0.4;
+                        
                         // Calculate offset from costume's face center to its top-left corner
                         const costumeFaceCenterOffsetX = (COSTUME_FACE_CENTER.x / COSTUME_SIZE) * costumeWidth;
                         const costumeFaceCenterOffsetY = (COSTUME_FACE_CENTER.y / COSTUME_SIZE) * costumeHeight;
-
-                        // Adjust costume position - move it by shifting Y position
-                        const verticalAdjustment = -box.height * 0.4;
-
-                        // Position costume so its face center aligns with detected face center
-                        const costumeX = faceCenterX - costumeFaceCenterOffsetX;
-                        const costumeY = faceCenterY - costumeFaceCenterOffsetY - verticalAdjustment;
-
-                        // Draw costume
+                        
+                        // Apply similar vertical adjustment as normal tracking
+                        const verticalAdjustment = -defaultFaceSize * 0.4;
+                        
+                        // Position costume so its face center aligns with canvas center
+                        const costumeX = canvasCenterX - costumeFaceCenterOffsetX;
+                        const costumeY = canvasCenterY - costumeFaceCenterOffsetY - verticalAdjustment;
+                        
+                        // Draw costume at full opacity
                         ctx.drawImage(costume, costumeX, costumeY, costumeWidth, costumeHeight);
                     }
-                });
+                }
 
             } catch (error) {
                 console.error('Error in face detection:', error);
@@ -946,7 +1008,7 @@ export default function FaceTrackingVideo({
     }, [onCanvasReady]);
 
     return (
-        <div ref={containerRef} className="overflow-hidden relative w-full h-full">
+        <div ref={containerRef} className="relative w-full h-full overflow-hidden">
             <div
                 className="relative w-full h-full"
                 style={{
@@ -961,7 +1023,7 @@ export default function FaceTrackingVideo({
                     muted
                     playsInline
                     onPlay={handleVideoPlay}
-                    className="object-cover absolute top-0 left-0 w-full h-full"
+                    className="absolute top-0 left-0 object-cover w-full h-full"
                     style={{
                         objectFit: 'cover',
                         transform: 'scaleX(-1)' // Mirror the video display
@@ -972,8 +1034,8 @@ export default function FaceTrackingVideo({
                     className="absolute top-0 left-0 w-full h-full"
                 />
                 {(!modelsLoaded || !imagesLoaded) && (
-                    <div className="flex absolute inset-0 justify-center items-center bg-black/30">
-                        <div className="p-4 bg-white rounded-lg border-2 border-black">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                        <div className="p-4 bg-white border-2 border-black rounded-lg">
                             Loading camera...
                         </div>
                     </div>
