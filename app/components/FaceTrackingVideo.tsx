@@ -951,7 +951,7 @@ export default function FaceTrackingVideo({
                     if (costume && isActiveRef.current) {
                         // Calculate default face size for centered overlay (based on canvas size)
                         const canvasArea = canvas.width * canvas.height;
-                        const defaultFaceRatio = 0.08; // 8% of canvas area for default face size
+                        const defaultFaceRatio = 0.06; // 6% of canvas area for default face size
                         const defaultFaceArea = canvasArea * defaultFaceRatio;
                         const defaultFaceSize = Math.sqrt(defaultFaceArea);
                         

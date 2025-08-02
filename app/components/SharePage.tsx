@@ -13,7 +13,7 @@ interface QRCodeProps {
 
 function SimpleQRCode({ value, size = 200 }: QRCodeProps) {
     return (
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
             <div className="bg-transparent rounded-lg">
                 <QRCode
                     value={value}
@@ -39,21 +39,9 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
     const { textContent } = useLanguage();
 
     return (
-        <div className="overflow-hidden relative p-0 w-full h-full bg-midblue">
-            {/* Title */}
-            <div className="absolute top-32 left-1/2 z-20 w-full transform -translate-x-1/2">
-                <h1 className="text-[84px] font-sans leading-tight text-center text-white">
-                    {textContent.sharePage.title.split('\n').map((line, index, array) => (
-                        <span key={index}>
-                            {line}
-                            {index < array.length - 1 && <br />}
-                        </span>
-                    ))}
-                </h1>
-            </div>
-
+        <div className="relative w-full h-full p-0 overflow-hidden bg-midblue">
             {/* Rotated captured image */}
-            <div className="flex absolute top-1/2 left-1/2 z-10 justify-center items-center w-[60%] transform -translate-x-1/2 -translate-y-1/2">
+            <div className="flex absolute top-[65%] left-1/2 z-30 justify-center items-center w-[60%] transform -translate-x-1/2 -translate-y-1/2">
                 <div className="transform -rotate-8">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -64,8 +52,8 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
                 </div>
             </div>
 
-            {/* Bottom overlay curve */}
-            <div className="absolute bottom-0 left-0 z-10 p-0 w-full">
+            {/* Top overlay curve */}
+            <div className="absolute top-0 left-0 z-10 w-full p-0 rotate-180">
                 <Image
                     src="/overlay-curve.svg"
                     alt="Curve overlay"
@@ -78,8 +66,8 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
 
 
             {/* Navigation buttons and QR code */}
-            <div className="absolute bottom-0 left-0 right-0 z-20 pb-[150px] px-[10%] flex flex-col gap-20">
-                <p className="text-[64px] leading-tight font-sans text-center text-black">
+            <div className="absolute top-[5%] left-0 right-0 z-20 pb-[150px] px-[10%] flex flex-col gap-20 scale-90">
+                <p className="text-[60px] leading-tight font-sans text-center text-black">
                     {textContent.sharePage.qrText.split('\n').map((line: string, index: number, array: string[]) => (
                         <span key={index}>
                             {line}
@@ -87,12 +75,12 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
                         </span>
                     ))}
                 </p>
-                <div className="flex justify-center items-center px-16">
+                <div className="flex items-center justify-center px-16">
                     {/* Back button */}
-                    <div className="flex flex-1 justify-start">
+                    <div className="flex justify-start flex-1">
                         <MotionButton
                             variant="primary"
-                            className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-yellow"
+                            className="flex items-center justify-center p-6 rounded-full w-28 h-28 bg-yellow"
                             onClick={onBack}
                         >
                             <Image
@@ -106,16 +94,16 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
                     </div>
 
                     {/* QR Code centered */}
-                    <div className="flex flex-col flex-1 gap-4 justify-center items-center">
+                    <div className="flex flex-col items-center justify-center flex-1 gap-4">
 
                         <SimpleQRCode value={imageUrl} size={300} />
                     </div>
 
                     {/* Home button */}
-                    <div className="flex flex-1 justify-end">
+                    <div className="flex justify-end flex-1">
                         <MotionButton
                             variant="primary"
-                            className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-yellow"
+                            className="flex items-center justify-center p-6 rounded-full w-28 h-28 bg-yellow"
                             onClick={onHome}
                         >
                             <Image
@@ -128,15 +116,6 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
                         </MotionButton>
                     </div>
                 </div>
-
-                <p className="w-full text-[40px] leading-tight font-sans text-center text-black">
-                    {textContent.sharePage.downloadText.split('\n').map((line, index, array) => (
-                        <span key={index}>
-                            {line}
-                            {index < array.length - 1 && <br />}
-                        </span>
-                    ))}
-                </p>
             </div>
         </div>
     );

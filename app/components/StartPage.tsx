@@ -15,11 +15,11 @@ export default function StartPage({ onStart }: StartPageProps) {
     return (
         <div className="relative h-full bg-yellow">
             {/* Costume marquee */}
-            <div className="absolute z-0 w-full top-[5%]">
+            <div className="absolute z-0 w-full bottom-[22%]">
                 <CostumeMarquee direction="left" />
             </div>
 
-            <div className="absolute left-1/2 -translate-x-1/2 w-dvw max-w-[1200px] aspect-[3/1] z-2 top-[24%]">
+            <div className="absolute left-1/2 -translate-x-1/2 w-dvw max-w-[1200px] aspect-[3/1] z-2 top-[10%]">
                 <Image
                     src="/logo.png"
                     alt="Logo"
@@ -36,8 +36,8 @@ export default function StartPage({ onStart }: StartPageProps) {
             </div>
 
             {/* Main content */}
-            <div className="grid absolute z-0 grid-cols-1 px-32 w-full h-auto font-sans top-[47%]">
-                <div className="flex flex-col justify-center items-center">
+            <div className="grid absolute z-0 grid-cols-1 px-32 w-full h-auto font-sans top-[33%]">
+                <div className="flex flex-col items-center justify-center">
 
                     <p className="text-center text-[48px] mb-12 leading-tight text-black">
                         {textContent.startPage.heroText.split('\n').map((line, index, array) => (

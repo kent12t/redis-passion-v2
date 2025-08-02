@@ -16,7 +16,7 @@ export default function IntroPage({ onBegin, onBack }: IntroPageProps) {
     return (
         <div className="relative h-full bg-purple">
             {/* Costume marquee */}
-            <div className="absolute z-0 w-full top-[5%]">
+            <div className="absolute z-0 w-full bottom-[22%]">
                 <CostumeMarquee direction="left" />
             </div>
 
@@ -26,7 +26,7 @@ export default function IntroPage({ onBegin, onBack }: IntroPageProps) {
             </div>
 
             {/* Main content */}
-            <div className="absolute z-0 grid w-full h-auto grid-cols-1 px-0 font-sans -translate-y-1/2 top-1/2">
+            <div className="absolute z-0 grid w-full h-auto grid-cols-1 px-0 font-sans -translate-y-1/2 top-[36%]">
                 <div className="flex flex-col items-center justify-center gap-8">
                     {/* Two paragraphs */}
                     <p className="text-center text-[60px] mb-8 font-sans leading-tight text-white">

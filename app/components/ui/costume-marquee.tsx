@@ -16,7 +16,7 @@ export default function CostumeMarquee({
     
     return (
         <div className={cn("overflow-hidden relative h-auto", className)}>
-            <div className={cn("flex w-[450%] gap-8", animationClass)}>
+            <div className={cn("flex w-[540%] gap-8", animationClass)}>
                 {/* First set of images */}
                 <div className="flex-shrink-0 w-1/3">
                     <Image 
@@ -24,7 +24,7 @@ export default function CostumeMarquee({
                         alt="All costumes" 
                         width={0}
                         height={0}
-                        sizes="150vw"
+                        sizes="180vw"
                         className="object-contain w-full h-full"
                         priority
                     />
@@ -36,7 +36,7 @@ export default function CostumeMarquee({
                         alt="All costumes" 
                         width={0}
                         height={0}
-                        sizes="150vw"
+                        sizes="180vw"
                         className="object-contain w-full h-full"
                         priority
                     />
