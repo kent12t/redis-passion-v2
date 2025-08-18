@@ -1,38 +1,43 @@
-import { personalityAssets } from '@/app/data/personality-assets';
+import { personalityAssets, getLanguageSpecificResultCard } from '@/app/data/personality-assets';
+import { Language } from '@/app/lib/language-context';
 
 interface ScreenshotOptions {
     faceTrackingCanvas: HTMLCanvasElement;
     video: HTMLVideoElement;
     personalityType: string;
+    language?: Language;
 }
 
 // Cache for preloaded result card images
 const imageCache = new Map<string, HTMLImageElement>();
 
 // Function to preload result card image
-export function preloadResultCardImage(personalityType: string): Promise<HTMLImageElement> {
+export function preloadResultCardImage(personalityType: string, language: Language = 'en'): Promise<HTMLImageElement> {
+    const cacheKey = `${personalityType}-${language}`;
+    
     return new Promise((resolve, reject) => {
         // Check if already cached
-        if (imageCache.has(personalityType)) {
-            resolve(imageCache.get(personalityType)!);
+        if (imageCache.has(cacheKey)) {
+            resolve(imageCache.get(cacheKey)!);
             return;
         }
 
         const image = document.createElement('img');
         image.crossOrigin = 'anonymous';
         image.onload = () => {
-            imageCache.set(personalityType, image);
+            imageCache.set(cacheKey, image);
             resolve(image);
         };
-        image.onerror = () => reject(new Error(`Failed to load result card image for ${personalityType}`));
-        image.src = personalityAssets[personalityType as keyof typeof personalityAssets].card;
+        image.onerror = () => reject(new Error(`Failed to load result card image for ${personalityType} in ${language}`));
+        image.src = getLanguageSpecificResultCard(personalityType, language);
     });
 }
 
 export async function createScreenshotCanvas({
     faceTrackingCanvas,
     video,
-    personalityType
+    personalityType,
+    language = 'en'
 }: ScreenshotOptions): Promise<HTMLCanvasElement> {
     // Create master canvas for compositing
     const masterCanvas = document.createElement('canvas');
@@ -43,7 +48,7 @@ export async function createScreenshotCanvas({
     }
 
     // Get result card image from cache or load it
-    const resultCardImage = await preloadResultCardImage(personalityType);
+    const resultCardImage = await preloadResultCardImage(personalityType, language);
 
     // Set canvas dimensions to 9:16 aspect ratio
     const canvasWidth = 1080;

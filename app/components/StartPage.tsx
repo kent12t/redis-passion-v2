@@ -3,7 +3,7 @@
 import MotionButton from './ui/motion-button';
 import CostumeMarquee from './ui/costume-marquee';
 import Image from 'next/image';
-import { useLanguage, languages } from '@/app/lib/text-utils';
+import { useLanguage, languages, getLanguageFontClass } from '@/app/lib/text-utils';
 
 interface StartPageProps {
     onStart: () => void;
@@ -39,7 +39,7 @@ export default function StartPage({ onStart }: StartPageProps) {
             <div className="grid absolute z-0 grid-cols-1 px-32 w-full h-auto font-sans top-[33%]">
                 <div className="flex flex-col items-center justify-center">
 
-                    <p className="text-center text-[48px] mb-12 leading-tight text-black">
+                    <p className={`text-center text-[48px] mb-12 leading-tight text-black ${getLanguageFontClass(currentLanguage, 'body')}`}>
                         {textContent.startPage.heroText.split('\n').map((line, index, array) => (
                             <span key={index}>
                                 {line}
@@ -68,7 +68,7 @@ export default function StartPage({ onStart }: StartPageProps) {
                     <MotionButton
                         onClick={onStart}
                         size="lg"
-                        className="h-auto w-auto px-12 py-4 text-[48px] font-sans bg-midblue text-white"
+                        className={`h-auto w-auto px-12 py-4 text-[48px] font-sans bg-midblue text-white ${getLanguageFontClass(currentLanguage, 'body')}`}
                     >
                         {textContent.startPage.button.getStarted}
                     </MotionButton>

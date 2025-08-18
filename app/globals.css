@@ -9,6 +9,10 @@
   --grid-size: 80px;
   --font-circular-medium: var(--font-circular-medium);
   --font-circular-bold: var(--font-circular-bold);
+  --font-noto-tamil-bold: var(--font-noto-tamil-bold);
+  --font-noto-tamil-medium: var(--font-noto-tamil-medium);
+  --font-noto-sc-bold: var(--font-noto-sc-bold);
+  --font-noto-sc-medium: var(--font-noto-sc-medium);
 
   /* Page-specific colors */
   --start-result-bg: #459bd1;
@@ -160,6 +164,27 @@ button,
 
 p {
   font-family: var(--font-circular-medium), system-ui, sans-serif;
+  font-weight: 500;
+}
+
+/* Language-specific font classes */
+.font-tamil-title {
+  font-family: var(--font-noto-tamil-bold), var(--font-circular-bold), system-ui, sans-serif !important;
+  font-weight: 700;
+}
+
+.font-tamil-body {
+  font-family: var(--font-noto-tamil-medium), var(--font-circular-medium), system-ui, sans-serif !important;
+  font-weight: 500;
+}
+
+.font-chinese-title {
+  font-family: var(--font-noto-sc-bold), var(--font-circular-bold), system-ui, sans-serif !important;
+  font-weight: 700;
+}
+
+.font-chinese-body {
+  font-family: var(--font-noto-sc-medium), var(--font-circular-medium), system-ui, sans-serif !important;
   font-weight: 500;
 }
 

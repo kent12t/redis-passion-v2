@@ -22,6 +22,34 @@ const circularStdBold = localFont({
   preload: true,
 });
 
+const notoSansTamilBold = localFont({
+  src: '../public/fonts/NotoSansTamil-Bold.ttf',
+  variable: '--font-noto-tamil-bold',
+  display: 'swap',
+  preload: true,
+});
+
+const notoSansTamilMedium = localFont({
+  src: '../public/fonts/NotoSansTamil-Medium.ttf',
+  variable: '--font-noto-tamil-medium',
+  display: 'swap',
+  preload: true,
+});
+
+const notoSansSCBold = localFont({
+  src: '../public/fonts/NotoSansSC-Bold.ttf',
+  variable: '--font-noto-sc-bold',
+  display: 'swap',
+  preload: true,
+});
+
+const notoSansSCMedium = localFont({
+  src: '../public/fonts/NotoSansSC-Medium.ttf',
+  variable: '--font-noto-sc-medium',
+  display: 'swap',
+  preload: true,
+});
+
 export const metadata: Metadata = {
   title: "Ideal Pursuits",
   description: "Personalized recommendations for your unique interests and passions.",
@@ -35,7 +63,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${circularStdMedium.variable} ${circularStdBold.variable} antialiased`}
+        className={`${circularStdMedium.variable} ${circularStdBold.variable} ${notoSansTamilBold.variable} ${notoSansTamilMedium.variable} ${notoSansSCBold.variable} ${notoSansSCMedium.variable} antialiased`}
       >
         <DebugProvider>
           <NeoBrutalismProvider>

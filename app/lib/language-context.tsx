@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 // Feature flag for language switcher (set to false to hide for deployment)
-const ENABLE_LANGUAGE_SWITCHER = false;
+const ENABLE_LANGUAGE_SWITCHER = true;
 
 // Language types
 export type Language = 'en' | 'cn' | 'ms' | 'ta';

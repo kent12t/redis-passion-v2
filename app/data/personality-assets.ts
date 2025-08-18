@@ -1,3 +1,22 @@
+import { Language } from '@/app/lib/language-context';
+
+// Function to get language-specific result card image
+export function getLanguageSpecificResultCard(personalityType: string, language: Language): string {
+    const baseType = personalityType.toLowerCase();
+    
+    switch (language) {
+        case 'ta': // Tamil
+            return `/results/result-${baseType}-ta.png`;
+        case 'cn': // Chinese
+            return `/results/result-${baseType}-zh.png`;
+        case 'ms': // Malay
+            return `/results/result-${baseType}-ms.png`;
+        case 'en': // English (default)
+        default:
+            return `/results/result-${baseType}.png`;
+    }
+}
+
 // Personality type to asset mapping
 export const personalityAssets = {
     "runner": {

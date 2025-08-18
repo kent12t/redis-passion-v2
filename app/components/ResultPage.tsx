@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useRef, useCallback, useState, useEffect } from 'react';
 import { uploadImage, canvasToBlob } from '@/app/lib/upload-utils';
 import { createScreenshotCanvas, preloadResultCardImage } from '@/app/lib/screenshot-utils';
-import { personalityAssets } from '@/app/data/personality-assets';
+import { personalityAssets, getLanguageSpecificResultCard } from '@/app/data/personality-assets';
 import { useLanguage } from '@/app/lib/text-utils';
 
 interface ResultPageProps {
@@ -23,7 +23,7 @@ export default function ResultPage({
     onHome,
     onShare,
 }: ResultPageProps) {
-    const { textContent } = useLanguage();
+    const { textContent, currentLanguage } = useLanguage();
     const getCanvasDataRef = useRef<(() => { canvas: HTMLCanvasElement | null; video: HTMLVideoElement | null }) | null>(null);
     const [isCapturing, setIsCapturing] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
@@ -122,7 +122,8 @@ export default function ResultPage({
             const masterCanvas = await createScreenshotCanvas({
                 faceTrackingCanvas,
                 video,
-                personalityType
+                personalityType,
+                language: currentLanguage
             });
             
             // Phase 2: Upload the image
@@ -188,11 +189,11 @@ export default function ResultPage({
     // Preload result card image for faster capture
     useEffect(() => {
         if (personalityType) {
-            preloadResultCardImage(personalityType).catch(error => {
+            preloadResultCardImage(personalityType, currentLanguage).catch(error => {
                 console.error('Failed to preload result card image:', error);
             });
         }
-    }, [personalityType]);
+    }, [personalityType, currentLanguage]);
 
     // Don't render anything if personalityType is not set yet (during preloading)
     if (!personalityType) {
@@ -296,7 +297,7 @@ export default function ResultPage({
 
                 <div className="absolute z-20 flex items-center justify-center w-full h-full transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
                     <Image
-                        src={personalityAssets[personalityType as keyof typeof personalityAssets].card}
+                        src={getLanguageSpecificResultCard(personalityType, currentLanguage)}
                         alt={personalityType}
                         sizes="100vw"
                         className="object-contain w-full h-full"
