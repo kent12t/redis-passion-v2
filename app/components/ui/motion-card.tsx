@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/app/lib/utils';
-import { forwardRef, ReactNode } from "react";
+import React, { forwardRef, ReactNode } from "react";
 
 interface MotionCardProps {
     className?: string;
@@ -10,6 +10,7 @@ interface MotionCardProps {
     variant?: 'primary' | 'secondary' | 'neutral' | 'white';
     children?: ReactNode;
     onClick?: () => void;
+    style?: React.CSSProperties;
 }
 
 export const MotionCard = forwardRef<HTMLDivElement, MotionCardProps>(({

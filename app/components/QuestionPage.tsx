@@ -67,7 +67,7 @@ export default function QuestionPage({
               className="flex flex-col items-center w-full"
             >
               {/* Question */}
-              <div className="flex flex-col items-center justify-center mb-4">
+              <div className="flex flex-col justify-center items-center mb-4">
                 <h2 className={`${getLanguageAdjustedFontSize('text-6xl', currentLanguage)} leading-snug text-center text-white question ${getLanguageFontClass(currentLanguage, 'title')}`}>
                   {currentQuestion.question_text
                     .split("\n")
@@ -83,8 +83,8 @@ export default function QuestionPage({
               </div>
 
               {/* Options */}
-              <div className="flex flex-col items-center w-full p-8">
-                <div className="flex flex-col w-full gap-4 md:gap-6">
+              <div className="flex flex-col items-center p-8 w-full">
+                <div className="flex flex-col gap-4 w-full md:gap-6">
                   {currentQuestion.options.map((option, index) => (
                     <MotionCard
                       key={index}
@@ -116,7 +116,7 @@ export default function QuestionPage({
           </AnimatePresence>
 
           {/* NAVIGATION BUTTONS */}
-          <div className="z-10 flex items-center gap-4">
+          <div className="flex z-10 gap-4 items-center">
             {/* BACK BUTTON */}
             <MotionButton
               onClick={onPrevious}
@@ -142,7 +142,7 @@ export default function QuestionPage({
                   ? "neutral"
                   : "primary"
               }
-              className="flex-shrink px-24 h-28 bg-orange text-white"
+              className="flex-shrink px-24 h-28 text-white bg-orange"
               style={getLanguageAdjustedFontStyle('text-[48px]', currentLanguage)}
             >
               {textContent.questionPage.buttons.next}
@@ -151,14 +151,14 @@ export default function QuestionPage({
                 alt={textContent.common.altTexts.next}
                 width={40}
                 height={40}
-                className="w-10 h-10 ml-4"
+                className="ml-4 w-10 h-10"
               />
             </MotionButton>
 
             {/* HOME BUTTON */}
             <MotionButton
               variant="primary"
-              className="flex items-center justify-center p-6 rounded-full w-28 h-28 bg-yellow"
+              className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-yellow"
               onClick={onHome}
             >
               <Image
@@ -173,9 +173,9 @@ export default function QuestionPage({
         </div>
 
         {/* Bottom navigation section */}
-        <div className="z-10 flex flex-col w-full gap-4 px-32 py-8 mb-32 transform scale-90">
+        <div className="flex z-10 flex-col gap-4 px-32 py-8 mb-32 w-full transform scale-90">
           {/* Progress bar */}
-          <div className="w-full h-8 overflow-hidden bg-white border-black rounded-full border-6">
+          <div className="overflow-hidden w-full h-8 bg-white rounded-full border-black border-6">
             <div
               className="h-full transition-all duration-300 ease-out bg-orange"
               style={{ width: `${progress}%` }}
