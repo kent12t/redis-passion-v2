@@ -2,7 +2,7 @@
 
 import MotionButton from './ui/motion-button';
 import CostumeMarquee from './ui/costume-marquee';
-import { useLanguage, getLanguageAdjustedFontSize, getLanguageAdjustedFontStyle } from '@/app/lib/text-utils';
+import { useLanguage, getLanguageAdjustedFontStyle } from '@/app/lib/text-utils';
 
 interface RevealPageProps {
     onReveal: () => void;

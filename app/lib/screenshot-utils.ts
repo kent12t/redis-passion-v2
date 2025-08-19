@@ -1,4 +1,4 @@
-import { personalityAssets, getLanguageSpecificResultCard } from '@/app/data/personality-assets';
+import { getLanguageSpecificResultCard } from '@/app/data/personality-assets';
 import { Language } from '@/app/lib/language-context';
 
 interface ScreenshotOptions {
