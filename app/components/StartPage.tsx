@@ -55,12 +55,17 @@ export default function StartPage({ onStart }: StartPageProps) {
                                 <MotionButton
                                     key={language.code}
                                     onClick={() => setLanguage(language.code)}
-                                    className={`px-8 py-8 font-sans text-white ${
+                                    className={`w-48 h-24 px-8 gap-0 py-4 rounded-[24px] font-sans text-white whitespace-normal flex-col ${
                                         currentLanguage === language.code ? 'bg-green' : 'bg-purple'
                                     }`}
                                     style={getLanguageAdjustedFontStyle('text-[30px]', currentLanguage)}
                                 >
-                                    {language.name}
+                                    {language.name.split('\n').map((line, index, array) => (
+                                        <span key={index}>
+                                            {line}
+                                            {index < array.length - 1 && <br />}
+                                        </span>
+                                    ))}
                                 </MotionButton>
                             ))}
                         </div>

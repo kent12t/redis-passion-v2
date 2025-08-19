@@ -52,7 +52,7 @@ export const MotionButton = forwardRef<HTMLButtonElement, MotionButtonProps>(({
             ref={ref}
             className={cn(
                 // Base styles
-                "inline-flex items-center justify-center whitespace-nowrap rounded-full",
+                "inline-flex items-center justify-center rounded-full",
                 "transition-colors gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0",
                 "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
                 "disabled:pointer-events-none disabled:opacity-50",

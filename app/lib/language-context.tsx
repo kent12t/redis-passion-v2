@@ -16,8 +16,8 @@ export interface LanguageConfig {
 
 export const languages: LanguageConfig[] = [
   { code: 'en', name: 'English', flag: '' },
-  { code: 'cn', name: '中文', flag: '' },
-  { code: 'ms', name: 'Bahasa', flag: '' },
+  { code: 'cn', name: '华语', flag: '' },
+  { code: 'ms', name: 'Bahasa\nMelayu', flag: '' },
   { code: 'ta', name: 'தமிழ்', flag: '' }
 ];
 
@@ -87,8 +87,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const isLanguageSwitcherEnabled = ENABLE_LANGUAGE_SWITCHER;
 
   // Load text content for a specific language
-  const loadTextContent = async (language: Language) => {
-    setIsLoading(true);
+  const loadTextContent = async (language: Language, isInitialLoad = false) => {
+    if (isInitialLoad) {
+      setIsLoading(true);
+    }
     try {
       const content = await import(`@/app/data/text_content_${language}.json`);
       setTextContent(content.default);
@@ -100,19 +102,22 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         setTextContent(fallback.default);
       }
     } finally {
-      setIsLoading(false);
+      if (isInitialLoad) {
+        setIsLoading(false);
+      }
     }
   };
 
   // Load initial language on mount
   useEffect(() => {
-    loadTextContent(currentLanguage);
-  }, [currentLanguage]);
+    loadTextContent(currentLanguage, true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount, not when currentLanguage changes
 
   // Handle language change
   const setLanguage = (language: Language) => {
     setCurrentLanguage(language);
-    loadTextContent(language);
+    loadTextContent(language, false); // Don't show loading screen for language switches
   };
 
   const value: LanguageContextType = {
