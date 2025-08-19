@@ -3,7 +3,7 @@
 import MotionButton from './ui/motion-button';
 import CostumeMarquee from './ui/costume-marquee';
 import Image from 'next/image';
-import { useLanguage, getLanguageFontClass } from '@/app/lib/text-utils';
+import { useLanguage, getLanguageFontClass, getLanguageAdjustedFontStyle } from '@/app/lib/text-utils';
 
 interface IntroPageProps {
     onBegin: () => void;
@@ -27,13 +27,18 @@ export default function IntroPage({ onBegin, onBack }: IntroPageProps) {
 
             {/* Main content */}
             <div className="absolute z-0 grid w-full h-auto grid-cols-1 px-0 font-sans -translate-y-1/2 top-[36%]">
-                <div className="flex flex-col items-center justify-center gap-8">
+                <div className="flex flex-col gap-8 justify-center items-center">
                     {/* Two paragraphs */}
-                    <p className={`text-center text-[60px] mb-8 font-sans leading-tight text-white ${getLanguageFontClass(currentLanguage, 'title')}`}>
-                        {textContent.introPage.title}
+                    <p className={`text-center mb-8 font-sans leading-tight text-white ${getLanguageFontClass(currentLanguage, 'title')}`} style={getLanguageAdjustedFontStyle('text-[60px]', currentLanguage)}>
+                        {textContent.introPage.title.split('\n').map((line, index, array) => (
+                            <span key={index}>
+                                {line}
+                                {index < array.length - 1 && <br />}
+                            </span>
+                        ))}
                     </p>
 
-                    <p className={`text-center text-[42px] mb-12 font-sans leading-tight text-white ${getLanguageFontClass(currentLanguage, 'body')}`}>
+                    <p className={`text-center mb-12 font-sans leading-tight text-white ${getLanguageFontClass(currentLanguage, 'body')}`} style={getLanguageAdjustedFontStyle('text-[42px]', currentLanguage)}>
                         {textContent.introPage.description.split('\n').map((line, index, array) => (
                             <span key={index}>
                                 {line}
@@ -43,7 +48,7 @@ export default function IntroPage({ onBegin, onBack }: IntroPageProps) {
                     </p>
 
                     {/* Navigation buttons */}
-                    <div className="flex items-center gap-4">
+                    <div className="flex gap-4 items-center">
                         {/* BACK BUTTON */}
                         <MotionButton
                             onClick={onBack}
@@ -63,7 +68,8 @@ export default function IntroPage({ onBegin, onBack }: IntroPageProps) {
                         <MotionButton
                             onClick={onBegin}
                             variant="primary"
-                            className={`flex-shrink px-24 h-28 text-[48px] bg-orange text-white ${getLanguageFontClass(currentLanguage, 'body')}`}
+                            className={`flex-shrink px-24 h-28 bg-orange text-white ${getLanguageFontClass(currentLanguage, 'body')}`}
+                            style={getLanguageAdjustedFontStyle('text-[48px]', currentLanguage)}
                         >
                             {textContent.introPage.buttons.begin}
                             <Image
@@ -71,7 +77,7 @@ export default function IntroPage({ onBegin, onBack }: IntroPageProps) {
                                 alt={textContent.common.altTexts.next}
                                 width={40}
                                 height={40}
-                                className="w-10 h-10 ml-4"
+                                className="ml-4 w-10 h-10"
                             />
                         </MotionButton>
                     </div>

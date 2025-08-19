@@ -3,7 +3,7 @@
 import MotionButton from './ui/motion-button';
 import CostumeMarquee from './ui/costume-marquee';
 import Image from 'next/image';
-import { useLanguage, languages, getLanguageFontClass } from '@/app/lib/text-utils';
+import { useLanguage, languages, getLanguageFontClass, getLanguageAdjustedFontStyle } from '@/app/lib/text-utils';
 
 interface StartPageProps {
     onStart: () => void;
@@ -39,7 +39,7 @@ export default function StartPage({ onStart }: StartPageProps) {
             <div className="grid absolute z-0 grid-cols-1 px-16 w-full h-auto font-sans top-[33%]">
                 <div className="flex flex-col justify-center items-center">
 
-                    <p className={`text-center text-[40px] mb-12 leading-tight text-black ${getLanguageFontClass(currentLanguage, 'body')}`}>
+                    <p className={`text-center mb-12 leading-tight text-black ${getLanguageFontClass(currentLanguage, 'body')}`} style={getLanguageAdjustedFontStyle('text-[40px]', currentLanguage)}>
                         {textContent.startPage.heroText.split('\n').map((line, index, array) => (
                             <span key={index}>
                                 {line}
@@ -55,9 +55,10 @@ export default function StartPage({ onStart }: StartPageProps) {
                                 <MotionButton
                                     key={language.code}
                                     onClick={() => setLanguage(language.code)}
-                                    className={`px-8 py-8 text-[30px] font-sans text-white ${
+                                    className={`px-8 py-8 font-sans text-white ${
                                         currentLanguage === language.code ? 'bg-green' : 'bg-purple'
                                     }`}
+                                    style={getLanguageAdjustedFontStyle('text-[30px]', currentLanguage)}
                                 >
                                     {language.name}
                                 </MotionButton>
@@ -68,7 +69,8 @@ export default function StartPage({ onStart }: StartPageProps) {
                     <MotionButton
                         onClick={onStart}
                         size="lg"
-                        className={`h-auto w-auto px-12 py-4 text-[48px] font-sans bg-midblue text-white ${getLanguageFontClass(currentLanguage, 'body')}`}
+                        className={`h-auto w-auto px-12 py-4 font-sans bg-midblue text-white ${getLanguageFontClass(currentLanguage, 'body')}`}
+                        style={getLanguageAdjustedFontStyle('text-[48px]', currentLanguage)}
                     >
                         {textContent.startPage.button.getStarted}
                     </MotionButton>

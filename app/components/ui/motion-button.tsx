@@ -11,6 +11,7 @@ interface MotionButtonProps {
     disabled?: boolean;
     children?: ReactNode;
     onClick?: () => void;
+    style?: React.CSSProperties;
 }
 
 export const MotionButton = forwardRef<HTMLButtonElement, MotionButtonProps>(({

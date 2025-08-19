@@ -8,7 +8,7 @@ import { useRef, useCallback, useState, useEffect } from 'react';
 import { uploadImage, canvasToBlob } from '@/app/lib/upload-utils';
 import { createScreenshotCanvas, preloadResultCardImage } from '@/app/lib/screenshot-utils';
 import { getLanguageSpecificResultCard } from '@/app/data/personality-assets';
-import { useLanguage } from '@/app/lib/text-utils';
+import { useLanguage, getLanguageAdjustedFontSize, getLanguageAdjustedFontStyle } from '@/app/lib/text-utils';
 
 interface ResultPageProps {
     personalityType: string;
@@ -247,7 +247,7 @@ export default function ResultPage({
                 {/* Countdown display */}
                 {countdown !== null && (
                     <div className="absolute top-[20%] right-[6%] w-[50%] h-[32%] z-10 flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
-                        <span className="text-9xl font-bold text-white">
+                        <span className={`${getLanguageAdjustedFontSize('text-9xl', currentLanguage)} font-bold text-white`}>
                             {countdown}
                         </span>
                     </div>
@@ -259,7 +259,7 @@ export default function ResultPage({
                         <div className="flex justify-center items-center mb-4">
                             <div className="w-12 h-12 rounded-full border-4 border-white animate-spin border-t-transparent"></div>
                         </div>
-                        <span className="text-[40px] font-bold text-white">Capturing...</span>
+                        <span className="font-bold text-white" style={getLanguageAdjustedFontStyle('text-[40px]', currentLanguage)}>Capturing...</span>
                     </div>
                 )}
 
@@ -269,7 +269,7 @@ export default function ResultPage({
                         <div className="flex justify-center items-center mb-4">
                             <div className="w-12 h-12 rounded-full border-4 border-white animate-spin border-t-transparent"></div>
                         </div>
-                        <span className="text-[40px] font-bold text-white">Uploading...</span>
+                        <span className="font-bold text-white" style={getLanguageAdjustedFontStyle('text-[40px]', currentLanguage)}>Uploading...</span>
                     </div>
                 )}
 
@@ -324,18 +324,19 @@ export default function ResultPage({
             {showUploadErrorModal && (
                 <div className="flex fixed inset-0 z-50 justify-center items-center bg-black/50">
                     <div className="w-[60%] p-16 bg-white border-6 border-black rounded-[48px] motion-card text-center">
-                        <p className="text-[36px] leading-tight font-bold text-[#3A3A3A] mb-2">
+                        <p className="leading-tight font-bold text-[#3A3A3A] mb-2" style={getLanguageAdjustedFontStyle('text-[36px]', currentLanguage)}>
                             Upload failed.
                             <br />
                             </p>
-                            <p className="text-[28px] leading-tight font-bold text-[#3A3A3A] mb-8">
+                            <p className="leading-tight font-bold text-[#3A3A3A] mb-8" style={getLanguageAdjustedFontStyle('text-[28px]', currentLanguage)}>
                             Please take a picture of your
                             <br />
                             Ideal Pursuit instead!
                         </p>
                         <MotionButton
                             variant="primary"
-                            className="text-black bg-yellow text-[32px] p-8"
+                            className="text-black bg-yellow p-8"
+                            style={getLanguageAdjustedFontStyle('text-[32px]', currentLanguage)}
                             onClick={() => {
                                 setShowUploadErrorModal(false);
                                 // Reset capture to allow retry

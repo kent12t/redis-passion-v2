@@ -2,14 +2,14 @@
 
 import MotionButton from './ui/motion-button';
 import CostumeMarquee from './ui/costume-marquee';
-import { useLanguage } from '@/app/lib/text-utils';
+import { useLanguage, getLanguageAdjustedFontSize, getLanguageAdjustedFontStyle } from '@/app/lib/text-utils';
 
 interface RevealPageProps {
     onReveal: () => void;
 }
 
 export default function RevealPage({ onReveal }: RevealPageProps) {
-    const { textContent } = useLanguage();
+    const { textContent, currentLanguage } = useLanguage();
 
     return (
         <div className="relative h-full bg-midblue">
@@ -36,7 +36,8 @@ export default function RevealPage({ onReveal }: RevealPageProps) {
                 <MotionButton
                     onClick={onReveal}
                     size="lg"
-                    className="h-auto w-full rounded-[48px] px-16 py-8 text-[52px] font-sans bg-orange text-white text-center leading-tight whitespace-normal"
+                    className="h-auto w-full rounded-[48px] px-16 py-8 font-sans bg-orange text-white text-center leading-tight whitespace-normal"
+                    style={getLanguageAdjustedFontStyle('text-[52px]', currentLanguage)}
                 >
                     <div className="whitespace-normal">
                         {textContent.revealPage.buttons.unveil.split('\n').map((line, index) => (

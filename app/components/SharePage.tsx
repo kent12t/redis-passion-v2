@@ -3,7 +3,7 @@
 import MotionButton from './ui/motion-button';
 import Image from 'next/image';
 import QRCode from 'react-fancy-qrcode';
-import { useLanguage, getLanguageFontClass } from '@/app/lib/text-utils';
+import { useLanguage, getLanguageFontClass, getLanguageAdjustedFontStyle } from '@/app/lib/text-utils';
 
 // QR Code component using react-fancy-qrcode
 interface QRCodeProps {
@@ -13,7 +13,7 @@ interface QRCodeProps {
 
 function SimpleQRCode({ value, size = 200 }: QRCodeProps) {
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex justify-center items-center">
             <div className="bg-transparent rounded-lg">
                 <QRCode
                     value={value}
@@ -39,7 +39,7 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
     const { textContent, currentLanguage } = useLanguage();
 
     return (
-        <div className="relative w-full h-full p-0 overflow-hidden bg-midblue">
+        <div className="overflow-hidden relative p-0 w-full h-full bg-midblue">
             {/* Rotated captured image */}
             <div className="flex absolute top-[65%] left-1/2 z-30 justify-center items-center w-[60%] transform -translate-x-1/2 -translate-y-1/2">
                 <div className="transform -rotate-8">
@@ -53,7 +53,7 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
             </div>
 
             {/* Top overlay curve */}
-            <div className="absolute top-0 left-0 z-10 w-full p-0 rotate-180">
+            <div className="absolute top-0 left-0 z-10 p-0 w-full rotate-180">
                 <Image
                     src="/overlay-curve.svg"
                     alt="Curve overlay"
@@ -67,7 +67,7 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
 
             {/* Navigation buttons and QR code */}
             <div className="absolute top-[5%] left-0 right-0 z-20 pb-[150px] px-[10%] flex flex-col gap-20 scale-90">
-                <p className={`text-[60px] leading-tight font-sans text-center text-black ${getLanguageFontClass(currentLanguage, 'title')}`}>
+                <p className={`leading-tight font-sans text-center text-black ${getLanguageFontClass(currentLanguage, 'title')}`} style={getLanguageAdjustedFontStyle('text-[60px]', currentLanguage)}>
                     {textContent.sharePage.qrText.split('\n').map((line: string, index: number, array: string[]) => (
                         <span key={index}>
                             {line}
@@ -75,12 +75,12 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
                         </span>
                     ))}
                 </p>
-                <div className="flex items-center justify-center px-16">
+                <div className="flex justify-center items-center px-16">
                     {/* Back button */}
-                    <div className="flex justify-start flex-1">
+                    <div className="flex flex-1 justify-start">
                         <MotionButton
                             variant="primary"
-                            className="flex items-center justify-center p-6 rounded-full w-28 h-28 bg-yellow"
+                            className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-yellow"
                             onClick={onBack}
                         >
                             <Image
@@ -94,16 +94,16 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
                     </div>
 
                     {/* QR Code centered */}
-                    <div className="flex flex-col items-center justify-center flex-1 gap-4">
+                    <div className="flex flex-col flex-1 gap-4 justify-center items-center">
 
                         <SimpleQRCode value={imageUrl} size={300} />
                     </div>
 
                     {/* Home button */}
-                    <div className="flex justify-end flex-1">
+                    <div className="flex flex-1 justify-end">
                         <MotionButton
                             variant="primary"
-                            className="flex items-center justify-center p-6 rounded-full w-28 h-28 bg-yellow"
+                            className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-yellow"
                             onClick={onHome}
                         >
                             <Image

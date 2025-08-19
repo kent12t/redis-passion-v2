@@ -4,7 +4,7 @@ import MotionButton from "./ui/motion-button";
 import MotionCard from "./ui/motion-card";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { useLanguage, getLanguageFontClass } from "@/app/lib/text-utils";
+import { useLanguage, getLanguageFontClass, getLanguageAdjustedFontSize, getLanguageAdjustedFontStyle } from "@/app/lib/text-utils";
 
 interface Option {
   option_text: string;
@@ -68,7 +68,7 @@ export default function QuestionPage({
             >
               {/* Question */}
               <div className="flex flex-col items-center justify-center mb-4">
-                <h2 className={`text-6xl leading-snug text-center text-white question ${getLanguageFontClass(currentLanguage, 'title')}`}>
+                <h2 className={`${getLanguageAdjustedFontSize('text-6xl', currentLanguage)} leading-snug text-center text-white question ${getLanguageFontClass(currentLanguage, 'title')}`}>
                   {currentQuestion.question_text
                     .split("\n")
                     .map((line, lineIndex) => (
@@ -91,11 +91,12 @@ export default function QuestionPage({
                       isSelected={
                         selectedAnswers[currentQuestionIndex] === index
                       }
-                      className={`p-12 text-[40px] text-white font-medium leading-normal text-center ${getLanguageFontClass(currentLanguage, 'body')} ${
+                      className={`p-12 text-white font-medium leading-normal text-center ${getLanguageFontClass(currentLanguage, 'body')} ${
                         selectedAnswers[currentQuestionIndex] === index
                           ? "bg-green"
                           : "bg-purple"
                       }`}
+                      style={getLanguageAdjustedFontStyle('text-[40px]', currentLanguage)}
                       onClick={() =>
                         onSelectAnswer(currentQuestionIndex, index)
                       }
@@ -141,7 +142,8 @@ export default function QuestionPage({
                   ? "neutral"
                   : "primary"
               }
-              className="flex-shrink px-24 h-28 text-[48px] bg-orange text-white"
+              className="flex-shrink px-24 h-28 bg-orange text-white"
+              style={getLanguageAdjustedFontStyle('text-[48px]', currentLanguage)}
             >
               {textContent.questionPage.buttons.next}
               <Image
