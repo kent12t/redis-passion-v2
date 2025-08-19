@@ -36,10 +36,10 @@ export default function StartPage({ onStart }: StartPageProps) {
             </div>
 
             {/* Main content */}
-            <div className="grid absolute z-0 grid-cols-1 px-32 w-full h-auto font-sans top-[33%]">
-                <div className="flex flex-col items-center justify-center">
+            <div className="grid absolute z-0 grid-cols-1 px-16 w-full h-auto font-sans top-[33%]">
+                <div className="flex flex-col justify-center items-center">
 
-                    <p className={`text-center text-[48px] mb-12 leading-tight text-black ${getLanguageFontClass(currentLanguage, 'body')}`}>
+                    <p className={`text-center text-[40px] mb-12 leading-tight text-black ${getLanguageFontClass(currentLanguage, 'body')}`}>
                         {textContent.startPage.heroText.split('\n').map((line, index, array) => (
                             <span key={index}>
                                 {line}

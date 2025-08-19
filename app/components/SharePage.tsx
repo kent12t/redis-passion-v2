@@ -3,7 +3,7 @@
 import MotionButton from './ui/motion-button';
 import Image from 'next/image';
 import QRCode from 'react-fancy-qrcode';
-import { useLanguage } from '@/app/lib/text-utils';
+import { useLanguage, getLanguageFontClass } from '@/app/lib/text-utils';
 
 // QR Code component using react-fancy-qrcode
 interface QRCodeProps {
@@ -36,7 +36,7 @@ interface SharePageProps {
 }
 
 export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) {
-    const { textContent } = useLanguage();
+    const { textContent, currentLanguage } = useLanguage();
 
     return (
         <div className="relative w-full h-full p-0 overflow-hidden bg-midblue">
@@ -67,7 +67,7 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
 
             {/* Navigation buttons and QR code */}
             <div className="absolute top-[5%] left-0 right-0 z-20 pb-[150px] px-[10%] flex flex-col gap-20 scale-90">
-                <p className="text-[60px] leading-tight font-sans text-center text-black">
+                <p className={`text-[60px] leading-tight font-sans text-center text-black ${getLanguageFontClass(currentLanguage, 'title')}`}>
                     {textContent.sharePage.qrText.split('\n').map((line: string, index: number, array: string[]) => (
                         <span key={index}>
                             {line}

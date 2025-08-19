@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useRef, useCallback, useState, useEffect } from 'react';
 import { uploadImage, canvasToBlob } from '@/app/lib/upload-utils';
 import { createScreenshotCanvas, preloadResultCardImage } from '@/app/lib/screenshot-utils';
-import { personalityAssets, getLanguageSpecificResultCard } from '@/app/data/personality-assets';
+import { getLanguageSpecificResultCard } from '@/app/data/personality-assets';
 import { useLanguage } from '@/app/lib/text-utils';
 
 interface ResultPageProps {
@@ -154,7 +154,7 @@ export default function ResultPage({
             setIsCapturing(false);
             setIsUploading(false);
         }
-    }, [onShare, personalityType]);
+    }, [onShare, personalityType, currentLanguage]);
 
     // Reset captured state for new photo
     const resetCapture = useCallback(() => {
@@ -208,7 +208,7 @@ export default function ResultPage({
                 <div className="absolute top-[47%] right-[18%] z-30">
                     <MotionButton
                         variant="primary"
-                        className="flex items-center justify-center p-6 rounded-full w-28 h-28 bg-yellow"
+                        className="flex justify-center items-center p-6 w-28 h-28 rounded-full bg-yellow"
                         onClick={onHome}
                     >
                         <Image
@@ -247,7 +247,7 @@ export default function ResultPage({
                 {/* Countdown display */}
                 {countdown !== null && (
                     <div className="absolute top-[20%] right-[6%] w-[50%] h-[32%] z-10 flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
-                        <span className="font-bold text-white text-9xl">
+                        <span className="text-9xl font-bold text-white">
                             {countdown}
                         </span>
                     </div>
@@ -256,8 +256,8 @@ export default function ResultPage({
                 {/* Capturing loader */}
                 {isCapturing && (
                     <div className="absolute top-[20%] right-[6%] w-[50%] h-[32%] z-10 flex flex-col justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
-                        <div className="flex items-center justify-center mb-4">
-                            <div className="w-12 h-12 border-4 border-white rounded-full animate-spin border-t-transparent"></div>
+                        <div className="flex justify-center items-center mb-4">
+                            <div className="w-12 h-12 rounded-full border-4 border-white animate-spin border-t-transparent"></div>
                         </div>
                         <span className="text-[40px] font-bold text-white">Capturing...</span>
                     </div>
@@ -266,15 +266,15 @@ export default function ResultPage({
                 {/* Uploading loader */}
                 {isUploading && (
                     <div className="absolute top-[20%] right-[6%] w-[50%] h-[32%] z-10 flex flex-col justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
-                        <div className="flex items-center justify-center mb-4">
-                            <div className="w-12 h-12 border-4 border-white rounded-full animate-spin border-t-transparent"></div>
+                        <div className="flex justify-center items-center mb-4">
+                            <div className="w-12 h-12 rounded-full border-4 border-white animate-spin border-t-transparent"></div>
                         </div>
                         <span className="text-[40px] font-bold text-white">Uploading...</span>
                     </div>
                 )}
 
                 <div className="absolute top-[20%] right-[6%] w-[50%] h-[32%] z-2">
-                    <div className="relative w-full h-full p-0 overflow-hidden">
+                    <div className="overflow-hidden relative p-0 w-full h-full">
                         {capturedImageData ? (
                             /* Show frozen captured image */
                             <Image 
@@ -295,7 +295,7 @@ export default function ResultPage({
                     </div>
                 </div>
 
-                <div className="absolute z-20 flex items-center justify-center w-full h-full transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                <div className="flex absolute top-1/2 left-1/2 z-20 justify-center items-center w-full h-full transform -translate-x-1/2 -translate-y-1/2">
                     <Image
                         src={getLanguageSpecificResultCard(personalityType, currentLanguage)}
                         alt={personalityType}
@@ -322,7 +322,7 @@ export default function ResultPage({
 
             {/* Upload Error Modal */}
             {showUploadErrorModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                <div className="flex fixed inset-0 z-50 justify-center items-center bg-black/50">
                     <div className="w-[60%] p-16 bg-white border-6 border-black rounded-[48px] motion-card text-center">
                         <p className="text-[36px] leading-tight font-bold text-[#3A3A3A] mb-2">
                             Upload failed.

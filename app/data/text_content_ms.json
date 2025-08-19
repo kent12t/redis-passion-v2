@@ -1,25 +1,25 @@
 {
     "startPage": {
-      "heroText": "Buka kunci pengembaraan\nanda seterusnya dengan\nmenyesuaikan cadangan\nmengikut minat anda.\nSama ada 'Main', 'Tujuan',\natau 'Keghairahan',\nkami akan membantu anda\nmencari padanan yang sempurna.",
+      "heroText": "Mulakan pengembaraan anda yang seterusnya\ndengan menyesuaikan cadangan mengikut\nperkara yang menggembirakan anda. Sama\nada Bermain, Matlamat atau Semangat, kami\nakan membantu anda mencari yang sesuai.",
       "button": {
         "getStarted": "MULAKAN!"
       }
     },
     "introPage": {
-      "title": "Hidup Tanpa Henti!",
-      "description": "Ikuti kuiz ringkas dan menyeronokkan ini untuk mengetahui aktiviti yang paling sesuai untuk anda! Tiada jawapan yang salah atau betul, hanya pilih apa yang paling sesuai dengan anda.\nIa hanya mengambil masa 3-5 minit.\n\nPada akhirnya, anda akan menerima cadangan aktiviti yang mungkin anda nikmati.\nHidup Tanpa Henti!",
+      "title": "Jalani Hidup Sepenuhnya!",
+      "description": "Ambil kuiz pantas dan menyeronokkan ini\nuntuk mengetahui aktiviti yang paling sesuai\nuntuk anda! Tiada jawapan yang betul\natau salah, pilih sahaja yang anda\nfikir paling sesuai.\n\nIni hanya akan mengambil masa 3-5 minit.\n\nApabila tamat, anda akan menerima cadangan\naktiviti yang mungkin anda akan suka.",
       "buttons": {
-        "begin": "MULAKAN"
+        "begin": "MULA"
       }
     },
     "revealPage": {
       "buttons": {
-        "unveil": "DEDAHKAN USAHA\nIDEAL SAYA!"
+        "unveil": "DEDAHKAN AKTIVITI\nIDEAL SAYA!"
       }
     },
     "sharePage": {
       "title": "Masa untuk\nMeneruskan Cita-cita Anda!",
-      "qrText": "Imbas kod QR untuk\nmenemui Usaha Ideal anda!",
+      "qrText": "Imbas kod QR untuk menemui\nAktiviti Ideal anda!",
       "downloadText": "Jangan lupa untuk tangkap skrin atau simpan gambar\nke telefon anda supaya boleh rujuk bila-bila masa."
     },
     "questionPage": {

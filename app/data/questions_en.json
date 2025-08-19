@@ -1,59 +1,59 @@
 [
     {
         "question_number": 1,
-        "question_text": "When an unexpected\nopportunity appears, what\nsparks your excitement?",
+        "question_text": "What motivates you most\nin your daily choices?",
         "options": [
             {
-                "option_text": "The idea of organising a\nmemorable group event that\nbrings people together.",
+                "option_text": "Creating harmony\nand expressing your\nauthentic self.",
                 "points": {
-                    "volunteer": 3,
-                    "gamer": 1
+                    "runner": 3,
+                    "artist": 3
                 }
             },
             {
-                "option_text": "The chance to test personal\nlimits with a burst of energy\nand fresh outdoor challenges.",
+                "option_text": "Finding efficient\nsolutions and building\nlasting value.",
                 "points": {
-                    "runner": 3,
-                    "farmer": 1
+                    "gamer": 3,
+                    "crafter": 3
                 }
             }
         ]
     },
     {
         "question_number": 2,
-        "question_text": "When you encounter\na complex problem,\nyour instinct is to:",
+        "question_text": "You feel most\nenergized when:",
         "options": [
             {
-                "option_text": "Break it down strategically,\nanalyse patterns, and find the\nmost efficient solution.",
+                "option_text": "Bringing people together\nor facilitating meaningful\nconnections.",
                 "points": {
-                    "artist": 3,
-                    "gamer": 1
+                    "volunteer": 3,
+                    "gamer": 0
                 }
             },
             {
-                "option_text": "Roll up your sleeves and\nexperiment with different\nhands-on approaches until\nsomething works.",
+                "option_text": "Nurturing something\nfrom start to finish or\ncreating with your hands.",
                 "points": {
-                    "crafter": 3,
-                    "artist": 1
+                    "farmer": 2,
+                    "crafter": 2
                 }
             }
         ]
     },
     {
         "question_number": 3,
-        "question_text": "What kind of\nlegacy would you like\nto leave behind?",
+        "question_text": "At a social gathering, you prefer to…",
         "options": [
             {
-                "option_text": "A thriving natural space you\nhelped cultivate, promoting\nhealth and tranquility\nfor future generations.",
+                "option_text": "Initiate a community\ngarden cleanup with\nneighbors.",
                 "points": {
-                    "farmer": 3,
-                    "runner": 1
+                    "volunteer": 1,
+                    "farmer": 1
                 }
             },
             {
-                "option_text": "A groundbreaking piece of\nart or a unique handcrafted\nitem that inspires awe\nand bold creativity.",
+                "option_text": "Share homemade cookies\nand latte art you've been\npracticing with friends.",
                 "points": {
-                    "artist": 3,
+                    "artist": 1,
                     "crafter": 1
                 }
             }
@@ -61,140 +61,60 @@
     },
     {
         "question_number": 4,
-        "question_text": "When planning\nsomething special,\nyou prioritise:",
+        "question_text": "Your ideal\nenvironment is:",
         "options": [
             {
-                "option_text": "Making sure everyone\nfeels included and that\nthe experience brings\npeople closer together.",
+                "option_text": "Calm and grounding,\nwhere you can\nfocus deeply.",
                 "points": {
-                    "volunteer": 3,
-                    "crafter": 1
+                    "farmer": 3,
+                    "runner": 2
                 }
             },
             {
-                "option_text": "Creating an engaging\nchallenge or activity that\ngets people thinking and\nparticipating actively.",
+                "option_text": "Dynamic and\nstimulating, with variety\nand new ideas.",
                 "points": {
-                    "gamer": 2,
-                    "farmer": 1
+                    "artist": 2,
+                    "gamer": 2
                 }
             }
         ]
     },
     {
         "question_number": 5,
-        "question_text": "If you were to start\na new club, what would\nits focus be?",
+        "question_text": "Learning excites you\nwhen you can…",
         "options": [
             {
-                "option_text": "A workshop for creating\nunique, handcrafted art\npieces from unconventional\nor adventurous materials.",
+                "option_text": "Join a dance class that\nblends fitness and\nperformance art.",
                 "points": {
-                    "crafter": 3,
-                    "artist": 1
+                    "runner": 3,
+                    "artist": 2
                 }
             },
             {
-                "option_text": "A group dedicated to exploring\nlocal nature trails and identifying\nplants, perhaps with a mapping\nor strategic challenge.",
+                "option_text": "Teach video editing\nto share skills and\nconnect with others.",
                 "points": {
-                    "farmer": 3,
-                    "gamer": 1
+                    "gamer": 1,
+                    "volunteer": 2
                 }
             }
         ]
     },
     {
         "question_number": 6,
-        "question_text": "What kind of\nweekend plans\nwould you prefer?",
+        "question_text": "When making important\ndecisions, you tend to:",
         "options": [
             {
-                "option_text": "A lively getaway with friends\nfocused on team-based\nstrategy games and fun\nsocial challenges.",
+                "option_text": "Trust your instincts and\nconsider effects on your\ndaily well-being.", 
                 "points": {
-                    "gamer": 3,
-                    "volunteer": 1
+                    "farmer": 2,
+                    "crafter": 2
                 }
             },
             {
-                "option_text": "A relaxing retreat focused\non healthy cooking\nworkshops and learning\na new hands-on craft.",
+                "option_text": "Research thoroughly and\nconsider innovative potential\nor social impact.",
                 "points": {
-                    "runner": 3,
-                    "crafter": 1
-                }
-            }
-        ]
-    },
-    {
-        "question_number": 7,
-        "question_text": "When you have free time,\nyou're drawn to:",
-        "options": [
-            {
-                "option_text": "Activities that get your\nheart pumping and make you\nfeel energized and alive.",
-                "points": {
-                    "runner": 3,
-                    "farmer": 1
-                }
-            },
-            {
-                "option_text": "Projects where you can\nexperiment with new\ntechniques and express\nyour unique vision.",
-                "points": {
-                    "artist": 3,
-                    "crafter": 1
-                }
-            }
-        ]
-    },
-    {
-        "question_number": 8,
-        "question_text": "What motivates you to\ntake on a challenge?",
-        "options": [
-            {
-                "option_text": "The chance to bring people\ntogether and make a positive\nimpact on your community.",
-                "points": {
-                    "volunteer": 3,
-                    "farmer": 1
-                }
-            },
-            {
-                "option_text": "The thrill of pushing creative\nboundaries and discovering\nnew ways to express yourself.",
-                "points": {
-                    "artist": 2,
-                    "runner": 2
-                }
-            }
-        ]
-    },
-    {
-        "question_number": 9,
-        "question_text": "What kind of\ncommunity improvement\nproject would you lead?",
-        "options": [
-            {
-                "option_text": "Setting up a regular\ncommunity game night or\na local esports tournament\nfor all ages.",
-                "points": {
-                    "volunteer": 2,
-                    "gamer": 2
-                }
-            },
-            {
-                "option_text": "Building a community garden\nor creating handcrafted\nbenches and nature-inspired\nplanters for public spaces.",
-                "points": {
-                    "crafter": 3,
-                    "farmer": 1
-                }
-            }
-        ]
-    },
-    {
-        "question_number": 10,
-        "question_text": "If someone gave you a\nsurprise gift for fun, which\nwould excite you most?",
-        "options": [
-            {
-                "option_text": "Something that challenges\nmy mind or lets me get\nclose to nature.",
-                "points": {
-                    "gamer": 3,
-                    "farmer": 1
-                }
-            },
-            {
-                "option_text": "Tickets to a lively community\nfair or a voucher for a\nrelaxing spa day.",
-                "points": {
-                    "volunteer": 2,
-                    "runner": 2
+                    "gamer": 2,
+                    "volunteer": 2
                 }
             }
         ]

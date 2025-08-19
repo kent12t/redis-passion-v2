@@ -1,59 +1,59 @@
 [
     {
         "question_number": 1,
-        "question_text": "Apabila peluang yang\ntidak dijangka muncul, apa\nyang membangkitkan\nsemangat anda?",
+        "question_text": "Apakah yang paling\nmendorong anda dalam\npilihan harian anda?",
         "options": [
             {
-                "option_text": "Idea untuk menganjurkan\nacara kumpulan yang\ntidak dapat dilupakan\nyang menyatukan orang.",
+                "option_text": "Mewujudkan keharmonian\ndan menyatakan diri anda\nyang sebenar.",
                 "points": {
-                    "volunteer": 3,
-                    "gamer": 1
+                    "runner": 3,
+                    "artist": 3
                 }
             },
             {
-                "option_text": "Peluang untuk menguji\nhad peribadi dengan letupan\ntenaga dan cabaran luar\nyang segar.",
+                "option_text": "Mencari penyelesaian yang\ncekap dan membina nilai\nyang berkekalan.",
                 "points": {
-                    "runner": 3,
-                    "farmer": 1
+                    "gamer": 3,
+                    "crafter": 3
                 }
             }
         ]
     },
     {
         "question_number": 2,
-        "question_text": "Apabila anda menghadapi\nmasalah yang kompleks,\nnaluri anda adalah untuk:",
+        "question_text": "Anda berasa paling\nbertenaga apabila:",
         "options": [
             {
-                "option_text": "Menganalisisnya secara\nstrategik, menganalisis corak,\ndan mencari penyelesaian\nyang paling cekap.",
+                "option_text": "Menyatukan orang ramai atau\nmemudahkan perhubungan\nyang bermakna.",
                 "points": {
-                    "artist": 3,
-                    "gamer": 1
+                    "volunteer": 3,
+                    "gamer": 0
                 }
             },
             {
-                "option_text": "Menyingsing lengan baju\ndan bereksperimen dengan\npelbagai pendekatan praktikal\nsehingga sesuatu berjaya.",
+                "option_text": "Memupuk sesuatu dari awal\nhingga akhir atau mencipta\nsesuatu menggunakan\ntangan anda.",
                 "points": {
-                    "crafter": 3,
-                    "artist": 1
+                    "farmer": 2,
+                    "crafter": 2
                 }
             }
         ]
     },
     {
         "question_number": 3,
-        "question_text": "Apakah jenis warisan\nyang ingin anda tinggalkan?",
+        "question_text": "Pada majlis perjumpaan\nsosial, anda lebih suka…",
         "options": [
             {
-                "option_text": "Ruang semula jadi yang\nberkembang maju yang\nanda bantu tanam, mempromosikan\nkesihatan dan ketenangan\nuntuk generasi akan datang.",
+                "option_text": "Memulakan pembersihan\ntaman masyarakat dengan\njiran.",
                 "points": {
-                    "farmer": 3,
-                    "runner": 1
+                    "volunteer": 1,
+                    "farmer": 1
                 }
             },
             {
-                "option_text": "Karya seni yang inovatif atau\nitem buatan tangan yang unik\nyang memberi inspirasi dan\nkreativiti yang berani.",
+                "option_text": "Berkongsi biskut buatan\nsendiri dan seni latte yang\nanda amalkan dengan\nrakan-rakan.",
                 "points": {
-                    "artist": 3,
+                    "artist": 1,
                     "crafter": 1
                 }
             }
@@ -61,140 +61,60 @@
     },
     {
         "question_number": 4,
-        "question_text": "Apabila merancang sesuatu\nyang istimewa, anda\nmemberi keutamaan kepada:",
+        "question_text": "Persekitaran ideal\nanda adalah:",
         "options": [
             {
-                "option_text": "Memastikan semua orang\nberasa termasuk dan\npengalaman itu merapatkan\nhubungan sesama manusia.",
+                "option_text": "Tenang dan mantap, di mana\nanda boleh memberi tumpuan\nyang mendalam.",
                 "points": {
-                    "volunteer": 3,
-                    "crafter": 1
+                    "farmer": 3,
+                    "runner": 2
                 }
             },
             {
-                "option_text": "Mencipta cabaran atau aktiviti\nyang menarik yang membuat\norang berfikir dan mengambil\nbahagian secara aktif.",
+                "option_text": "Dinamik dan merangsang,\ndengan kepelbagaian dan\nidea baharu.",
                 "points": {
-                    "gamer": 2,
-                    "farmer": 1
+                    "artist": 2,
+                    "gamer": 2
                 }
             }
         ]
     },
     {
         "question_number": 5,
-        "question_text": "Jika anda ingin memulakan\nkelab baru, apakah fokusnya?",
+        "question_text": "Pembelajaran\nmenggembirakan anda\napabila anda boleh…",
         "options": [
             {
-                "option_text": "Bengkel untuk mencipta\nkarya seni buatan tangan\nyang unik daripada bahan\nyang tidak konvensional\natau mencabar.",
+                "option_text": "Menyertai kelas tarian yang\nmenggabungkan kecergasan\ndan seni persembahan.",
                 "points": {
-                    "crafter": 3,
-                    "artist": 1
+                    "runner": 3,
+                    "artist": 2
                 }
             },
             {
-                "option_text": "Kumpulan yang berdedikasi\nuntuk meneroka denai alam\nsemula jadi tempatan dan\nmengenal pasti tumbuh-tumbuhan,\nmungkin dengan cabaran\npemetaan atau strategik.",
+                "option_text": "Mengajar menyunting\nvideo untuk berkongsi\nkemahiran dan berhubung\ndengan orang lain.",
                 "points": {
-                    "farmer": 3,
-                    "gamer": 1
+                    "gamer": 1,
+                    "volunteer": 2
                 }
             }
         ]
     },
     {
         "question_number": 6,
-        "question_text": "Jenis rancangan hujung\nminggu apakah yang\nanda suka?",
+        "question_text": "Apabila membuat\nkeputusan penting,\nanda cenderung untuk:",
         "options": [
             {
-                "option_text": "Percutian yang meriah bersama\nrakan-rakan yang berfokus\npada permainan strategi\nberpasukan dan cabaran\nsosial yang menyeronokkan.",
+                "option_text": "Mempercayai naluri anda\ndan mempertimbangkan\nkesan ke atas kesejahteraan\nharian anda.", 
                 "points": {
-                    "gamer": 3,
-                    "volunteer": 1
+                    "farmer": 2,
+                    "crafter": 2
                 }
             },
             {
-                "option_text": "Percutian yang menenangkan\nberfokus pada bengkel masakan\nsihat dan mempelajari\nkraf tangan baru.",
+                "option_text": "Menyelidik secara\nmenyeluruh dan\nmempertimbangkan potensi\ninovatif atau impak sosial.",
                 "points": {
-                    "runner": 3,
-                    "crafter": 1
-                }
-            }
-        ]
-    },
-    {
-        "question_number": 7,
-        "question_text": "Apabila anda mempunyai\nmasa lapang, anda tertarik kepada:",
-        "options": [
-            {
-                "option_text": "Aktiviti yang membuat\njantung anda berdegup\nkencang dan membuat\nanda berasa bertenaga\ndan bersemangat.",
-                "points": {
-                    "runner": 3,
-                    "farmer": 1
-                }
-            },
-            {
-                "option_text": "Projek di mana anda\nboleh bereksperimen\ndengan teknik baru dan\nmenyatakan visi unik anda.",
-                "points": {
-                    "artist": 3,
-                    "crafter": 1
-                }
-            }
-        ]
-    },
-    {
-        "question_number": 8,
-        "question_text": "Apa yang mendorong anda\nuntuk menyahut cabaran?",
-        "options": [
-            {
-                "option_text": "Peluang untuk menyatukan\norang dan membuat impak\npositif kepada komuniti anda.",
-                "points": {
-                    "volunteer": 3,
-                    "farmer": 1
-                }
-            },
-            {
-                "option_text": "Keseronokan mendorong\nhad kreatif dan menemui cara\nbaru untuk menyatakan diri.",
-                "points": {
-                    "artist": 2,
-                    "runner": 2
-                }
-            }
-        ]
-    },
-    {
-        "question_number": 9,
-        "question_text": "Apakah jenis projek\npeningkatan komuniti\nyang akan anda pimpin?",
-        "options": [
-            {
-                "option_text": "Menyiapkan malam permainan\nkomuniti biasa atau\nkejohanan esports tempatan\nuntuk semua peringkat umur.",
-                "points": {
-                    "volunteer": 2,
-                    "gamer": 2
-                }
-            },
-            {
-                "option_text": "Membina taman komuniti\natau mencipta bangku buatan\ntangan dan penanam yang\ndiinspirasi oleh alam\nuntuk ruang awam.",
-                "points": {
-                    "crafter": 3,
-                    "farmer": 1
-                }
-            }
-        ]
-    },
-    {
-        "question_number": 10,
-        "question_text": "Jika seseorang memberi\nanda hadiah kejutan untuk\nkeseronokan, yang mana\nyang paling membuat anda\nteruja?",
-        "options": [
-            {
-                "option_text": "Sesuatu yang mencabar\nminda saya atau membolehkan\nsaya mendekati alam semula jadi.",
-                "points": {
-                    "gamer": 3,
-                    "farmer": 1
-                }
-            },
-            {
-                "option_text": "Tiket ke pameran komuniti\nyang meriah atau baucar\nuntuk hari spa yang\nmenenangkan.",
-                "points": {
-                    "volunteer": 2,
-                    "runner": 2
+                    "gamer": 2,
+                    "volunteer": 2
                 }
             }
         ]

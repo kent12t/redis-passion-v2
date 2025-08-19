@@ -8,6 +8,9 @@ export {
   type TextContent 
 } from './language-context';
 
+// Import Language type for local use
+import type { Language } from './language-context';
+
 // Legacy default export removed - use useLanguage hook instead
 
 /**
