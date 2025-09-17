@@ -1,27 +1,27 @@
 @echo off
-REM Kill any existing Edge processes
-taskkill /F /IM msedge.exe
+REM Kill any existing Edge processes to ensure clean start
+taskkill /F /IM msedge.exe >nul 2>&1
 
-REM Launch Edge with kiosk mode and various flags to disable unwanted features
+REM Wait a moment for processes to fully terminate
+timeout /t 1 /nobreak >nul
+
+REM Launch Edge with fullscreen for touch screen kiosk
 start "" "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" ^
-  --kiosk "http://rediscover-passion.vercel.app" ^
-  --edge-kiosk-type=fullscreen ^
+  --start-fullscreen ^
+  --force-device-scale-factor=0.65 ^
   --disable-pinch ^
   --overscroll-history-navigation=0 ^
-  --disable-features=TouchpadOverscrollHistoryNavigation ^
+  --disable-features=TouchpadOverscrollHistoryNavigation,Windows10TabSearch,TabHoverCards,SpatialNavigation,TranslateUI ^
   --disable-threaded-scrolling ^
   --disable-gesture-editing ^
   --disable-gesture-typing ^
   --disable-touchpad-three-finger-click ^
   --disable-touch-adjustment ^
-  --disable-touch-drag-drop ^
-  --disable-pull-to-refresh ^
   --disable-touchpad-smooth-scrolling ^
   --disable-touch-feedback-for-pinch ^
   --disable-touch-feedback-for-scroll ^
-  --disable-features=Windows10TabSearch ^
-  --disable-features=TabHoverCards ^
-  --disable-features=SpatialNavigation ^
-  --disable-features=TranslateUI ^
   --disable-background-mode ^
-  --no-first-run
+  --disable-web-security ^
+  --disable-features=VizDisplayCompositor ^
+  --no-first-run ^
+  --kiosk "http://localhost:3000" ^

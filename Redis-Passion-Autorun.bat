@@ -6,13 +6,13 @@ REM Run npm dev command
 echo Starting Web Server...
 start /b npm start
 
-REM Wait for 10 seconds
+REM Wait for 4 seconds
 echo Waiting...
-timeout /t 10 /nobreak
+timeout /t 3 /nobreak
 
 REM Open another batch file - replace with the actual path
 echo Opening second batch file...
-start "" "C:\Users\Admin\Documents\GitHub\redis-passion-v2\EdgeKioskLauncher.bat"
+start "" ".\EdgeKioskLauncher.bat"
 
 REM Close this batch file
 echo Closing this batch file...
