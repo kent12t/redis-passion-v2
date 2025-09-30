@@ -951,7 +951,7 @@ export default function FaceTrackingVideo({
                     if (costume && isActiveRef.current) {
                         // Calculate default face size for centered overlay (based on canvas size)
                         const canvasArea = canvas.width * canvas.height;
-                        const defaultFaceRatio = 0.06; // 6% of canvas area for default face size
+                        const defaultFaceRatio = 0.04; // 6% of canvas area for default face size
                         const defaultFaceArea = canvasArea * defaultFaceRatio;
                         const defaultFaceSize = Math.sqrt(defaultFaceArea);
                         
@@ -966,7 +966,7 @@ export default function FaceTrackingVideo({
                         
                         // Center the costume in the canvas
                         const canvasCenterX = canvas.width / 2;
-                        const canvasCenterY = canvas.height * 0.4;
+                        const canvasCenterY = canvas.height * 0.6;
                         
                         // Calculate offset from costume's face center to its top-left corner
                         const costumeFaceCenterOffsetX = (COSTUME_FACE_CENTER.x / COSTUME_SIZE) * costumeWidth;
@@ -1008,7 +1008,7 @@ export default function FaceTrackingVideo({
     }, [onCanvasReady]);
 
     return (
-        <div ref={containerRef} className="relative w-full h-full overflow-hidden">
+        <div ref={containerRef} className="overflow-hidden relative w-full h-full">
             <div
                 className="relative w-full h-full"
                 style={{
@@ -1023,7 +1023,7 @@ export default function FaceTrackingVideo({
                     muted
                     playsInline
                     onPlay={handleVideoPlay}
-                    className="absolute top-0 left-0 object-cover w-full h-full"
+                    className="object-cover absolute top-0 left-0 w-full h-full"
                     style={{
                         objectFit: 'cover',
                         transform: 'scaleX(-1)' // Mirror the video display
@@ -1034,8 +1034,8 @@ export default function FaceTrackingVideo({
                     className="absolute top-0 left-0 w-full h-full"
                 />
                 {(!modelsLoaded || !imagesLoaded) && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                        <div className="p-4 bg-white border-2 border-black rounded-lg">
+                    <div className="flex absolute inset-0 justify-center items-center bg-black/30">
+                        <div className="p-4 bg-white rounded-lg border-2 border-black">
                             Loading camera...
                         </div>
                     </div>
