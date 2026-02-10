@@ -2,9 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  devIndicators: {
-    buildActivity: false,
-  },
+
+
+  turbopack: {},
   webpack: (config) => {
     // Ignore warnings from face-api instead of trying to use ignore-loader
     config.ignoreWarnings = [
