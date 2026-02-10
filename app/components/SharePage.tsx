@@ -30,12 +30,13 @@ function SimpleQRCode({ value, size = 200 }: QRCodeProps) {
 }
 
 interface SharePageProps {
-    imageUrl: string;
+    imageUrl: string | null; // remote URL (R2)
+    previewImageUrl?: string | null; // local blob: URL
     onBack: () => void;
     onHome: () => void;
 }
 
-export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) {
+export default function SharePage({ imageUrl, previewImageUrl, onBack, onHome }: SharePageProps) {
     const { textContent, currentLanguage } = useLanguage();
 
     return (
@@ -45,7 +46,7 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
                 <div className="transform -rotate-8">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                        src={imageUrl}
+                        src={previewImageUrl || imageUrl || ''}
                         alt="Your captured result"
                         className="w-full p-auto h-auto rounded-[32px] border-4 border-black shadow-[-24px_24px_0px_0px_rgba(35,31,32,1)]"
                     />
@@ -95,8 +96,14 @@ export default function SharePage({ imageUrl, onBack, onHome }: SharePageProps) 
 
                     {/* QR Code centered */}
                     <div className="flex flex-col flex-1 gap-4 justify-center items-center">
-
-                        <SimpleQRCode value={imageUrl} size={300} />
+                        {imageUrl ? (
+                            <SimpleQRCode value={imageUrl} size={300} />
+                        ) : (
+                            <div className="flex flex-col items-center justify-center w-[300px] h-[300px] rounded-lg border-2 border-gray-200 bg-white/60">
+                                <div className="w-10 h-10 rounded-full border-4 border-gray-700 animate-spin border-t-transparent"></div>
+                                <p className="mt-4 text-sm text-gray-700">Generating QR…</p>
+                            </div>
+                        )}
                     </div>
 
                     {/* Home button */}

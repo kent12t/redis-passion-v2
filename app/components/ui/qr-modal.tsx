@@ -9,6 +9,7 @@ import {
 } from './dialog';
 import MotionButton from './motion-button';
 
+import Image from 'next/image';
 import QRCode from 'react-fancy-qrcode';
 
 // QR Code component using react-fancy-qrcode
@@ -36,11 +37,12 @@ function SimpleQRCode({ value, size = 200 }: QRCodeProps) {
 interface QRModalProps {
   isOpen: boolean;
   onClose: () => void;
-  imageUrl: string;
+  imageUrl: string | null;
   personalityType: string;
+  previewImageUrl?: string | null;
 }
 
-export default function QRModal({ isOpen, onClose, imageUrl, personalityType }: QRModalProps) {
+export default function QRModal({ isOpen, onClose, imageUrl, personalityType, previewImageUrl }: QRModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -55,8 +57,28 @@ export default function QRModal({ isOpen, onClose, imageUrl, personalityType }: 
         </DialogHeader>
 
         <div className="flex flex-col items-center py-8 space-y-6">
+          {/* Local preview (instant, no network) */}
+          {previewImageUrl ? (
+            <div className="relative w-[240px] h-[240px] overflow-hidden rounded-lg border-2 border-gray-200 bg-gray-50">
+              <Image
+                src={previewImageUrl}
+                alt="Result preview"
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            </div>
+          ) : null}
+
           {/* QR Code */}
-          <SimpleQRCode value={imageUrl} size={250} />
+          {imageUrl ? (
+            <SimpleQRCode value={imageUrl} size={250} />
+          ) : (
+            <div className="flex flex-col items-center justify-center w-[250px] h-[250px] rounded-lg border-2 border-gray-200 bg-gray-50">
+              <div className="w-10 h-10 rounded-full border-4 border-gray-700 animate-spin border-t-transparent"></div>
+              <p className="mt-4 text-sm text-gray-600">Generating QR…</p>
+            </div>
+          )}
           
           {/* Instructions */}
           <div className="space-y-2 text-center">
@@ -64,7 +86,7 @@ export default function QRModal({ isOpen, onClose, imageUrl, personalityType }: 
               Use your phone&apos;s camera or QR scanner app
             </p>
             <p className="text-xs text-gray-400">
-              The image will open in your browser
+              {imageUrl ? 'The image will open in your browser' : 'Waiting for upload URL…'}
             </p>
           </div>
         </div>

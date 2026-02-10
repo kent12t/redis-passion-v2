@@ -13,7 +13,7 @@ import { useLanguage, getLanguageAdjustedFontSize, getLanguageAdjustedFontStyle 
 interface ResultPageProps {
     personalityType: string;
     onHome?: () => void;
-    onShare?: (imageUrl: string) => void;
+    onShare?: (payload: { remoteUrl: string | null; localUrl: string }) => void;
 }
 
 
@@ -28,6 +28,7 @@ export default function ResultPage({
     const [isCapturing, setIsCapturing] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [uploadUrl, setUploadUrl] = useState<string | null>(null);
+    const [localResultUrl, setLocalResultUrl] = useState<string | null>(null);
     const [showQRModal, setShowQRModal] = useState(false);
     const [countdown, setCountdown] = useState<number | null>(null);
     const [capturedImageData, setCapturedImageData] = useState<string | null>(null);
@@ -70,6 +71,14 @@ export default function ResultPage({
         // Phase 1: Capture the image
         setIsCapturing(true);
         setUploadUrl(null);
+        // Only manage/revoke the local preview URL when ResultPage owns it (i.e. QR modal flow).
+        // If we're navigating to SharePage via onShare, the parent takes ownership of the object URL.
+        if (!onShare) {
+            setLocalResultUrl(prev => {
+                if (prev) URL.revokeObjectURL(prev);
+                return null;
+            });
+        }
 
         try {
             // First, create a composite image for freezing the camera feed (video + costume overlays)
@@ -132,14 +141,25 @@ export default function ResultPage({
 
             // Convert to blob with optimized settings for upload
             const blob = await canvasToBlob(masterCanvas, 0.85); // Reduced quality for faster upload
+            // Create a local object URL so the results can display instantly with zero network round-trip
+            const objectUrl = URL.createObjectURL(blob);
+            if (onShare) {
+                onShare({ remoteUrl: null, localUrl: objectUrl });
+            } else {
+                setLocalResultUrl(objectUrl);
+            }
+
+            // Open the QR modal immediately (it will show a loading state until uploadUrl is ready)
+            if (!onShare) {
+                setShowQRModal(true);
+            }
+
             const result = await uploadImage(blob, personalityType);
 
             if (result.success && result.url) {
                 setUploadUrl(result.url);
                 if (onShare) {
-                    onShare(result.url);
-                } else {
-                    setShowQRModal(true);
+                    onShare({ remoteUrl: result.url, localUrl: objectUrl });
                 }
                 console.log('Screenshot uploaded successfully:', result.url);
             } else {
@@ -160,8 +180,14 @@ export default function ResultPage({
     const resetCapture = useCallback(() => {
         setCapturedImageData(null);
         setUploadUrl(null);
+        setLocalResultUrl(prev => {
+            if (prev) URL.revokeObjectURL(prev);
+            return null;
+        });
         setShowUploadErrorModal(false);
     }, []);
+
+    // (No unmount cleanup here) ResultPage revokes only when it owns the URL (QR modal flow).
 
     // Countdown functionality
     const startCountdown = useCallback(() => {
@@ -311,14 +337,13 @@ export default function ResultPage({
             </div>
             
             {/* QR Modal */}
-            {uploadUrl && (
-                <QRModal
-                    isOpen={showQRModal}
-                    onClose={() => setShowQRModal(false)}
-                    imageUrl={uploadUrl}
-                    personalityType={personalityType}
-                />
-            )}
+            <QRModal
+                isOpen={showQRModal}
+                onClose={() => setShowQRModal(false)}
+                imageUrl={uploadUrl}
+                previewImageUrl={localResultUrl}
+                personalityType={personalityType}
+            />
 
             {/* Upload Error Modal */}
             {showUploadErrorModal && (

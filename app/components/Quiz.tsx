@@ -53,7 +53,8 @@ export default function Quiz() {
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
     const [personalityResult, setPersonalityResult] = useState('');
     const [sessionId, setSessionId] = useState<string>('');
-    const [shareImageUrl, setShareImageUrl] = useState<string>('');
+    const [shareImageUrl, setShareImageUrl] = useState<string>(''); // remote URL (R2)
+    const [sharePreviewUrl, setSharePreviewUrl] = useState<string>(''); // local blob: URL
 
     // Load questions based on current language
     useEffect(() => {
@@ -167,14 +168,17 @@ export default function Quiz() {
         setCurrentQuestionIndex(0);
         setSelectedAnswers({});
         setPersonalityResult('');
+        if (sharePreviewUrl) URL.revokeObjectURL(sharePreviewUrl);
         setShareImageUrl('');
+        setSharePreviewUrl('');
         // Create new session when returning to home
         await initializeSession();
     };
 
     // Handle transitioning to share page
-    const handleShare = (imageUrl: string) => {
-        setShareImageUrl(imageUrl);
+    const handleShare = (payload: { remoteUrl: string | null; localUrl: string }) => {
+        setSharePreviewUrl(payload.localUrl);
+        if (payload.remoteUrl) setShareImageUrl(payload.remoteUrl);
         setQuizState('share');
     };
 
@@ -267,7 +271,8 @@ export default function Quiz() {
 
             {quizState === 'share' && (
                 <SharePage
-                    imageUrl={shareImageUrl}
+                    imageUrl={shareImageUrl || null}
+                    previewImageUrl={sharePreviewUrl || null}
                     onBack={handleBackToResult}
                     onHome={handleHome}
                 />
