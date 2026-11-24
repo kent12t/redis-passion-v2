@@ -8,7 +8,7 @@ Case study: [kentlimanza.co/work/aic-life-unstoppable-2025](https://kentlimanza.
 
 ## How it works
 
-- **Quiz.** Each answer can award points to several personalities, and the highest total wins. A tie goes to the first personality in the fixed order in `app/data/personality.json`. The questions, weights, and six results (The Wellness Warrior, The Adventurous Artist, The Tech Explorer, The Everyday Creator, The Urban Gardener, The Community Champion) were checked and rebalanced with simulations outside this repo.
+- **Quiz.** Each answer can award points to several personalities, and the highest total wins. A tie goes to the first of the six in a fixed order (see `app/components/Quiz.tsx`). The questions, weights, and six results (The Wellness Warrior, The Adventurous Artist, The Tech Explorer, The Everyday Creator, The Urban Gardener, The Community Champion) were checked and rebalanced with simulations outside this repo.
 - **Costume overlay.** Face detection (`@vladmandic/face-api`, SSD MobileNet V1, models in `public/models/`) places a 3D-rendered costume on the face. Position and scale are smoothed, and the costume stays on screen if tracking drops for a moment.
 - **Photo and QR.** The captured photo is shown straight from the local blob, then uploaded through `app/api/upload-image` to Cloudflare R2 so the QR code can point at a public image URL.
 - **Languages.** English, Chinese, Malay, and Tamil, with localised questions, text, and result artwork.
