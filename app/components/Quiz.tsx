@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { StartPage, IntroPage, QuestionPage, RevealPage, ResultPage, SharePage } from './';
 import { generateSessionId, createActivityRecord, updateActivityRecord } from '@/app/lib/activity';
 import { useLanguage } from '@/app/lib/text-utils';
@@ -55,6 +55,7 @@ export default function Quiz() {
     const [sessionId, setSessionId] = useState<string>('');
     const [shareImageUrl, setShareImageUrl] = useState<string>(''); // remote URL (R2)
     const [sharePreviewUrl, setSharePreviewUrl] = useState<string>(''); // local blob: URL
+    const quizRootRef = useRef<HTMLDivElement>(null);
 
     // Load questions based on current language
     useEffect(() => {
@@ -89,19 +90,23 @@ export default function Quiz() {
         }
     };
 
-    // Apply container classes based on quiz state
-    useEffect(() => {
-        const appContainer = document.querySelector('.app-container');
-        if (appContainer) {
-            // Remove all state classes
-            appContainer.classList.remove('question-page');
-            
-            // Add appropriate class based on state
-            if (quizState === 'question') {
-                appContainer.classList.add('question-page');
+    // Match the letterbox fill around the 9:16 frame to the active page's
+    // background. Reads the page's rendered color so it stays in sync with
+    // each page's own Tailwind class (incl. the per-personality result color).
+    useLayoutEffect(() => {
+        const appContainer = document.querySelector<HTMLElement>('.app-container');
+        // The last child is the topmost page (RevealPage overlays ResultPage).
+        let el = quizRootRef.current?.lastElementChild as HTMLElement | null;
+        while (el) {
+            const bg = getComputedStyle(el).backgroundColor;
+            if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') {
+                appContainer?.style.setProperty('background-color', bg);
+                return;
             }
+            el = el.firstElementChild as HTMLElement | null;
         }
-    }, [quizState]);
+        appContainer?.style.removeProperty('background-color');
+    }, [quizState, personalityResult, questions.length]);
 
     // Handle starting the quiz
     const handleStart = () => {
@@ -214,7 +219,7 @@ export default function Quiz() {
 
     // Simple render without complex animations for now
     return (
-        <div className="overflow-hidden relative w-full h-full">
+        <div ref={quizRootRef} className="overflow-hidden relative w-full h-full">
             {quizState === 'start' && (
                 <StartPage onStart={handleStart} />
             )}
