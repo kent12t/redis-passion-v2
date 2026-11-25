@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { StartPage, IntroPage, QuestionPage, RevealPage, ResultPage, SharePage } from './';
-import { generateSessionId, createActivityRecord, updateActivityRecord, isSupabaseAvailable } from '@/app/lib/supabase';
+import { generateSessionId, createActivityRecord, updateActivityRecord } from '@/app/lib/activity';
 import { useLanguage } from '@/app/lib/text-utils';
 
 // Types
@@ -83,19 +83,9 @@ export default function Quiz() {
         const newSessionId = generateSessionId();
         setSessionId(newSessionId);
         
-        // Only attempt to create activity record if Supabase is available
-        if (isSupabaseAvailable()) {
-            try {
-                const { error } = await createActivityRecord(newSessionId);
-                if (error) {
-                    console.error('Error creating activity record:', error);
-                }
-            } catch (error) {
-                console.error('Error initializing session:', error);
-            }
-        } else {
-            // Supabase not configured, continue without recording activity
-            console.info('Activity recording disabled - Supabase not configured');
+        const { error } = await createActivityRecord(newSessionId);
+        if (error) {
+            console.error('Error creating activity record:', error);
         }
     };
 
@@ -216,18 +206,9 @@ export default function Quiz() {
         setPersonalityResult(winner);
 
         // Update the activity record with the official personality name
-        if (isSupabaseAvailable()) {
-            try {
-                const officialPersonalityName = getOfficialPersonalityName(winner);
-                const { error } = await updateActivityRecord(sessionId, officialPersonalityName);
-                if (error) {
-                    console.error('Error updating activity record:', error);
-                }
-            } catch (error) {
-                console.error('Error saving quiz result:', error);
-            }
-        } else {
-            console.info('Activity recording disabled - Supabase not configured');
+        const { error } = await updateActivityRecord(sessionId, getOfficialPersonalityName(winner));
+        if (error) {
+            console.error('Error updating activity record:', error);
         }
     };
 

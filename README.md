@@ -13,7 +13,7 @@ Case study: [kentlimanza.co/work/aic-life-unstoppable-2025](https://kentlimanza.
 - **Photo and QR.** The captured photo is shown straight from the local blob, then uploaded through `app/api/upload-image` to Cloudflare R2 so the QR code can point at a public image URL.
 - **Languages.** English, Chinese, Malay, and Tamil, with localised questions, text, and result artwork.
 - **Kiosk use.** Portrait scaling, touch-gesture suppression, and button placement that works for standing visitors and wheelchair users. `EdgeKioskLauncher.bat` and `Redis-Passion-Autorun.bat` launch it unattended on Windows; edit the project path inside them first.
-- **Optional activity log.** If Supabase is configured, each session is recorded as started and then marked complete with the personality result. The game plays on if Supabase is missing or fails.
+- **Optional activity log.** If `DATABASE_URL` (Neon Postgres) is configured, each session is recorded as started and then marked complete with the personality result. The game plays on if the database is missing or fails.
 
 ## Running it
 
@@ -22,7 +22,7 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:3000` and allow camera access. The quiz works without any environment variables; sharing needs R2 and the activity log needs Supabase.
+Open `http://localhost:3000` and allow camera access. The quiz works without any environment variables; sharing needs R2 and the activity log needs Neon (run `db/schema.sql` once).
 
 Create `.env.local` with:
 
@@ -35,8 +35,7 @@ CLOUDFLARE_R2_BUCKET_NAME=
 CLOUDFLARE_R2_PUBLIC_URL=
 
 # Optional activity log
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
+DATABASE_URL=
 ```
 
 More on the upload endpoint is in [app/api/README.md](app/api/README.md).
@@ -47,7 +46,7 @@ Photos are taken on the visitor's device and uploaded only when sharing. The liv
 
 ## Stack
 
-Next.js, React, TypeScript, Tailwind CSS, Radix UI, `@vladmandic/face-api`, Cloudflare R2 (AWS SDK), Supabase.
+Next.js, React, TypeScript, Tailwind CSS, Radix UI, `@vladmandic/face-api`, Cloudflare R2 (AWS SDK), Neon.
 
 ## Credits
 
