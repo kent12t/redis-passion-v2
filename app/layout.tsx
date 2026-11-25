@@ -26,28 +26,28 @@ const notoSansTamilBold = localFont({
   src: '../public/fonts/NotoSansTamil-Bold.woff2',
   variable: '--font-noto-tamil-bold',
   display: 'swap',
-  preload: false,
+  preload: true,
 });
 
 const notoSansTamilMedium = localFont({
   src: '../public/fonts/NotoSansTamil-Medium.woff2',
   variable: '--font-noto-tamil-medium',
   display: 'swap',
-  preload: false,
+  preload: true,
 });
 
 const notoSansSCBold = localFont({
   src: '../public/fonts/NotoSansSC-Bold.woff2',
   variable: '--font-noto-sc-bold',
   display: 'swap',
-  preload: false,
+  preload: true,
 });
 
 const notoSansSCMedium = localFont({
   src: '../public/fonts/NotoSansSC-Medium.woff2',
   variable: '--font-noto-sc-medium',
   display: 'swap',
-  preload: false,
+  preload: true,
 });
 
 export const metadata: Metadata = {

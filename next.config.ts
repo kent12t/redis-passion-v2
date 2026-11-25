@@ -17,6 +17,15 @@ const nextConfig: NextConfig = {
     
     return config;
   },
+  // Model weights never change; without this Next serves /public with max-age=0
+  async headers() {
+    return [
+      {
+        source: '/models/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+    ];
+  },
   // Optimize images
   images: {
     formats: ['image/webp', 'image/avif'],
