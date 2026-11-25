@@ -77,7 +77,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* clip (not just hidden): the unscaled 1080x1920 layout box overflows the
+     viewport, and `hidden` still lets focus/scrollIntoView scroll it. */
   overflow: hidden;
+  overflow: clip;
+  /* Fallback; Quiz.tsx overrides this to match the active page. */
   background-color: #facc19; /* yellow */
 }
 
