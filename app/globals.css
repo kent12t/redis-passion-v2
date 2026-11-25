@@ -61,39 +61,34 @@ body {
   overflow: hidden;
 }
 
-/* Responsive 9:16 container system */
+/* Fixed 9:16 design canvas, scaled to fit the viewport.
+   The UI is authored at 1080x1920 with fixed px sizes, so instead of
+   resizing the layout we lay it out at the design size and scale the
+   whole frame uniformly (--app-scale is set by the script in layout.tsx).
+   Space outside the frame is filled with the brand yellow. */
+:root {
+  --app-design-width: 1080px;
+  --app-design-height: 1920px;
+}
+
 .app-container {
-  width: 100vw;
-  height: 100vh;
+  position: fixed;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Plain background color - no grid */
-  background-color: var(--start-result-bg);
-}
-
-.app-container.question-page {
-  background-color: var(--question-bg);
+  overflow: hidden;
+  background-color: #facc19; /* yellow */
 }
 
 .app-content {
   position: relative;
+  flex: none;
+  width: var(--app-design-width);
+  height: var(--app-design-height);
   overflow: hidden;
-  /* Grid background removed */
-}
-
-/* Default: Wider than 9:16 (landscape) - constrain by height */
-.app-content {
-  width: calc(100vh * 9 / 16);
-  height: 100vh;
-}
-
-/* Narrower than 9:16 (very tall portrait) - constrain by width */
-@media (max-aspect-ratio: 9/16) {
-  .app-content {
-    width: 100vw;
-    height: calc(100vw * 16 / 9);
-  }
+  transform: scale(var(--app-scale, 1));
+  transform-origin: center center;
 }
 
 /* Question page grid colors removed */

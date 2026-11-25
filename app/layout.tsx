@@ -55,16 +55,33 @@ export const metadata: Metadata = {
   description: "Personalized recommendations for your unique interests and passions.",
 };
 
+// Keep in sync with --app-design-width/height in globals.css.
+// Runs before first paint so the scaled frame never flashes at 1:1.
+const appScaleScript = `(function(){
+  var W = 1080, H = 1920;
+  function fit(){
+    var vv = window.visualViewport;
+    var w = vv ? vv.width : window.innerWidth;
+    var h = vv ? vv.height : window.innerHeight;
+    document.documentElement.style.setProperty('--app-scale', String(Math.min(w / W, h / H)));
+  }
+  fit();
+  window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', fit);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
+})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${circularStdMedium.variable} ${circularStdBold.variable} ${notoSansTamilBold.variable} ${notoSansTamilMedium.variable} ${notoSansSCBold.variable} ${notoSansSCMedium.variable} antialiased`}
       >
+        <script dangerouslySetInnerHTML={{ __html: appScaleScript }} />
         <DebugProvider>
           <NeoBrutalismProvider>
             <LanguageProvider>
