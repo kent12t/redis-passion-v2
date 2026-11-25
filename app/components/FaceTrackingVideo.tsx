@@ -216,12 +216,12 @@ interface FaceTrackingVideoProps {
 
 // Personality type to costume asset mapping
 const personalityAssets = {
-    "runner": '/costume/runner.png',
-    "artist": '/costume/artist.png',
-    "gamer": '/costume/gamer.png',
-    "crafter": '/costume/crafter.png',
-    "farmer": '/costume/farmer.png',
-    "volunteer": '/costume/volunteer.png'
+    "runner": '/costume/runner.webp',
+    "artist": '/costume/artist.webp',
+    "gamer": '/costume/gamer.webp',
+    "crafter": '/costume/crafter.webp',
+    "farmer": '/costume/farmer.webp',
+    "volunteer": '/costume/volunteer.webp'
 } as const;
 
 // Costume image properties
@@ -811,8 +811,11 @@ export default function FaceTrackingVideo({
                     tempCanvasRef.current = document.createElement('canvas');
                 }
                 const tempCanvas = tempCanvasRef.current;
-                tempCanvas.width = DETECTION_SIZE;
-                tempCanvas.height = DETECTION_SIZE;
+                // Assigning width/height reallocates the bitmap, so only do it once
+                if (tempCanvas.width !== DETECTION_SIZE) {
+                    tempCanvas.width = DETECTION_SIZE;
+                    tempCanvas.height = DETECTION_SIZE;
+                }
                 const tempCtx = tempCanvas.getContext('2d');
                 if (!tempCtx || !isActiveRef.current) return;
 

@@ -9,45 +9,45 @@ import { DebugButton } from "./components/ui/debug-button";
 import { Analytics } from "@vercel/analytics/next";
 
 const circularStdMedium = localFont({
-  src: '../public/fonts/circular-std-medium-500.ttf',
+  src: '../public/fonts/circular-std-medium-500.woff2',
   variable: '--font-circular-medium',
   display: 'swap',
   preload: true,
 });
 
 const circularStdBold = localFont({
-  src: '../public/fonts/CircularStd-Bold.ttf',
+  src: '../public/fonts/CircularStd-Bold.woff2',
   variable: '--font-circular-bold',
   display: 'swap',
   preload: true,
 });
 
 const notoSansTamilBold = localFont({
-  src: '../public/fonts/NotoSansTamil-Bold.ttf',
+  src: '../public/fonts/NotoSansTamil-Bold.woff2',
   variable: '--font-noto-tamil-bold',
   display: 'swap',
-  preload: true,
+  preload: false,
 });
 
 const notoSansTamilMedium = localFont({
-  src: '../public/fonts/NotoSansTamil-Medium.ttf',
+  src: '../public/fonts/NotoSansTamil-Medium.woff2',
   variable: '--font-noto-tamil-medium',
   display: 'swap',
-  preload: true,
+  preload: false,
 });
 
 const notoSansSCBold = localFont({
-  src: '../public/fonts/NotoSansSC-Bold.ttf',
+  src: '../public/fonts/NotoSansSC-Bold.woff2',
   variable: '--font-noto-sc-bold',
   display: 'swap',
-  preload: true,
+  preload: false,
 });
 
 const notoSansSCMedium = localFont({
-  src: '../public/fonts/NotoSansSC-Medium.ttf',
+  src: '../public/fonts/NotoSansSC-Medium.woff2',
   variable: '--font-noto-sc-medium',
   display: 'swap',
-  preload: true,
+  preload: false,
 });
 
 export const metadata: Metadata = {
