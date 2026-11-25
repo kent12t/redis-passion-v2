@@ -4,6 +4,7 @@ import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { StartPage, IntroPage, QuestionPage, RevealPage, ResultPage, SharePage } from './';
 import { generateSessionId, createActivityRecord, updateActivityRecord } from '@/app/lib/activity';
 import { useLanguage } from '@/app/lib/text-utils';
+import { preloadFaceDetection } from './FaceTrackingVideo';
 
 // Types
 export interface Option {
@@ -107,6 +108,12 @@ export default function Quiz() {
         }
         appContainer?.style.removeProperty('background-color');
     }, [quizState, personalityResult, questions.length]);
+
+    // Warm up face detection while the user answers questions, so the camera
+    // on the result page doesn't pay the model download / GPU warm-up cost
+    useEffect(() => {
+        if (quizState === 'intro') preloadFaceDetection();
+    }, [quizState]);
 
     // Handle starting the quiz
     const handleStart = () => {

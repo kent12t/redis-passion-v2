@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
+import enContent from '@/app/data/text_content_en.json';
 
 // Feature flag for language switcher (set to false to hide for deployment)
 const ENABLE_LANGUAGE_SWITCHER = true;
@@ -80,8 +81,10 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 // Language provider component
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [currentLanguage, setCurrentLanguage] = useState<Language>('en');
-  const [textContent, setTextContent] = useState<TextContent | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // English ships in the main bundle so first paint never waits on a fetch;
+  // other languages are loaded on demand.
+  const [textContent, setTextContent] = useState<TextContent | null>(enContent as TextContent);
+  const [isLoading, setIsLoading] = useState(false);
   
   // Feature flag for language switcher
   const isLanguageSwitcherEnabled = ENABLE_LANGUAGE_SWITCHER;
@@ -107,12 +110,6 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       }
     }
   };
-
-  // Load initial language on mount
-  useEffect(() => {
-    loadTextContent(currentLanguage, true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run on mount, not when currentLanguage changes
 
   // Handle language change
   const setLanguage = (language: Language) => {

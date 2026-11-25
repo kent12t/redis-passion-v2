@@ -38,7 +38,6 @@ export default function CostumeMarquee({
                         height={0}
                         sizes="180vw"
                         className="object-contain w-full h-full"
-                        priority
                     />
                 </div>
                 {/* Third set (duplicate) */}
@@ -50,7 +49,6 @@ export default function CostumeMarquee({
                         height={0}
                         sizes="150vw"
                         className="object-contain w-full h-full"
-                        priority
                     />
                 </div>
             </div>

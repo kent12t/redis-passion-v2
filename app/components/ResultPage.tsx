@@ -161,7 +161,6 @@ export default function ResultPage({
                 if (onShare) {
                     onShare({ remoteUrl: result.url, localUrl: objectUrl });
                 }
-                console.log('Screenshot uploaded successfully:', result.url);
             } else {
                 console.error('Upload failed:', result.error);
                 setShowUploadErrorModal(true);
